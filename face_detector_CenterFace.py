@@ -6,8 +6,6 @@ import pycuda.driver as cuda
 import tensorrt as trt
 import time
 
-TRT_PATH = '/home/thesis/Documents/STUDY/Thesis/engines/face_detector_320_192.trt'
-
 class FaceDetector(object):
     def _load_plugins(self):
         trt.init_libnvinfer_plugins(self.trt_logger, '')
@@ -51,7 +49,7 @@ class FaceDetector(object):
 
         try:
             self._load_plugins()
-            self.engine = self._load_engine(TRT_PATH)
+            self.engine = self._load_engine(CENTER_FACE_TRT_PATH)
             self.context = self.engine.create_execution_context()
             self.stream = cuda.Stream()
             self.inputs, self.outputs, self.bindings = self._allocate_buffers()

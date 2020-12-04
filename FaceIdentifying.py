@@ -1,16 +1,16 @@
-import face_recognition
-import cv2
-import sys, glob, time
-import numpy as np
-import os
 import re
+import os
+import cv2
 import json
-import pycuda.driver as cuda
-from face_identifier import *
-from face_detector_CenterFace import *
 import pickle
+import numpy as numpy
+import sys, glob, time
+import pycuda.driver as cuda
+
+import face_recognition
 from sklearn import neighbors
 from common_functions import *
+from face_detector_CenterFace import *
 
 class FaceIdentify:
     ###############################################################################################

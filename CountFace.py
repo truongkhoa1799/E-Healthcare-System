@@ -11,12 +11,10 @@ class CountFace:
     def __init__(self):
         print("Starting CountFace")
         self.__list_faces = []
-        self.StartCountingFace()
     
     def CountSecond(self):
         freq = {}
-        percent = {}
-        max_percent = 0
+        max_people = 0
         return_face_id = None
         for face_id in self.__list_faces: 
             if (face_id in freq): 
@@ -24,22 +22,20 @@ class CountFace:
             else: 
                 freq[face_id] = 1
             
-            percent[face_id] = freq[face_id]/len(self.__list_faces)
-            if percent[face_id] > max_percent:
-                max_percent = percent[face_id]
+            if freq[face_id] > max_people:
+                max_people = freq[face_id]
                 return_face_id = face_id
                 
-        print("Total faces: {}".format(len(self.__list_faces)))
-        print(percent)
-        if max_fre >= 25:
-            print("User {} with percent {}".format(return_face_id,max_percent))
-            # current_patient.UpdatePatientName(max_face_id)
-        else:
-            print("There is no user")
-            # current_patient.UpdatePatientName("Unknown")
+        # print("Total faces: {}".format(len(self.__list_faces)))
+        # print(freq)
+        if max_people >= THRESHOLD_PATIENT_REC:
+            glo_va.patient_id = return_face_id
+            # print("User {} with percent {}".format(return_face_id,max_people))
         
         self.__list_faces = []
 
+    def Error(self):
+        self.__list_faces = []
 
     def StartCountingFace(self):
         self.__counter=RepeatTimer(CYCLE_COUNT_FACE_PERIOD, self.CountSecond)
