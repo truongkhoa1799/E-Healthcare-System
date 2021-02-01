@@ -1,10 +1,10 @@
-from utils.face_detector_CenterFace import FaceDetector
-from utils.face_identifying import FaceIdentify
-from utils.camera_detecting import CameraDetecting
-from utils.count_face import CountFace
+from identifying_users.face_detector_CenterFace import FaceDetector
+from identifying_users.face_identifying import FaceIdentify
+from identifying_users.camera_detecting import CameraDetecting
+from identifying_users.count_face import CountFace
 
 from utils.parameters import *
-from identifying_users_functions import *
+from identifying_users.identifying_users_functions import *
 
 import time
 import pycuda.driver as cuda
@@ -110,7 +110,7 @@ if __name__ == "__main__":
                 # print("\tTime to iden face: {}".format(time.time() - time_identifying))
 
                 face_id, dist = glo_va.face_identifying.GetFaceID()
-                
+
                 if ret == -3:
                     print("Error Face locations")
                     glo_va.STATE = 2
