@@ -4,7 +4,6 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk
 
 from utils.parameters import *
-from utils.common_functions import Preprocessing_Img
     
 def ConvertToDisplay():
     glo_va.display_image = cv2.cvtColor(glo_va.img, cv2.COLOR_BGR2RGB)  # to RGB
@@ -89,10 +88,5 @@ def Locating_Faces():
     return -1
 
 def Encoding_Face():
-    iden_new_img = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
-
-    # Pre-processing
-    RGB_resized_adjusted_bright_img = Preprocessing_Img(iden_new_img)
-
-    glo_va.embedded_face = glo_va.face_identifier.face_encodings(RGB_resized_adjusted_bright_img, [(0, IMAGE_SIZE, IMAGE_SIZE,0)])[0]
-    glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)
+    glo_va.img_located = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
+    glo_va.face_encoder.Encoding_Face()    

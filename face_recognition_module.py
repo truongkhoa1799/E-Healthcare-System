@@ -1,7 +1,9 @@
 from identifying_users.face_detector_CenterFace import FaceDetector
-from identifying_users.face_identifying import FaceIdentifier
+from identifying_users.face_encoder import Face_Encoder
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
+
+from communicate_server.server import Server
 
 from utils.parameters import *
 from identifying_users.identifying_users_functions import *
@@ -26,12 +28,12 @@ def Start_Face_Detector():
     print("Done start init Face Detector")
     print()
 
-def Start_Face_Identifier():
-    print("Starting init Face Identifier")
-    glo_va.face_identifier = FaceIdentifier()
+def Start_Face_Encoder():
+    print("Starting init Face Encoder")
+    glo_va.face_encoder = Face_Encoder()
 
     time.sleep(0.5)
-    print("Done start init Face Identifier")
+    print("Done start init Face Encoder")
     print()
 
 def Start_Camera_Detecting():
@@ -45,13 +47,22 @@ def Start_Camera_Detecting():
 def Start_Count_Face():
     print("Starting Init CountFace")
     glo_va.count_face = CountFace()
+    time.sleep(0.5)
     print("Done start CountFace")
     print()
 
 def Start_GUI():
     print("Starting Init GUI")
     InitGUI()
+    time.sleep(0.5)
     print("Done Init GUI")
+    print()
+
+def Start_Server_Connection():
+    print("Starting Init Server Connection")
+    glo_va.server = Server()
+    print("Done Init Server Connection")
+    print()
 
 #########################################################################
 # STOP FUNCTIONS                                                        #
@@ -59,15 +70,24 @@ def Start_GUI():
 def Stop_Face_Detector():
     print("Stop Face Detector")
     del glo_va.face_detector
-    print("Stop Face Identifier")
-    del glo_va.face_identifier
+
+    print("Stop Face Encoder")
+    del glo_va.face_encoder
+
     glo_va.cuda_ctx.pop()
     del glo_va.cuda_ctx
     print('\tTrtThread: stopped...')
+    print()
 
 def Stop_Camera_Detecting():
-    print("Stop Camera Detecting")
     glo_va.camera.StopCamera()
+    print("Stop Camera Detecting")
+    print()
+
+def Stop_Connecting_Server():
+    glo_va.server.Close()
+    print("Stop Connecting Server")
+    print()
 
 #########################################################################
 # INIT FUNCTION                                                         #
@@ -77,8 +97,8 @@ def Init():
     Start_Face_Detector()
     glo_va.flg_init_face_detector = True
 
-    # Init face identifying
-    Start_Face_Identifier()
+    # Init face encoder
+    Start_Face_Encoder()
 
     # Init camera detecting
     Start_Camera_Detecting()
@@ -87,6 +107,10 @@ def Init():
     # Init count face
     Start_Count_Face()
     glo_va.flg_init_count_face = True
+
+    # Init server connection
+    Start_Server_Connection()
+    glo_va.flg_server_connected = True
 
     # Init GUI
     Start_GUI()
@@ -108,60 +132,60 @@ def End():
     if glo_va.flg_init_face_detector:
         Stop_Face_Detector()
 
+    if glo_va.flg_server_connected:
+        Stop_Connecting_Server()
         
 #########################################################################
-# Main FUNCTION                                                          #
+# Main FUNCTION                                                         #
 #########################################################################
 if __name__ == "__main__":
     try:
         Init()
     except Exception as e:
-        print(e)
+        print("Error at Init module: {}".format(e))
         End()
         exit(-1)
         
     while True:
         event, values = glo_va.window_GUI.read(timeout=1)
         if event == 'Exit' or event == sg.WIN_CLOSED:
-            glo_va.STATE = 2
+            glo_va.STATE = -1
         elif event == 'Start':
             glo_va.count_face.StartCountingFace()
             glo_va.STATE = 1
         try:
-            if glo_va.STATE == 2:
+            if glo_va.STATE == -1:
                 End()
                 break
             elif glo_va.STATE == 1:
                 # Read camera
-                # time_read_frame = time.time()
                 glo_va.camera.RunCamera()
-                # print("\tTime to read frame: {}".format(time.time() - time_read_frame))
 
                 # Face detecting
-                # time_detecting = time.time()
                 ret = Locating_Faces()
-
                 if ret == -2:
                     print("Error Face locations")
-                    glo_va.STATE = 2
+                    glo_va.STATE = -1
                     continue
-                    glo_va.count_face.Error()
                 elif ret == 0:
                     # Face Identifying
-                    # time_identifying = time.time()
                     Encoding_Face()
-                    user_id = glo_va.face_identifier.Get_User_ID()
-                    # print("\tTime to iden face: {}".format(time.time() - time_identifying))
-
-                    glo_va.count_face.CountFace(user_id)
+                    glo_va.count_face.CountFace()
 
                 ConvertToDisplay()
-                if glo_va.patient_id is not None:
-                    glo_va.window_GUI['-NAME-'].update(str(glo_va.patient_id))
                 glo_va.window_GUI['image'].update(data=glo_va.display_image)
-            
+
+                if glo_va.patient_id is not None and glo_va.patient_id != -1:
+                    glo_va.window_GUI['-NAME-'].update(str(glo_va.patient_id))
+                    glo_va.STATE = 2
+            elif glo_va.STATE == 2:
+                continue
         except Exception as e:
-            print(e)
+            print("Error in main module: {}".format(e))
+            End()
+            break
+        except KeyboardInterrupt:
+            print('Interrupted')
             End()
             break
     print("Turn off E-Healthcare system")
