@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk
 
 from utils.parameters import *
-from utils.common_functions import AdjustBright
+from utils.common_functions import Preprocessing_Img
     
 def ConvertToDisplay():
     glo_va.display_image = cv2.cvtColor(glo_va.img, cv2.COLOR_BGR2RGB)  # to RGB
@@ -53,19 +53,18 @@ def InitGUI():
     glo_va.window_GUI = sg.Window('Demo Application - OpenCV Integration', layout, location=(800, 400), size=(800, 400))
     print("OPENED GUI")
 
-def LocateFaces():
+def Locating_Faces():
     # CenterFace
     if glo_va.img is not None:
         # locate faces in the images
         face_locations = glo_va.face_detector(glo_va.img)
         
         if len(face_locations) == 0:
-            glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
+            # glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
             return -1
-        elif len(face_locations) > 1:
-            glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
-            return -2
 
+        area = 0
+        max_area = 0
         try:
             for face_location in face_locations:
                 boxes, score = face_location[:4], face_location[4]
@@ -73,22 +72,27 @@ def LocateFaces():
                 top = int(face_location[1])
                 right = int(face_location[2])
                 bottom = int(face_location[3])
-                cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
-                glo_va.face_location = (top, bottom, left, right)
-                return 0
+
+                area = (right - left)*(bottom - top)
+                if area > max_area:
+                    glo_va.face_location = (top, bottom, left, right)
+                    max_area = area
         except:
-            return -3
-    
+            return -2
+
+        if max_area > MIN_FACE_AREA:
+            cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+            return 0
+        else:
+            return -1
+
     return -1
 
-def FaceIdentifying():
+def Encoding_Face():
     iden_new_img = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
-    fra = IMAGE_SIZE / max(iden_new_img.shape[0], iden_new_img.shape[1])
 
     # Pre-processing
-    resized_img = cv2.resize(iden_new_img, (IMAGE_SIZE,IMAGE_SIZE))
-    resized_img = AdjustBright(resized_img)
-    RGB_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
+    RGB_resized_adjusted_bright_img = Preprocessing_Img(iden_new_img)
 
-    glo_va.embedded_face = glo_va.face_identifying.face_encodings(RGB_resized_img, [(0, IMAGE_SIZE, IMAGE_SIZE,0)])[0]
+    glo_va.embedded_face = glo_va.face_identifier.face_encodings(RGB_resized_adjusted_bright_img, [(0, IMAGE_SIZE, IMAGE_SIZE,0)])[0]
     glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)

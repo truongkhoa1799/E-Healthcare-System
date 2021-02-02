@@ -1,5 +1,5 @@
 from identifying_users.face_detector_CenterFace import FaceDetector
-from identifying_users.face_identifying import FaceIdentify
+from identifying_users.face_identifying import FaceIdentifier
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
 
@@ -9,58 +9,92 @@ from identifying_users.identifying_users_functions import *
 import time
 import pycuda.driver as cuda
 
-def StartFaceDetector():
-    print('TrtThread: loading the TRT model...')
+
+#########################################################################
+# START FUNCTIONS                                                       #
+#########################################################################
+def Start_Face_Detector():
+    print("Starting init Face Detector")
+
+    print('\tTrtThread: loading the TRT model...')
     glo_va.cuda_ctx = cuda.Device(0).make_context()  # GPU 0
-    print("Load Face Detector model")
+    
+    print("\tLoad Face Detector model")
     glo_va.face_detector = FaceDetector(landmarks=False)
 
-def StopFaceDetector():
-    del glo_va.face_detector
-    del glo_va.face_identifying
-    glo_va.cuda_ctx.pop()
-    del glo_va.cuda_ctx
-    print('TrtThread: stopped...')
-
-def Init():
-    # Init face regonizer
-    print("Starting init Face Detector")
-    StartFaceDetector()
-    glo_va.flg_init_face_detector = True
     time.sleep(0.5)
     print("Done start init Face Detector")
     print()
 
-    # Init camera detecting
-    print("Starting init Camera")
-    glo_va.camera = CameraDetecting()
-    glo_va.flg_init_camera = True
-    time.sleep(0.5)
-    print("Done start init Camera")
-    print()
-    
-    # Init face identifying
+def Start_Face_Identifier():
     print("Starting init Face Identifier")
-    glo_va.face_identifying = FaceIdentify()
+    glo_va.face_identifier = FaceIdentifier()
+
     time.sleep(0.5)
-    # Init face identifying
     print("Done start init Face Identifier")
     print()
 
-    # Init count face
+def Start_Camera_Detecting():
+    print("Starting init Camera")
+    glo_va.camera = CameraDetecting()
+
+    time.sleep(0.5)
+    print("Done start init Camera")
+    print()
+
+def Start_Count_Face():
     print("Starting Init CountFace")
     glo_va.count_face = CountFace()
-    glo_va.flg_init_count_face = True
     print("Done start CountFace")
     print()
 
-    # Init GUI
+def Start_GUI():
     print("Starting Init GUI")
     InitGUI()
-    glo_va.flg_init_GUI = True
     print("Done Init GUI")
 
+#########################################################################
+# STOP FUNCTIONS                                                        #
+#########################################################################
+def Stop_Face_Detector():
+    print("Stop Face Detector")
+    del glo_va.face_detector
+    print("Stop Face Identifier")
+    del glo_va.face_identifier
+    glo_va.cuda_ctx.pop()
+    del glo_va.cuda_ctx
+    print('\tTrtThread: stopped...')
 
+def Stop_Camera_Detecting():
+    print("Stop Camera Detecting")
+    glo_va.camera.StopCamera()
+
+#########################################################################
+# INIT FUNCTION                                                         #
+#########################################################################
+def Init():
+    # Init Face Detector
+    Start_Face_Detector()
+    glo_va.flg_init_face_detector = True
+
+    # Init face identifying
+    Start_Face_Identifier()
+
+    # Init camera detecting
+    Start_Camera_Detecting()
+    glo_va.flg_init_camera = True
+    
+    # Init count face
+    Start_Count_Face()
+    glo_va.flg_init_count_face = True
+
+    # Init GUI
+    Start_GUI()
+    glo_va.flg_init_GUI = True
+
+#########################################################################
+# End FUNCTION                                                          #
+#########################################################################
 def End():
     if glo_va.flg_init_count_face:
         glo_va.count_face.stop()
@@ -69,11 +103,15 @@ def End():
         glo_va.window_GUI.close()
 
     if glo_va.flg_init_camera:
-        glo_va.camera.StopCamera()
+        Stop_Camera_Detecting()
 
     if glo_va.flg_init_face_detector:
-        StopFaceDetector()
+        Stop_Face_Detector()
 
+        
+#########################################################################
+# Main FUNCTION                                                          #
+#########################################################################
 if __name__ == "__main__":
     try:
         Init()
@@ -101,25 +139,21 @@ if __name__ == "__main__":
 
                 # Face detecting
                 # time_detecting = time.time()
-                ret = LocateFaces()
-                # print("\tTime to detect face: {}".format(time.time() - time_detecting))
+                ret = Locating_Faces()
 
-                # Face Identifying
-                # time_identifying = time.time()
-                FaceIdentifying()
-                # print("\tTime to iden face: {}".format(time.time() - time_identifying))
-
-                face_id, dist = glo_va.face_identifying.GetFaceID()
-
-                if ret == -3:
+                if ret == -2:
                     print("Error Face locations")
                     glo_va.STATE = 2
                     continue
-                elif ret == -2:
-                    print("There is more than 1 patient detected")
                     glo_va.count_face.Error()
-                elif ret == 0 and face_id != "Null":
-                    glo_va.count_face.CountFace(face_id)
+                elif ret == 0:
+                    # Face Identifying
+                    # time_identifying = time.time()
+                    Encoding_Face()
+                    user_id = glo_va.face_identifier.Get_User_ID()
+                    # print("\tTime to iden face: {}".format(time.time() - time_identifying))
+
+                    glo_va.count_face.CountFace(user_id)
 
                 ConvertToDisplay()
                 if glo_va.patient_id is not None:

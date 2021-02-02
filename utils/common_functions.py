@@ -33,3 +33,8 @@ def AdjustBright(img):
         # return BRG image
         return ret_img
         
+def Preprocessing_Img(img):
+    resized_img = cv2.resize(img, (IMAGE_SIZE,IMAGE_SIZE))
+    resized_adjusted_bright_img = AdjustBright(resized_img)
+    RGB_resized_adjusted_bright_img = cv2.cvtColor(resized_adjusted_bright_img, cv2.COLOR_BGR2RGB)
+    return RGB_resized_adjusted_bright_img

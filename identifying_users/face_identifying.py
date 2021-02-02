@@ -1,14 +1,16 @@
 import os
+import time
 import json
 import pickle
 import numpy as np
 
+import cv2
 # import face_recognition
 import dlib
 from sklearn import neighbors
 from utils.parameters import *
 
-class FaceIdentify:
+class FaceIdentifier:
     ###############################################################################################
     # __init__                                                                                    #
     # Input:                                                                                      #
@@ -18,28 +20,22 @@ class FaceIdentify:
     #   None            None                        :   None                                      #
     ###############################################################################################
     def __init__(self):
-        self.__list_patient = {}
         self.__known_face_encodings = []
         self.__known_face_IDs = []
         self.__knn_clf = None
 
-        self.pose_predictor_5_point = dlib.shape_predictor(PREDICTOR_5_POINT_MODEL)
-        self.face_encoder = dlib.face_recognition_model_v1(RESNET_MODEL)
+        self.__pose_predictor_5_point = dlib.shape_predictor(PREDICTOR_5_POINT_MODEL)
+        self.__face_encoder = dlib.face_recognition_model_v1(RESNET_MODEL)
+        
+        test_img = cv2.imread(FACE_TEST_PATH + '/00002/0-khoa_1.jpeg')
+        resized_img = cv2.resize(test_img, (IMAGE_SIZE,IMAGE_SIZE))
+        test_encoded = self.face_encodings(resized_img, [(1, 149, 1, 149)])
+        time.sleep(1)
+        print("\tDone load dlib model")
 
-        ret, self.__known_face_IDs, self.__known_face_encodings = self.__LoadData()
-        if ret == -1:
-            print("There is no user id or encoding face face to load")
-            exit(-1)
+        self.__Load_Data(PATH_USER_ID, PATH_USER_IMG_ENCODED)
 
-        ret, self.__knn_clf = self.__LoadKNNModel(KNN_MODEL_PATH)
-        if ret == -1:
-            print("There is KNN model to load")
-            exit(-1)
-
-        ret, self.__list_patient = self.__ReadPatientsInfo()
-        if ret == -1:
-            print("There Patient info to load")
-            exit(-1)
+        self.__Load_KNN_Model(KNN_MODEL_PATH)
 
     ###############################################################################################
     # face_encodings                                                                              #
@@ -51,7 +47,7 @@ class FaceIdentify:
     ###############################################################################################
     def face_encodings(self, face_image, known_face_locations):
         raw_landmarks = self._raw_face_landmarks(face_image, known_face_locations)
-        return [np.array(self.face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
+        return [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
 
     ###############################################################################################
     # _css_to_rect                                                                                #
@@ -69,68 +65,33 @@ class FaceIdentify:
         else:
             face_locations = [self._css_to_rect(face_location) for face_location in face_locations]
 
-        return [self.pose_predictor_5_point(face_image, face_location) for face_location in face_locations]
+        return [self.__pose_predictor_5_point(face_image, face_location) for face_location in face_locations]
 
     ###############################################################################################
-    # __ReadPatientsInfo                                                                                  #                    
+    # __Load_Data                                                                                  #                    
     # Input:                                                                                      #
     #   None            None                        :   None                                      #
     # Output:                                                                                     #
     #   ret             int                         :   -1 No Data Loaded, 0 success              #
     ###############################################################################################
-    def __ReadPatientsInfo(self):
-        if not os.path.exists(PATIENT_FILE):
-            return -1, None
+    def __Load_Data(self, user_id_path, encoding_img_path):
+        with open (user_id_path, 'rb') as fp_1:
+            self.__known_face_IDs = pickle.load(fp_1)
 
-        info = None
-        with open(PATIENT_FILE, 'r') as json_file:
-            info = json.load(json_file)
-
-        list = info['patients_info']
-        for user in list:
-            self.__list_patient[user['patient_id']] = user['name']
-        
-        return 0, self.__list_patient
-
-    ###############################################################################################
-    # __LoadData                                                                                  #                    
-    # Input:                                                                                      #
-    #   None            None                        :   None                                      #
-    # Output:                                                                                     #
-    #   ret             int                         :   -1 No Data Loaded, 0 success              #
-    ###############################################################################################
-    def __LoadData(self):
-        known_face_IDs = None
-        known_face_encodings = None
-        if not os.path.exists(PATH_USER_ID):
-            return -1, None, None
-
-        with open (PATH_USER_ID, 'rb') as fp_1:
-            known_face_IDs = pickle.load(fp_1)
-
-        if not os.path.exists(PATH_USER_IMG_ENCODED):
-            return -1, None, None
-
-        with open (PATH_USER_IMG_ENCODED, 'rb') as fp_2:
-            known_face_encodings = pickle.load(fp_2)
-        
-        return 0, known_face_IDs, known_face_encodings
+        with open (encoding_img_path, 'rb') as fp_2:
+            self.__known_face_encodings = pickle.load(fp_2)
     
     #################################################################################
-    # __LoadKNNModel                                                                #                    
+    # __Load_KNN_Model                                                                #                    
     # Input:                                                                        #
     #   model_path      :   path to save model                                      #
     # Output:                                                                       #
     #   ret             :   -1 no path, 0 success                                   #
     #   knn_clf         :   Model                                                   #
     #################################################################################
-    def __LoadKNNModel(self,model_path):
-        if not os.path.exists(model_path):
-            return -1, None
-
+    def __Load_KNN_Model(self,model_path):
         with open(model_path, 'rb') as f:
-            knn_clf = pickle.load(f)
-            return 0, knn_clf
+            self.__knn_clf = pickle.load(f)
     
     ###############################################################################################
     # GetFaceID                                                                                   #                    
@@ -139,22 +100,16 @@ class FaceIdentify:
     # Output:                                                                                     #
     #   Str             UserID                      :                                             #
     ###############################################################################################
-    def GetFaceID(self):
+    def Get_User_ID(self):
         closet_distances = self.__knn_clf.kneighbors(glo_va.embedded_face, n_neighbors = NUM_NEIGHBROS)
         face_id = self.__knn_clf.predict(glo_va.embedded_face)
-
         meet_condition_threshold = [closet_distances[0][0][i] <= THRESHOLD_FACE_REC for i in range(len(closet_distances[0][0]))]
+
         for i in range(len(meet_condition_threshold)):
             if self.__known_face_IDs[closet_distances[1][0][i]] == face_id[-1] and meet_condition_threshold[i]:
-                try:
-                    return self.__list_patient[face_id[-1]], closet_distances[0][0][i]
-                except:
-                    print("There is no face ins database")
-                    return "Null", 0
-        return "Null", 0
+                return face_id[-1]
+        return -1
 
-# if __name__ == '__main__':
-#     # print('TrtThread: loading the TRT model...')
-#     print("Test with RGB converter")
-#     test = FaceIdentify()
-#     test.Test()
+# # print('TrtThread: loading the TRT model...')
+# print("Test with RGB converter")
+# test = FaceIdentifier()

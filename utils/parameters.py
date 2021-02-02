@@ -36,14 +36,11 @@ DISPLAY_HEIGHT=360
 
 LOCATION_FACE_WIDTH = 300
 LOCATION_FACE_HEIGHT = 360
+MIN_FACE_AREA = 60000
 
 # image for center face
 SCALE_WIDTH=320
 SCALE_HEIGHT=192
-
-# For 1920x1080
-# DISPLAY_WIDTH=960
-# DISPLAY_HEIGHT=540
 
 # 1920x1080, 30 fps
 SENSOR_MODE_1080=2
@@ -56,19 +53,26 @@ time_read_frame = 0
 
 class GlobalVariable:
     def __init__(self):
-        self.gui = None
         self.camera = None
-        self.STATE = 0
-        self.img = None
+
+        self.gui = None
         self.display_image = None
         self.window_GUI = None
-        self.face_detector = None
-        self.cuda_ctx = None
-        self.face_location = None
-        self.face_identifying = None
-        self.embedded_face = None
         self.patient_id = None
+
+        self.STATE = 0
+
+        self.cuda_ctx = None
+
         self.count_face = None
+
+        # face recognition
+        self.face_identifier = None
+        self.face_detector = None
+
+        self.img = None
+        self.face_location = None
+        self.embedded_face = None
 
         # flag init
         self.flg_init_count_face = False
