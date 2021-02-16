@@ -10,6 +10,7 @@
 # Let's use a repeating Timer for counting FPS
 import cv2
 import threading
+from utils.parameters import *
 
 class RepeatTimer(threading.Timer):
     def run(self):
@@ -29,12 +30,13 @@ class CSI_Camera:
         self.read_thread = None
         self.read_lock = threading.Lock()
         self.running = False
+
+        # The parameter for reading fps
         self.fps_timer=None
         self.frames_read=0
         self.frames_displayed=0
         self.last_frames_read=0
         self.last_frames_displayed=0
-
 
     def open(self, gstreamer_pipeline_string):
         try:
@@ -54,16 +56,13 @@ class CSI_Camera:
         if self.running:
             print('Video capturing is already running')
             return None
+
         # create a thread to read the camera image
         if self.video_capture != None:
             self.running=True
             self.read_thread = threading.Thread(target=self.updateCamera)
             self.read_thread.start()
         return self
-
-    def stop(self):
-        self.running=False
-        self.read_thread.join()
 
     def updateCamera(self):
         # This is the thread to read images from the camera
@@ -79,23 +78,11 @@ class CSI_Camera:
         # FIX ME - stop and cleanup thread
         # Something bad happened
         
-
     def read(self):
         with self.read_lock:
             frame = self.frame.copy()
             grabbed=self.grabbed
         return grabbed, frame
-
-    def release(self):
-        if self.video_capture != None:
-            self.video_capture.release()
-            self.video_capture = None
-        # Kill the timer
-        self.fps_timer.cancel()
-        self.fps_timer.join()
-        # Now kill the thread
-        if self.read_thread != None:
-            self.read_thread.join()
 
     def update_fps_stats(self):
         self.last_frames_read=self.frames_read
@@ -108,6 +95,23 @@ class CSI_Camera:
         self.fps_timer=RepeatTimer(1.0,self.update_fps_stats)
         self.fps_timer.start()
 
+    def stop(self):
+        self.running=False
+        self.read_thread.join()
+
+    def release(self):
+        if self.video_capture != None:
+            self.video_capture.release()
+            self.video_capture = None
+                # Now kill the thread
+        if self.read_thread != None:
+            self.read_thread.join()
+
+        if show_fps:
+            # Kill the timer
+            self.fps_timer.cancel()
+            self.fps_timer.join()
+
     @property
     def gstreamer_pipeline(self):
         return self._gstreamer_pipeline
@@ -116,12 +120,12 @@ class CSI_Camera:
     # Here we directly select sensor_mode 3 (1280x720, 59.9999 fps)
     def create_gstreamer_pipeline(
         self,
-        sensor_id=0,
-        sensor_mode=3,
-        display_width=1280,
-        display_height=720,
-        framerate=60,
-        flip_method=0,
+        sensor_id,
+        sensor_mode,
+        framerate,
+        flip_method,
+        display_width,
+        display_height
     ):
         self._gstreamer_pipeline = (
             "nvarguscamerasrc sensor-id=%d sensor-mode=%d ! "

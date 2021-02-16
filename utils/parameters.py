@@ -17,28 +17,32 @@ IMAGE_SIZE = 150
 BASE_BRIGHTNESS = 180
 
 # Count Face
-CYCLE_COUNT_FACE_PERIOD = 2.0
-THRESHOLD_PATIENT_REC = 15
+CYCLE_COUNT_FACE_PERIOD = 1.5
+NUMBER_DETECTED_FACE_TRANSMITED = 20
 
 # Display image
 DISPLAY_WIDTH=640
 DISPLAY_HEIGHT=360
+# DISPLAY_WIDTH=1280
+# DISPLAY_HEIGHT=720
+
+# 1920x1080, 30 fps
+SENSOR_MODE_1080=2
+# 1280x720, 60 fps
+SENSOR_MODE_720=3
 
 # size for display
 LOCATION_FACE_WIDTH = 300
 LOCATION_FACE_HEIGHT = 360
 
 # Min are to encoding
-MIN_FACE_AREA = 60000
+MIN_FACE_AREA = 40000
 
 # image for center face
 SCALE_WIDTH=320
 SCALE_HEIGHT=192
 
-# 1920x1080, 30 fps
-SENSOR_MODE_1080=2
-# 1280x720, 60 fps
-SENSOR_MODE_720=3
+show_fps = True
 
 class GlobalVariable:
     def __init__(self):
@@ -57,7 +61,7 @@ class GlobalVariable:
 
         # face recognition
         self.face_detector = None
-        self.face_encoder = None
+        self.face_recognition = None
 
         self.img = None
         self.img_located = None
@@ -70,6 +74,7 @@ class GlobalVariable:
         self.flg_init_camera = False
         self.flg_init_face_detector = False
         self.flg_server_connected = False
+        self.flg_init_face_recognition = False
 
         # Encoded Image
         self.list_encoded_img = ""
@@ -83,4 +88,19 @@ class GlobalVariable:
         self.eventhub_connection = None
         self.eventhub_name = None
 
+class User_Infor:
+    def __init__(self):
+        self.name = None
+        self.birthday = None
+        self.phone = None
+        self.address = None
+        self.Init()
+    
+    def Init(self):
+        self.name = "None"
+        self.birthday = "None"
+        self.phone = "None"
+        self.address = "None"
+
 glo_va = GlobalVariable()
+user_infor = User_Infor()

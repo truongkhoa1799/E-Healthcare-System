@@ -17,13 +17,13 @@ def InitGUI():
     camera_layout = [[sg.Image(filename='', key='image', size=(300,360), visible=True)],]
     information_layout = [
             [sg.Text('Name', size=(40, 1), justification='left', font='Helvetica 20')],
-            [sg.Text('Name', size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', key='-NAME-', text_color='black')],
+            [sg.Text(user_infor.name, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', key='-NAME-', text_color='black')],
             [sg.Text('Birth Date', size=(40, 1), justification='left', font='Helvetica 20')],
-            [sg.Input('Birth Date', size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', disabled=True, key='patient_bd')],
+            [sg.Text(user_infor.birthday, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', key='-BD-', text_color='black')],
             [sg.Text('Phone', size=(40, 1), justification='left', font='Helvetica 20')],
-            [sg.Input('Phone', size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', disabled=True, key='patient_phone')],
+            [sg.Text(user_infor.phone, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', key='-PHONE-', text_color='black')],
             [sg.Text('Address', size=(40, 1), justification='left', font='Helvetica 20')],
-            [sg.Input('Address', size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', disabled=True, key='patient_address')],
+            [sg.Text(user_infor.address, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 15', key='-ADDRESS-', text_color='black')],
             [
             sg.Button('Start', size=(10, 1), font='Helvetica 14'),
             sg.Button('Exit', size=(10, 1), font='Helvetica 14'),
@@ -55,9 +55,37 @@ def InitGUI():
 def Locating_Faces():
     # CenterFace
     if glo_va.img is not None:
-        # locate faces in the images
-        face_locations = glo_va.face_detector(glo_va.img)
+        # # locate faces in the images
+        # face_locations = glo_va.face_detector(glo_va.img)
         
+        # if len(face_locations) == 0:
+        #     # glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
+        #     return -1
+
+        # area = 0
+        # max_area = 0
+        # try:
+        #     for face_location in face_locations:
+        #         boxes, score = face_location[:4], face_location[4]
+        #         left = int(face_location[0])
+        #         top = int(face_location[1])
+        #         right = int(face_location[2])
+        #         bottom = int(face_location[3])
+
+        #         area = (right - left)*(bottom - top)
+        #         if area > max_area:
+        #             glo_va.face_location = (top, bottom, left, right)
+        #             max_area = area
+        # except:
+        #     return -2
+
+        # locate faces in the images
+        fra = 80 / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+        resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
+        GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
+        
+        face_locations = glo_va.face_recognition.Get_Face_Locations(GRAY_resized_img)
+
         if len(face_locations) == 0:
             # glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
             return -1
@@ -66,11 +94,10 @@ def Locating_Faces():
         max_area = 0
         try:
             for face_location in face_locations:
-                boxes, score = face_location[:4], face_location[4]
-                left = int(face_location[0])
-                top = int(face_location[1])
-                right = int(face_location[2])
-                bottom = int(face_location[3])
+                top = int(face_location[0] / fra)
+                bottom = int(face_location[2] / fra)
+                left = int(face_location[3] / fra)
+                right = int(face_location[1] / fra)
 
                 area = (right - left)*(bottom - top)
                 if area > max_area:
@@ -80,13 +107,10 @@ def Locating_Faces():
             return -2
 
         if max_area > MIN_FACE_AREA:
+            glo_va.img_located = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
             cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
             return 0
         else:
             return -1
 
     return -1
-
-def Encoding_Face():
-    glo_va.img_located = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
-    glo_va.face_encoder.Encoding_Face()    

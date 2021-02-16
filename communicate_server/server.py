@@ -24,9 +24,9 @@ class Server:
         )
 
         # Start a thread to listen 
-        device_method_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=(self.__connection,))
-        device_method_thread.daemon = True
-        device_method_thread.start()
+        self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=(self.__connection,))
+        self.__listening_server_thread.daemon = True
+        self.__listening_server_thread.start()
 
     def __LoadConnection(self):
         with open (CONNECTION_LIST_PATH, 'rb') as fp_1:
@@ -39,16 +39,17 @@ class Server:
     def __Listen_Reponse_Server(self, connection):
         while True:
             method_request = connection.receive_method_request()
-            print (
-                "\nMethod callback called with:\nmethodName = {method_name}\npayload = {payload}".format(
-                    method_name=method_request.name,
-                    payload=method_request.payload
-                )
-            )
             if method_request.name == "Validate_User":
-                print(method_request.payload)
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
+                ret_msg = int(method_request.payload['return'])
+                print("\tReceived response from server: {}".format(ret_msg))
+                if ret_msg == 0:
+                    user_infor.name = method_request.payload['name']
+                    user_infor.birthday = method_request.payload['birthday']
+                    user_infor.phone = method_request.payload['phone']
+                    user_infor.address = method_request.payload['address']
+                    glo_va.has_response_server = True
             else:
                 response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
                 response_status = 404
@@ -56,8 +57,6 @@ class Server:
             method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
             connection.send_method_response(method_response)
 
-            glo_va.patient_id = method_request.payload['answer']
-    
     def Validate_User(self):
         try:
             event_data_batch = self.__producer.create_batch()
@@ -71,10 +70,11 @@ class Server:
                 glo_va.STATE = -1
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
-            print(e)
+            print("Has error at module Validate_User in server.py: {}".format(e))
             glo_va.STATE = -1
 
     def Close(self):
+        # self.__listening_server_thread.join()
         self.__producer.close()
         self.__connection.disconnect()
 

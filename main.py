@@ -1,5 +1,5 @@
 from identifying_users.face_detector_CenterFace import FaceDetector
-from identifying_users.face_encoder import Face_Encoder
+from identifying_users.face_recognition import Face_Recognition
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
 
@@ -11,6 +11,7 @@ from identifying_users.identifying_users_functions import *
 import time
 import pycuda.driver as cuda
 
+from utils.common_functions import Preprocessing_Img
 
 #########################################################################
 # START FUNCTIONS                                                       #
@@ -28,9 +29,9 @@ def Start_Face_Detector():
     print("Done start init Face Detector")
     print()
 
-def Start_Face_Encoder():
-    print("Starting init Face Encoder")
-    glo_va.face_encoder = Face_Encoder()
+def Start_Face_Recognition():
+    print("Starting init Face Recognition")
+    glo_va.face_recognition = Face_Recognition()
 
     time.sleep(0.5)
     print("Done start init Face Encoder")
@@ -71,12 +72,14 @@ def Stop_Face_Detector():
     print("Stop Face Detector")
     del glo_va.face_detector
 
-    print("Stop Face Encoder")
-    del glo_va.face_encoder
-
     glo_va.cuda_ctx.pop()
     del glo_va.cuda_ctx
     print('\tTrtThread: stopped...')
+    print()
+
+def Stop_Face_Recognition():
+    print("Stop Face Recognition")
+    del glo_va.face_recognition
     print()
 
 def Stop_Camera_Detecting():
@@ -93,12 +96,15 @@ def Stop_Connecting_Server():
 # INIT FUNCTION                                                         #
 #########################################################################
 def Init():
-    # Init Face Detector
-    Start_Face_Detector()
-    glo_va.flg_init_face_detector = True
+    glo_va.has_response_server = False
+
+    # # Init Face Detector
+    # Start_Face_Detector()
+    # glo_va.flg_init_face_detector = True
 
     # Init face encoder
-    Start_Face_Encoder()
+    Start_Face_Recognition()
+    glo_va.flg_init_face_recognition = True
 
     # Init camera detecting
     Start_Camera_Detecting()
@@ -131,6 +137,9 @@ def End():
 
     if glo_va.flg_init_face_detector:
         Stop_Face_Detector()
+    
+    if glo_va.flg_init_face_recognition:
+        Stop_Face_Recognition()
 
     if glo_va.flg_server_connected:
         Stop_Connecting_Server()
@@ -169,15 +178,19 @@ if __name__ == "__main__":
                     continue
                 elif ret == 0:
                     # Face Identifying
-                    Encoding_Face()
+                    glo_va.face_recognition.Encoding_Face()
                     glo_va.count_face.CountFace()
 
                 ConvertToDisplay()
                 glo_va.window_GUI['image'].update(data=glo_va.display_image)
 
-                if glo_va.patient_id is not None and glo_va.patient_id != -1:
-                    glo_va.window_GUI['-NAME-'].update(str(glo_va.patient_id))
-                    glo_va.STATE = 2
+                if glo_va.has_response_server == True:
+                    glo_va.window_GUI['-NAME-'].update(str(user_infor.name))
+                    glo_va.window_GUI['-BD-'].update(str(user_infor.birthday))
+                    glo_va.window_GUI['-PHONE-'].update(str(user_infor.phone))
+                    glo_va.window_GUI['-ADDRESS-'].update(str(user_infor.address))
+                    glo_va.has_response_server = False
+                    # glo_va.STATE = 2
             elif glo_va.STATE == 2:
                 continue
         except Exception as e:
@@ -189,3 +202,7 @@ if __name__ == "__main__":
             End()
             break
     print("Turn off E-Healthcare system")
+    
+    # RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.img_located)
+    # cv2.imshow('test', RGB_resized_adjusted_bright_img)
+    # cv2.waitKey(2000)

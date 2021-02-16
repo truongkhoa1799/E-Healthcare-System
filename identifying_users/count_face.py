@@ -14,7 +14,7 @@ class CountFace:
         self.__num_imgs = 0
 
     def CountSecond(self):
-        if self.__num_imgs > THRESHOLD_PATIENT_REC:
+        if self.__num_imgs > NUMBER_DETECTED_FACE_TRANSMITED:
             glo_va.list_encoded_img = self.__list_faces
             glo_va.server.Validate_User()
 
@@ -31,6 +31,7 @@ class CountFace:
             self.__counter.join()
         except:
             print("Not yet start")
+            print()
     
     def __Compose_String(self, encoded_img):
         ret_string = ""
@@ -39,11 +40,8 @@ class CountFace:
             ret_string += str(precision_i) + '/'
         
         return ret_string
-
-    # def CountFace(self, face_id):
-    #     self.__list_faces.append(face_id)
     
     def CountFace(self):
-        self.__num_imgs += 1
         encoded_img_string = self.__Compose_String(glo_va.embedded_face)
         self.__list_faces += encoded_img_string + ' '
+        self.__num_imgs += 1
