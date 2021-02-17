@@ -53,7 +53,9 @@ def InitGUI():
     print("OPENED GUI")
 
 def Locating_Faces():
-    # CenterFace
+    face_area = 0
+    max_face_area = 0
+
     if glo_va.img is not None:
         # # locate faces in the images
         # face_locations = glo_va.face_detector(glo_va.img)
@@ -80,18 +82,15 @@ def Locating_Faces():
         #     return -2
 
         # locate faces in the images
-        fra = 80 / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+        fra = MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
         resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
         GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
         
         face_locations = glo_va.face_recognition.Get_Face_Locations(GRAY_resized_img)
 
         if len(face_locations) == 0:
-            # glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
             return -1
 
-        area = 0
-        max_area = 0
         try:
             for face_location in face_locations:
                 top = int(face_location[0] / fra)
@@ -99,15 +98,15 @@ def Locating_Faces():
                 left = int(face_location[3] / fra)
                 right = int(face_location[1] / fra)
 
-                area = (right - left)*(bottom - top)
-                if area > max_area:
+                face_area = (right - left)*(bottom - top)
+                if face_area > max_face_area:
                     glo_va.face_location = (top, bottom, left, right)
-                    max_area = area
+                    max_face_area = face_area
         except:
             return -2
 
-        if max_area > MIN_FACE_AREA:
-            glo_va.img_located = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
+        if max_face_area > MIN_FACE_AREA:
+            glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
             cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
             return 0
         else:

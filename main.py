@@ -1,4 +1,4 @@
-from identifying_users.face_detector_CenterFace import FaceDetector
+# from identifying_users.face_detector_CenterFace import FaceDetector
 from identifying_users.face_recognition import Face_Recognition
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
@@ -9,25 +9,25 @@ from utils.parameters import *
 from identifying_users.identifying_users_functions import *
 
 import time
-import pycuda.driver as cuda
+# import pycuda.driver as cuda
 
 from utils.common_functions import Preprocessing_Img
 
 #########################################################################
 # START FUNCTIONS                                                       #
 #########################################################################
-def Start_Face_Detector():
-    print("Starting init Face Detector")
+# def Start_Face_Detector():
+#     print("Starting init Face Detector")
 
-    print('\tTrtThread: loading the TRT model...')
-    glo_va.cuda_ctx = cuda.Device(0).make_context()  # GPU 0
+#     print('\tTrtThread: loading the TRT model...')
+#     glo_va.cuda_ctx = cuda.Device(0).make_context()  # GPU 0
     
-    print("\tLoad Face Detector model")
-    glo_va.face_detector = FaceDetector(landmarks=False)
+#     print("\tLoad Face Detector model")
+#     glo_va.face_detector = FaceDetector(landmarks=False)
 
-    time.sleep(0.5)
-    print("Done start init Face Detector")
-    print()
+#     time.sleep(0.5)
+#     print("Done start init Face Detector")
+#     print()
 
 def Start_Face_Recognition():
     print("Starting init Face Recognition")
@@ -68,14 +68,14 @@ def Start_Server_Connection():
 #########################################################################
 # STOP FUNCTIONS                                                        #
 #########################################################################
-def Stop_Face_Detector():
-    print("Stop Face Detector")
-    del glo_va.face_detector
+# def Stop_Face_Detector():
+#     print("Stop Face Detector")
+#     del glo_va.face_detector
 
-    glo_va.cuda_ctx.pop()
-    del glo_va.cuda_ctx
-    print('\tTrtThread: stopped...')
-    print()
+#     glo_va.cuda_ctx.pop()
+#     del glo_va.cuda_ctx
+#     print('\tTrtThread: stopped...')
+#     print()
 
 def Stop_Face_Recognition():
     print("Stop Face Recognition")
@@ -135,8 +135,8 @@ def End():
     if glo_va.flg_init_camera:
         Stop_Camera_Detecting()
 
-    if glo_va.flg_init_face_detector:
-        Stop_Face_Detector()
+    # if glo_va.flg_init_face_detector:
+    #     Stop_Face_Detector()
     
     if glo_va.flg_init_face_recognition:
         Stop_Face_Recognition()

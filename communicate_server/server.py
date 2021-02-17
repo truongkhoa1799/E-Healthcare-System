@@ -61,8 +61,7 @@ class Server:
         try:
             event_data_batch = self.__producer.create_batch()
             try:
-                data = EventData(glo_va.list_encoded_img)
-                # data = EventData("Hello")
+                data = EventData(glo_va.list_embedded_face)
                 data.properties = {'type_request':"0", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)
             except Exception as e:

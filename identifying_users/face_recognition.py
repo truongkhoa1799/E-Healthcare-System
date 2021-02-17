@@ -85,7 +85,7 @@ class Face_Recognition:
 
     def Encoding_Face(self):
         # Pre-processing
-        RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.img_located)
+        RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
 
         glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, IMAGE_SIZE, IMAGE_SIZE,0)])[0]
         # glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)

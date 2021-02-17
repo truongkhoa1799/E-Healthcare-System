@@ -17,8 +17,8 @@ class CameraDetecting(Thread):
             sensor_mode=SENSOR_MODE_720,
             framerate=30,
             flip_method=2,
-            display_height=DISPLAY_HEIGHT,
-            display_width=DISPLAY_WIDTH,
+            display_height=CAMERA_DISPLAY_HEIGHT,
+            display_width=CAMERA_DISPLAY_WIDTH,
         )
 
         print("Init camera")

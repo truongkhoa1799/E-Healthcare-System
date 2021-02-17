@@ -15,7 +15,7 @@ class CountFace:
 
     def CountSecond(self):
         if self.__num_imgs > NUMBER_DETECTED_FACE_TRANSMITED:
-            glo_va.list_encoded_img = self.__list_faces
+            glo_va.list_embedded_face = self.__list_faces
             glo_va.server.Validate_User()
 
         self.__list_faces = ""

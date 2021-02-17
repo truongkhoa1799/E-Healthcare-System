@@ -21,8 +21,8 @@ CYCLE_COUNT_FACE_PERIOD = 1.5
 NUMBER_DETECTED_FACE_TRANSMITED = 20
 
 # Display image
-DISPLAY_WIDTH=640
-DISPLAY_HEIGHT=360
+CAMERA_DISPLAY_WIDTH=640
+CAMERA_DISPLAY_HEIGHT=360
 # DISPLAY_WIDTH=1280
 # DISPLAY_HEIGHT=720
 
@@ -38,9 +38,12 @@ LOCATION_FACE_HEIGHT = 360
 # Min are to encoding
 MIN_FACE_AREA = 40000
 
-# image for center face
-SCALE_WIDTH=320
-SCALE_HEIGHT=192
+# MAX length for HOG face Detector
+MAX_LENGTH_IMG = 80
+
+# # image for center face
+# SCALE_WIDTH=320
+# SCALE_HEIGHT=192
 
 show_fps = True
 
@@ -48,25 +51,29 @@ class GlobalVariable:
     def __init__(self):
         self.camera = None
 
+        # Parameters for GUI
         self.gui = None
         self.display_image = None
         self.window_GUI = None
         self.patient_id = None
 
+        # STATE of the program
         self.STATE = 0
 
-        self.cuda_ctx = None
+        # self.cuda_ctx = None
 
         self.count_face = None
 
         # face recognition
-        self.face_detector = None
+        # self.face_detector = None
         self.face_recognition = None
 
+        # Parameters for face recognition
         self.img = None
-        self.img_located = None
+        self.detected_face = None
         self.face_location = None
         self.embedded_face = None
+        self.list_embedded_face = ""
 
         # flag init
         self.flg_init_count_face = False
@@ -75,9 +82,6 @@ class GlobalVariable:
         self.flg_init_face_detector = False
         self.flg_server_connected = False
         self.flg_init_face_recognition = False
-
-        # Encoded Image
-        self.list_encoded_img = ""
 
         # Server para
         self.has_response_server = False
