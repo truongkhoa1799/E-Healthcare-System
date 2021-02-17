@@ -2,6 +2,7 @@ from azure.eventhub import EventData, EventHubProducerClient
 from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
 
 import sys
+import time
 import pickle
 import threading
 sys.path.append('/home/thesis/Documents/E-Healthcare-System')
@@ -39,17 +40,21 @@ class Server:
     def __Listen_Reponse_Server(self, connection):
         while True:
             method_request = connection.receive_method_request()
+            current_time = time.strftime("%H:%M:%S", time.localtime())
+            print("[{time}]: Received response for validating message from server.".format(time=current_time))
             if method_request.name == "Validate_User":
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
+
                 ret_msg = int(method_request.payload['return'])
-                print("\tReceived response from server: {}".format(ret_msg))
-                if ret_msg == 0:
+                if glo_va.STATE == 1 and ret_msg == 0:
+                    user_infor.status = 0
                     user_infor.name = method_request.payload['name']
                     user_infor.birthday = method_request.payload['birthday']
                     user_infor.phone = method_request.payload['phone']
                     user_infor.address = method_request.payload['address']
-                    glo_va.has_response_server = True
+                
+                glo_va.has_response_server = True
             else:
                 response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
                 response_status = 404
@@ -61,6 +66,8 @@ class Server:
         try:
             event_data_batch = self.__producer.create_batch()
             try:
+                current_time = time.strftime("%H:%M:%S", time.localtime())
+                print("[{time}]: Send validating message to server.".format(time=current_time))
                 data = EventData(glo_va.list_embedded_face)
                 data.properties = {'type_request':"0", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)

@@ -32,11 +32,11 @@ SENSOR_MODE_1080=2
 SENSOR_MODE_720=3
 
 # size for display
-LOCATION_FACE_WIDTH = 300
-LOCATION_FACE_HEIGHT = 360
+LOCATION_FACE_WIDTH = 360
+LOCATION_FACE_HEIGHT = 350
 
 # Min are to encoding
-MIN_FACE_AREA = 40000
+MIN_FACE_AREA = 50000
 
 # MAX length for HOG face Detector
 MAX_LENGTH_IMG = 80
@@ -44,6 +44,15 @@ MAX_LENGTH_IMG = 80
 # # image for center face
 # SCALE_WIDTH=320
 # SCALE_HEIGHT=192
+
+# Parameters for GUI
+WIDTH_GUI = 800
+HEIGHT_GUI = 480
+CAM_EXAM_LAYOUT_WIDTH = 370
+CAM_EXAM_LAYOUT_HEIGHT = 360
+INFOR_SENSOR_LAYOUT_WIDTH = 400
+INFOR_SENSOR_LAYOUT_HEIGHT = 360
+
 
 show_fps = True
 
@@ -86,14 +95,19 @@ class GlobalVariable:
         # Server para
         self.has_response_server = False
         self.server = None
+        self.is_sending_message = False
 
         self.device_ID = None
         self.device_iothub_connection = None
         self.eventhub_connection = None
         self.eventhub_name = None
 
+        sensor_information_layout = None
+    
+
 class User_Infor:
     def __init__(self):
+        self.status = -1
         self.name = None
         self.birthday = None
         self.phone = None
@@ -101,10 +115,51 @@ class User_Infor:
         self.Init()
     
     def Init(self):
+        self.status = -1
         self.name = "None"
         self.birthday = "None"
         self.phone = "None"
         self.address = "None"
 
+    def Clear(self):
+        self.status = -1
+        self.name = "None"
+        self.birthday = "None"
+        self.phone = "None"
+        self.address = "None"
+
+    def Update(self):
+        glo_va.window_GUI['-NAME-'].update(str(self.name))
+        glo_va.window_GUI['-BD-'].update(str(self.birthday))
+        glo_va.window_GUI['-PHONE-'].update(str(self.phone))
+        glo_va.window_GUI['-ADDRESS-'].update(str(self.address))
+    
+class Sensor:
+    def __init__(self):
+        self.blood_pressure = None
+        self.pulse = None
+        self.thermal = None
+        self.spo2 = None
+        self.Init()
+    
+    def Init(self):
+        self.blood_pressure = "None"
+        self.pulse = "None"
+        self.thermal = "None"
+        self.spo2 = "None"
+    
+    def Clear(self):
+        self.blood_pressure = "None"
+        self.pulse = "None"
+        self.thermal = "None"
+        self.spo2 = "None"
+    
+    def Update(self):
+        glo_va.window_GUI['-NAME-'].update(str(self.blood_pressure))
+        glo_va.window_GUI['-BD-'].update(str(self.pulse))
+        glo_va.window_GUI['-PHONE-'].update(str(self.thermal))
+        glo_va.window_GUI['-ADDRESS-'].update(str(self.spo2))
+
 glo_va = GlobalVariable()
 user_infor = User_Infor()
+sensor = Sensor()

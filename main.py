@@ -98,11 +98,11 @@ def Stop_Connecting_Server():
 def Init():
     glo_va.has_response_server = False
 
-    # # Init Face Detector
-    # Start_Face_Detector()
-    # glo_va.flg_init_face_detector = True
+    # # # Init Face Detector
+    # # Start_Face_Detector()
+    # # glo_va.flg_init_face_detector = True
 
-    # Init face encoder
+    # Init face recognition
     Start_Face_Recognition()
     glo_va.flg_init_face_recognition = True
 
@@ -127,7 +127,7 @@ def Init():
 #########################################################################
 def End():
     if glo_va.flg_init_count_face:
-        glo_va.count_face.stop()
+        glo_va.count_face.Stop()
 
     if glo_va.flg_init_GUI:
         glo_va.window_GUI.close()
@@ -159,18 +159,25 @@ if __name__ == "__main__":
         event, values = glo_va.window_GUI.read(timeout=1)
         if event == 'Exit' or event == sg.WIN_CLOSED:
             glo_va.STATE = -1
-        elif event == 'Start':
-            glo_va.count_face.StartCountingFace()
+        elif event == 'Start' and glo_va.STATE == 0:
+            glo_va.count_face.Start_Counting_Face()
             glo_va.STATE = 1
+            # glo_va.window_GUI[f'-COL1-'].update(visible=False)
+            # glo_va.window_GUI[f'-COL2-'].update(visible=True)
+            # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
+            # progress_bar.UpdateBar(20, 100)
         try:
+            # STATE INIT
             if glo_va.STATE == -1:
                 End()
                 break
+
+            # STATE DETECTING AND RECOGNIZING PATIENT
             elif glo_va.STATE == 1:
                 # Read camera
                 glo_va.camera.RunCamera()
 
-                # Face detecting
+                # # Face detecting
                 ret = Locating_Faces()
                 if ret == -2:
                     print("Error Face locations")
@@ -179,22 +186,37 @@ if __name__ == "__main__":
                 elif ret == 0:
                     # Face Identifying
                     glo_va.face_recognition.Encoding_Face()
-                    glo_va.count_face.CountFace()
+                    glo_va.count_face.Count_Face()
 
                 ConvertToDisplay()
                 glo_va.window_GUI['image'].update(data=glo_va.display_image)
 
                 if glo_va.has_response_server == True:
-                    glo_va.window_GUI['-NAME-'].update(str(user_infor.name))
-                    glo_va.window_GUI['-BD-'].update(str(user_infor.birthday))
-                    glo_va.window_GUI['-PHONE-'].update(str(user_infor.phone))
-                    glo_va.window_GUI['-ADDRESS-'].update(str(user_infor.address))
+                    if user_infor.status == 0:
+                        glo_va.STATE = 2
+                        user_infor.Update()
+                        
+                    glo_va.is_sending_message = False
                     glo_va.has_response_server = False
-                    # glo_va.STATE = 2
+
+            # STATE CONFIRMING PATIENT INFORMATION
             elif glo_va.STATE == 2:
+                if event == 'Confirm':
+                    glo_va.window_GUI[f'-COL1-'].update(visible=False)
+                    glo_va.window_GUI[f'-COL2-'].update(visible=True)
+                    user_infor.Clear()
+                    user_infor.Update()
+                    glo_va.STATE = 3
+                elif event == 'Reject':
+                    user_infor.Clear()
+                    user_infor.Update()
+                    glo_va.STATE = 1
+
+            # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
+            elif glo_va.STATE == 3:
                 continue
         except Exception as e:
-            print("Error in main module: {}".format(e))
+            print("Error at module main in main: {}".format(e))
             End()
             break
         except KeyboardInterrupt:
@@ -202,7 +224,3 @@ if __name__ == "__main__":
             End()
             break
     print("Turn off E-Healthcare system")
-    
-    # RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.img_located)
-    # cv2.imshow('test', RGB_resized_adjusted_bright_img)
-    # cv2.waitKey(2000)
