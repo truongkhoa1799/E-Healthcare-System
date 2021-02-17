@@ -98,25 +98,21 @@ def Stop_Connecting_Server():
 def Init():
     glo_va.has_response_server = False
 
-    # # # Init Face Detector
-    # # Start_Face_Detector()
-    # # glo_va.flg_init_face_detector = True
+    # # Init face recognition
+    # Start_Face_Recognition()
+    # glo_va.flg_init_face_recognition = True
 
-    # Init face recognition
-    Start_Face_Recognition()
-    glo_va.flg_init_face_recognition = True
-
-    # Init camera detecting
-    Start_Camera_Detecting()
-    glo_va.flg_init_camera = True
+    # # Init camera detecting
+    # Start_Camera_Detecting()
+    # glo_va.flg_init_camera = True
     
-    # Init count face
-    Start_Count_Face()
-    glo_va.flg_init_count_face = True
+    # # Init count face
+    # Start_Count_Face()
+    # glo_va.flg_init_count_face = True
 
-    # Init server connection
-    Start_Server_Connection()
-    glo_va.flg_server_connected = True
+    # # Init server connection
+    # Start_Server_Connection()
+    # glo_va.flg_server_connected = True
 
     # Init GUI
     Start_GUI()
@@ -134,9 +130,6 @@ def End():
 
     if glo_va.flg_init_camera:
         Stop_Camera_Detecting()
-
-    # if glo_va.flg_init_face_detector:
-    #     Stop_Face_Detector()
     
     if glo_va.flg_init_face_recognition:
         Stop_Face_Recognition()
@@ -160,12 +153,11 @@ if __name__ == "__main__":
         if event == 'Exit' or event == sg.WIN_CLOSED:
             glo_va.STATE = -1
         elif event == 'Start' and glo_va.STATE == 0:
-            glo_va.count_face.Start_Counting_Face()
-            glo_va.STATE = 1
-            # glo_va.window_GUI[f'-COL1-'].update(visible=False)
-            # glo_va.window_GUI[f'-COL2-'].update(visible=True)
-            # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-            # progress_bar.UpdateBar(20, 100)
+            # glo_va.count_face.Start_Counting_Face()
+            # glo_va.STATE = 1
+            glo_va.STATE = 3
+            glo_va.window_GUI[f'-COL1-'].update(visible=False)
+            glo_va.window_GUI[f'-COL2-'].update(visible=True)
         try:
             # STATE INIT
             if glo_va.STATE == -1:
@@ -192,9 +184,9 @@ if __name__ == "__main__":
                 glo_va.window_GUI['image'].update(data=glo_va.display_image)
 
                 if glo_va.has_response_server == True:
-                    if user_infor.status == 0:
+                    if user_infor.Get_Status() == 0:
                         glo_va.STATE = 2
-                        user_infor.Update()
+                        user_infor.Update_Screen()
                         
                     glo_va.is_sending_message = False
                     glo_va.has_response_server = False
@@ -205,15 +197,36 @@ if __name__ == "__main__":
                     glo_va.window_GUI[f'-COL1-'].update(visible=False)
                     glo_va.window_GUI[f'-COL2-'].update(visible=True)
                     user_infor.Clear()
-                    user_infor.Update()
+                    user_infor.Update_Screen()
                     glo_va.STATE = 3
+                    glo_va.measuring_sensor = False
                 elif event == 'Reject':
                     user_infor.Clear()
-                    user_infor.Update()
+                    user_infor.Update_Screen()
                     glo_va.STATE = 1
 
             # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
             elif glo_va.STATE == 3:
+                if event == 'Measure':
+                    # glo_va.window_GUI[f'-COL2-'].update(visible=False)
+                    # glo_va.window_GUI[f'-COL1-'].update(visible=True)
+                    glo_va.measuring_sensor = True
+                    # glo_va.STATE = 0
+
+                if glo_va.measuring_sensor == True:
+                    progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
+                    for i in range(10):
+                        progress_bar.UpdateBar(10*(i+1), 100)
+                        time.sleep(1)
+                    sensor_info = {'blood_pressure': 120, 'pulse':98, 'thermal':38, 'spo2':90}
+                    sensor.Update_Sensor(sensor_info)
+                    sensor.Update_Screen()
+                    glo_va.measuring_sensor = False
+
+                    glo_va.STATE = 4
+
+            # STATE CLASSIFYING ROOM
+            elif glo_va.STATE == 4:
                 continue
         except Exception as e:
             print("Error at module main in main: {}".format(e))

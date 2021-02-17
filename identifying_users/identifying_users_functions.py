@@ -16,34 +16,43 @@ def InitGUI():
     # define the window layout
     # 370 ngang, 330 doc
     camera_layout = [[sg.Image(filename='', key='image', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
-    examination_info = [[sg.Text('Smart E-Healthcare', size=(CAM_EXAM_LAYOUT_WIDTH,CAM_EXAM_LAYOUT_HEIGHT), justification='left', font='Helvetica 20')]]
+    
+    examination_info = [
+        [sg.Text('NOTE: Please put your hand on sensors\nand press "Measure\" button', size=(50, 3),border_width=1, justification='left', text_color='red', font='Helvetica 12')],
+    
+        [sg.Text('STT', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-STT-', text_color='black')],
+        [sg.Text('Room', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ROOM-', text_color='black')],
+    ]
     
     information_layout = [
-            [sg.Text('Name', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(user_infor.name, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-NAME-', text_color='black')],
-            [sg.Text('Birth Date', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(user_infor.birthday, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BD-', text_color='black')],
-            [sg.Text('Phone', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(user_infor.phone, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PHONE-', text_color='black')],
-            [sg.Text('Address', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(user_infor.address, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ADDRESS-', text_color='black')],
-            [sg.Text('Confirm Information', size=(50, 1), justification='left', font='Helvetica 12')],
-            [
-                sg.Button('Confirm', size=(15, 1), font='Helvetica 14'),
-                sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
-            ],
+        [sg.Text('Name', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-NAME-', text_color='black')],
+        [sg.Text('Birth Date', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BD-', text_color='black')],
+        [sg.Text('Phone', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PHONE-', text_color='black')],
+        [sg.Text('Address', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ADDRESS-', text_color='black')],
+        [sg.Text('Confirm Information', size=(50, 1), justification='left', font='Helvetica 12')],
+        [
+            sg.Button('Confirm', size=(15, 1), font='Helvetica 14'),
+            sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
+        ],
     ]
     sensor_information_layout = [
-            [sg.Text('Blood Pressure', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(sensor.blood_pressure, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BLOOD_PRESSURE-', text_color='black')],
-            [sg.Text('Pulse Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(sensor.pulse, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PULSE-', text_color='black')],
-            [sg.Text('Thermal Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(sensor.thermal, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-THERMAL-', text_color='black')],
-            [sg.Text('SPO2', size=(40, 1), justification='left', font='Helvetica 16')],
-            [sg.Text(sensor.spo2, size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-SPO2-', text_color='black')],
-            [sg.Text('Measuring sensor', size=(50, 1), justification='left', font='Helvetica 12')],
-            [sg.ProgressBar(100, orientation='h', size=(50, 15), key='sensor_progress')],
+        [sg.Text('Blood Pressure', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BLOOD_PRESSURE-', text_color='black')],
+        [sg.Text('Pulse Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PULSE-', text_color='black')],
+        [sg.Text('Thermal Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-THERMAL-', text_color='black')],
+        [sg.Text('SPO2', size=(40, 1), justification='left', font='Helvetica 16')],
+        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-SPO2-', text_color='black')],
+        [sg.Text('Measuring sensor', size=(50, 1), justification='left', font='Helvetica 12')],
+        [sg.ProgressBar(100, orientation='h', size=(33, 15), key='sensor_progress')],
+        [sg.Button('Measure', size=(33, 1), font='Helvetica 14'),],
     ]
    
     layout1 = [

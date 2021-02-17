@@ -48,11 +48,7 @@ class Server:
 
                 ret_msg = int(method_request.payload['return'])
                 if glo_va.STATE == 1 and ret_msg == 0:
-                    user_infor.status = 0
-                    user_infor.name = method_request.payload['name']
-                    user_infor.birthday = method_request.payload['birthday']
-                    user_infor.phone = method_request.payload['phone']
-                    user_infor.address = method_request.payload['address']
+                    user_infor.Update_Info(method_request.payload)
                 
                 glo_va.has_response_server = True
             else:

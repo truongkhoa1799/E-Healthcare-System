@@ -102,64 +102,87 @@ class GlobalVariable:
         self.eventhub_connection = None
         self.eventhub_name = None
 
-        sensor_information_layout = None
+        # Measuring biological parameters
+        self.measuring_sensor = False
     
 
 class User_Infor:
     def __init__(self):
-        self.status = -1
-        self.name = None
-        self.birthday = None
-        self.phone = None
-        self.address = None
-        self.Init()
-    
-    def Init(self):
-        self.status = -1
-        self.name = "None"
-        self.birthday = "None"
-        self.phone = "None"
-        self.address = "None"
+        self.__status = -1
+        self.__name = None
+        self.__birthday = None
+        self.__phone = None
+        self.__address = None
+        self.Clear()
 
     def Clear(self):
-        self.status = -1
-        self.name = "None"
-        self.birthday = "None"
-        self.phone = "None"
-        self.address = "None"
+        self.__status = -1
+        self.__name = "None"
+        self.__birthday = "None"
+        self.__phone = "None"
+        self.__address = "None"
+    
+    def Update_Info(self, user_info):
+        self.__status = 0
+        self.__name = user_info['name']
+        self.__birthday = user_info['birthday']
+        self.__phone = user_info['phone']
+        self.__address = user_info['address']
 
-    def Update(self):
-        glo_va.window_GUI['-NAME-'].update(str(self.name))
-        glo_va.window_GUI['-BD-'].update(str(self.birthday))
-        glo_va.window_GUI['-PHONE-'].update(str(self.phone))
-        glo_va.window_GUI['-ADDRESS-'].update(str(self.address))
+    def Update_Screen(self):
+        glo_va.window_GUI['-NAME-'].update(str(self.__name))
+        glo_va.window_GUI['-BD-'].update(str(self.__birthday))
+        glo_va.window_GUI['-PHONE-'].update(str(self.__phone))
+        glo_va.window_GUI['-ADDRESS-'].update(str(self.__address))
+    
+    def Get_Status(self):
+        return self.__status
     
 class Sensor:
     def __init__(self):
-        self.blood_pressure = None
-        self.pulse = None
-        self.thermal = None
-        self.spo2 = None
-        self.Init()
-    
-    def Init(self):
-        self.blood_pressure = "None"
-        self.pulse = "None"
-        self.thermal = "None"
-        self.spo2 = "None"
+        self.__blood_pressure = None
+        self.__pulse = None
+        self.__thermal = None
+        self.__spo2 = None
+        self.Clear()
     
     def Clear(self):
-        self.blood_pressure = "None"
-        self.pulse = "None"
-        self.thermal = "None"
-        self.spo2 = "None"
+        self.__blood_pressure = "None"
+        self.__pulse = "None"
+        self.__thermal = "None"
+        self.__spo2 = "None"
     
-    def Update(self):
-        glo_va.window_GUI['-NAME-'].update(str(self.blood_pressure))
-        glo_va.window_GUI['-BD-'].update(str(self.pulse))
-        glo_va.window_GUI['-PHONE-'].update(str(self.thermal))
-        glo_va.window_GUI['-ADDRESS-'].update(str(self.spo2))
+    def Update_Sensor(self, sensor):
+        self.__blood_pressure = sensor['blood_pressure']
+        self.__pulse = sensor['pulse']
+        self.__thermal = sensor['thermal']
+        self.__spo2 = sensor['spo2']
+    
+    def Update_Screen(self):
+        glo_va.window_GUI['-BLOOD_PRESSURE-'].update(str(self.__blood_pressure))
+        glo_va.window_GUI['-PULSE-'].update(str(self.__pulse))
+        glo_va.window_GUI['-THERMAL-'].update(str(self.__thermal))
+        glo_va.window_GUI['-SPO2-'].update(str(self.__spo2))
+
+class Examination:
+    def __init__(self):
+        self.__stt = None
+        self.__room = None
+        self.Clear()
+    
+    def Clear(self):
+        self.__stt = "None"
+        self.__room = "None"
+    
+    def Update_Examination(self, exam):
+        self.__stt = exam['sst']
+        self.__room = exam['room']
+    
+    def Update_Screen(self):
+        glo_va.window_GUI['-STT-'].update(str(self.__stt))
+        glo_va.window_GUI['-ROOM-'].update(str(self.__room))
 
 glo_va = GlobalVariable()
 user_infor = User_Infor()
 sensor = Sensor()
+exam = Examination()
