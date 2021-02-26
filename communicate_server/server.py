@@ -40,20 +40,34 @@ class Server:
     def __Listen_Reponse_Server(self, connection):
         while True:
             method_request = connection.receive_method_request()
-            current_time = time.strftime("%H:%M:%S", time.localtime())
-            print("[{time}]: Received response for validating message from server.".format(time=current_time))
-            if method_request.name == "Validate_User":
+            timer_id = method_request.payload['request_id']
+            glo_va.lock_response_server.acquire()
+            if glo_va.current_timer_id_validation == timer_id:
+                glo_va.lock_timer_expir = True
+                glo_va.lock_response_server.release()
+
+                current_time = time.strftime("%H:%M:%S", time.localtime())
+                print("[{time}]: Received response of timer_id: {timer_id} for validating message from server.".format(time=current_time, timer_id=timer_id))
+                
+                if method_request.name == "Validate_User":
+                    response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
+                    response_status = 200
+
+                    ret_msg = int(method_request.payload['return'])
+                    if glo_va.STATE == 1 and ret_msg == 0:
+                        user_infor.Update_Info(method_request.payload)
+                    elif glo_va.STATE == 1 and ret_msg == -1:
+                        glo_va.times_missing_face += 1
+
+                    glo_va.has_response_server = True
+                    glo_va.lock_timer_expir = False
+                else:
+                    response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
+                    response_status = 404
+            else:
+                glo_va.lock_response_server.release()
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
-
-                ret_msg = int(method_request.payload['return'])
-                if glo_va.STATE == 1 and ret_msg == 0:
-                    user_infor.Update_Info(method_request.payload)
-                
-                glo_va.has_response_server = True
-            else:
-                response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
-                response_status = 404
 
             method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
             connection.send_method_response(method_response)
@@ -63,9 +77,9 @@ class Server:
             event_data_batch = self.__producer.create_batch()
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Send validating message to server.".format(time=current_time))
+                print("[{time}]: Send validating message to server with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.current_timer_id_validation))
                 data = EventData(glo_va.list_embedded_face)
-                data.properties = {'type_request':"0", 'device_ID': str(self.__device_ID)}
+                data.properties = {'request_id':glo_va.current_timer_id_validation,'type_request':"0", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)
             except Exception as e:
                 print(e)

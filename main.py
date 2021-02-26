@@ -7,8 +7,11 @@ from communicate_server.server import Server
 
 from utils.parameters import *
 from identifying_users.identifying_users_functions import *
+from utils.common_functions import Compose_Embedded_Face
+from utils.timer import Timer
 
 import time
+from threading import Lock
 # import pycuda.driver as cuda
 
 from utils.common_functions import Preprocessing_Img
@@ -52,6 +55,13 @@ def Start_Count_Face():
     print("Done start CountFace")
     print()
 
+def Start_Timer():
+    print("Starting Init Timer")
+    glo_va.timer = Timer()
+    time.sleep(0.5)
+    print("Done start Timer")
+    print()
+
 def Start_GUI():
     print("Starting Init GUI")
     InitGUI()
@@ -92,38 +102,58 @@ def Stop_Connecting_Server():
     print("Stop Connecting Server")
     print()
 
+def Stop_Count_Face():
+    glo_va.count_face.Stop()
+    print("Stop Count Face")
+    print()
+
+def Stop_Timer():
+    glo_va.timer.Stop()
+    print("Stop Timer")
+    print()
+
 #########################################################################
 # INIT FUNCTION                                                         #
 #########################################################################
 def Init():
     glo_va.has_response_server = False
 
-    # # Init face recognition
-    # Start_Face_Recognition()
-    # glo_va.flg_init_face_recognition = True
+    # Init face recognition
+    Start_Face_Recognition()
+    glo_va.flg_init_face_recognition = True
 
-    # # Init camera detecting
-    # Start_Camera_Detecting()
-    # glo_va.flg_init_camera = True
+    # Init camera detecting
+    Start_Camera_Detecting()
+    glo_va.flg_init_camera = True
     
-    # # Init count face
-    # Start_Count_Face()
-    # glo_va.flg_init_count_face = True
+    # Init count face
+    Start_Count_Face()
+    glo_va.flg_init_count_face = True
 
-    # # Init server connection
-    # Start_Server_Connection()
+    # Init server connection
+    Start_Server_Connection()
     # glo_va.flg_server_connected = True
 
     # Init GUI
     Start_GUI()
     glo_va.flg_init_GUI = True
 
+    # Init Timer
+    Start_Timer()
+    glo_va.flg_init_timer = True
+
+    # Init lock response from server and timer
+    glo_va.lock_response_server = Lock()
+
 #########################################################################
 # End FUNCTION                                                          #
 #########################################################################
 def End():
     if glo_va.flg_init_count_face:
-        glo_va.count_face.Stop()
+        Stop_Count_Face()
+
+    if glo_va.flg_init_timer:
+        Stop_Timer()
 
     if glo_va.flg_init_GUI:
         glo_va.window_GUI.close()
@@ -150,14 +180,8 @@ if __name__ == "__main__":
         
     while True:
         event, values = glo_va.window_GUI.read(timeout=1)
-        if event == 'Exit' or event == sg.WIN_CLOSED:
+        if event == sg.WIN_CLOSED:
             glo_va.STATE = -1
-        elif event == 'Start' and glo_va.STATE == 0:
-            # glo_va.count_face.Start_Counting_Face()
-            # glo_va.STATE = 1
-            glo_va.STATE = 3
-            glo_va.window_GUI[f'-COL1-'].update(visible=False)
-            glo_va.window_GUI[f'-COL2-'].update(visible=True)
         try:
             # STATE INIT
             if glo_va.STATE == -1:
@@ -180,13 +204,18 @@ if __name__ == "__main__":
                     glo_va.face_recognition.Encoding_Face()
                     glo_va.count_face.Count_Face()
 
-                ConvertToDisplay()
-                glo_va.window_GUI['image'].update(data=glo_va.display_image)
+                display_image = ConvertToDisplay(glo_va.img)
+                glo_va.window_GUI['image'].update(data=display_image)
 
                 if glo_va.has_response_server == True:
                     if user_infor.Get_Status() == 0:
                         glo_va.STATE = 2
+                        glo_va.count_face.Clear()
                         user_infor.Update_Screen()
+                    elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == TIMES_MISSING_FACE:
+                        glo_va.STATE = 5
+                        glo_va.times_missing_face = 0
+
                         
                     glo_va.is_sending_message = False
                     glo_va.has_response_server = False
@@ -207,7 +236,7 @@ if __name__ == "__main__":
 
             # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
             elif glo_va.STATE == 3:
-                if event == 'Measure':
+                if event == 'Capture':
                     # glo_va.window_GUI[f'-COL2-'].update(visible=False)
                     # glo_va.window_GUI[f'-COL1-'].update(visible=True)
                     glo_va.measuring_sensor = True
@@ -228,6 +257,54 @@ if __name__ == "__main__":
             # STATE CLASSIFYING ROOM
             elif glo_va.STATE == 4:
                 continue
+            
+            # STATE CONFIRM NEW USER
+            elif glo_va.STATE == 5:
+                if is_new_user() == 'No':
+                    glo_va.STATE = 1
+                else:
+                    glo_va.STATE = 6
+                    glo_va.window_GUI[f'-COL1-'].update(visible=False)
+                    glo_va.window_GUI[f'-COL3-'].update(visible=True)
+                continue
+            
+            # STATE FOR NEW USER
+            elif glo_va.STATE == 6:
+                if event == 'Capture':
+                    glo_va.embedded_face_new_user = glo_va.embedded_face
+                    review_image = cv2.resize(glo_va.detected_face, (300,300))
+                    display_review_image = ConvertToDisplay(review_image)
+                    glo_va.window_GUI['review_photo'].update(data=display_review_image)
+                    glo_va.has_capture = True
+                elif event == 'Confirm' and glo_va.has_capture == True:
+                    temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
+                    glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+                    glo_va.num_images_new_user += 1
+                    glo_va.has_capture = False
+                    glo_va.window_GUI['review_photo'].update('')
+                    if glo_va.num_images_new_user == 5:
+                        glo_va.START == 7
+                    glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
+
+                # Read camera
+                glo_va.camera.RunCamera()
+
+                # # Face detecting
+                ret = Locating_Faces()
+                if ret == -2:
+                    print("Error Face locations")
+                    glo_va.STATE = -1
+                    continue
+                elif ret == 0:
+                    # Face Identifying
+                    glo_va.face_recognition.Encoding_Face()
+
+                display_image_new_user = ConvertToDisplay(glo_va.img)
+                glo_va.window_GUI['photo_new_user'].update(data=display_image_new_user)
+            
+            elif glo_va.STATE == 7:
+                continue
+
         except Exception as e:
             print("Error at module main in main: {}".format(e))
             End()

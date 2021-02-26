@@ -32,6 +32,14 @@ def AdjustBright(img):
         ret_img = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2RGB)
         # return RGB image
         return ret_img
+
+def Compose_Embedded_Face(encoded_img):
+    ret_string = ""
+    for i in encoded_img:
+        precision_i = '%.20f'%np.float64(i)
+        ret_string += str(precision_i) + '/'
+    
+    return ret_string
         
 def Preprocessing_Img(img):
     resized_img = cv2.resize(img, (IMAGE_SIZE,IMAGE_SIZE))

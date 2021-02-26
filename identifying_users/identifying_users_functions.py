@@ -5,10 +5,11 @@ from PIL import Image, ImageTk
 
 from utils.parameters import *
     
-def ConvertToDisplay():
-    glo_va.display_image = cv2.cvtColor(glo_va.img, cv2.COLOR_BGR2RGB)  # to RGB
-    glo_va.display_image = Image.fromarray(glo_va.display_image)  # to PIL format
-    glo_va.display_image = ImageTk.PhotoImage(glo_va.display_image)  # to ImageTk format
+def ConvertToDisplay(image):
+    display_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # to RGB
+    display_image = Image.fromarray(display_image)  # to PIL format
+    display_image = ImageTk.PhotoImage(display_image)  # to ImageTk format
+    return display_image
 
 def InitGUI():
     # sg.theme('Black')
@@ -17,42 +18,46 @@ def InitGUI():
     # 370 ngang, 330 doc
     camera_layout = [[sg.Image(filename='', key='image', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
     
-    examination_info = [
-        [sg.Text('NOTE: Please put your hand on sensors\nand press "Measure\" button', size=(50, 3),border_width=1, justification='left', text_color='red', font='Helvetica 12')],
+    take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(CAM_EXAM_LAYOUT_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
     
-        [sg.Text('STT', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-STT-', text_color='black')],
-        [sg.Text('Room', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ROOM-', text_color='black')],
+    review_cam_layout = [
+        [
+            sg.Text('Number of images:', size=(15, 1), justification='left', font='Helvetica 16'),
+            sg.Text("0", size=(15, 1), justification='left', font='Helvetica 14', key='-NUM_IMAGES-')
+        ],
+        [sg.Image(filename='', key='review_photo', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],
+    ]
+
+    examination_info = [
+        [sg.Text('NOTE: Please put your hand on sensors\nand press "Measure\" button', size=(50, 4),border_width=1, justification='left', text_color='red', font='Helvetica 13')],
+    
+        [sg.Text('STT', size=(35, 1), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-STT-', text_color='black')],
+        [sg.Text('\nRoom', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ROOM-', text_color='black')],
+        [sg.Text('\nMeasuring sensor', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.ProgressBar(100, orientation='h', size=(32, 15), key='sensor_progress')],
     ]
     
     information_layout = [
-        [sg.Text('Name', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-NAME-', text_color='black')],
-        [sg.Text('Birth Date', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BD-', text_color='black')],
-        [sg.Text('Phone', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PHONE-', text_color='black')],
-        [sg.Text('Address', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ADDRESS-', text_color='black')],
-        [sg.Text('Confirm Information', size=(50, 1), justification='left', font='Helvetica 12')],
-        [
-            sg.Button('Confirm', size=(15, 1), font='Helvetica 14'),
-            sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
-        ],
+        [sg.Text('Name', size=(35, 1), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-NAME-', text_color='black')],
+        [sg.Text('\nBirth Date', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BD-', text_color='black')],
+        [sg.Text('\nPhone', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PHONE-', text_color='black')],
+        [sg.Text('\nAddress', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ADDRESS-', text_color='black')],
     ]
     sensor_information_layout = [
-        [sg.Text('Blood Pressure', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BLOOD_PRESSURE-', text_color='black')],
-        [sg.Text('Pulse Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PULSE-', text_color='black')],
-        [sg.Text('Thermal Sensor', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-THERMAL-', text_color='black')],
-        [sg.Text('SPO2', size=(40, 1), justification='left', font='Helvetica 16')],
-        [sg.Text("None", size=(50, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-SPO2-', text_color='black')],
-        [sg.Text('Measuring sensor', size=(50, 1), justification='left', font='Helvetica 12')],
-        [sg.ProgressBar(100, orientation='h', size=(33, 15), key='sensor_progress')],
-        [sg.Button('Measure', size=(33, 1), font='Helvetica 14'),],
+        [sg.Text('Blood Pressure', size=(35, 1), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-BLOOD_PRESSURE-', text_color='black')],
+        [sg.Text('\nPulse Sensor', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-PULSE-', text_color='black')],
+        [sg.Text('\nThermal Sensor', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-THERMAL-', text_color='black')],
+        [sg.Text('\nSPO2', size=(35, 2), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-SPO2-', text_color='black')],
     ]
    
     layout1 = [
@@ -71,32 +76,39 @@ def InitGUI():
         ],
     ]
 
+    layout_new_user = [
+        [
+            sg.Column(review_cam_layout, size=(CAM_EXAM_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT)), 
+            sg.VSeparator(),
+            sg.Column(take_photo_layout, size=(INFOR_SENSOR_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT))
+        ],
+    ]
+
 
     main_layout = [
         [sg.Text('Smart E-Healthcare', size=(40, 1), justification='center', font='Helvetica 20')],
         [
             sg.Column(layout1, visible=True, key='-COL1-'),
             sg.Column(layout2, visible=False, key='-COL2-'),
+            sg.Column(layout_new_user, visible=False, key='-COL3-'),
         ], 
         [
-            sg.Button('Start', size=(35, 1), font='Helvetica 14'),
-            sg.Button('Exit', size=(35, 1), font='Helvetica 14'),
+            sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
+            sg.Button('Confirm', size=(15, 1), font='Helvetica 14'),
+            sg.Button('Capture', size=(34, 1), font='Helvetica 14'),
         ],
     ]
     # create the window and show it without the plot
 
 
-    glo_va.window_GUI = sg.Window('Demo Application - OpenCV Integration', main_layout, location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    glo_va.window_GUI = sg.Window('Demo Application - OpenCV Integration', main_layout, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
 
-    # original_logo = cv2.imread('/home/thesis/Documents/E-Healthcare-System/model_engine/logo.jpeg')
-    # original_logo = cv2.resize(original_logo, (CAMERA_DISPLAY_WIDTH,CAMERA_DISPLAY_HEIGHT))
+    # original_logo = cv2.imread('/home/thesis/Documents/E-Healthcare-System/model_engine/logo.jpg')
+    # original_logo = cv2.cvtColor(original_logo, cv2.COLOR_RGB2BGR)
+    # original_logo = cv2.resize(original_logo, (300,300))
 
-    # margin_width = int((original_logo.shape[1] - LOCATION_FACE_WIDTH) / 2)
-    # margin_height = int((original_logo.shape[0] - LOCATION_FACE_HEIGHT) / 2)
-    # glo_va.img = original_logo[margin_height:LOCATION_FACE_HEIGHT+margin_height , margin_width:LOCATION_FACE_WIDTH+margin_width]
-
-    # ConvertToDisplay()
-    # glo_va.window_GUI['image'].update(data=glo_va.display_image)
+    # display_image = ConvertToDisplay(original_logo)
+    # glo_va.window_GUI['review_photo'].update(data=display_image)
 
     # cv2.imshow('test', display_image)
     # cv2.waitKey(2000)
@@ -107,30 +119,6 @@ def Locating_Faces():
     max_face_area = 0
 
     if glo_va.img is not None:
-        # # locate faces in the images
-        # face_locations = glo_va.face_detector(glo_va.img)
-        
-        # if len(face_locations) == 0:
-        #     # glo_va.face_location = (1, LOCATION_FACE_HEIGHT, 1, LOCATION_FACE_WIDTH)
-        #     return -1
-
-        # area = 0
-        # max_area = 0
-        # try:
-        #     for face_location in face_locations:
-        #         boxes, score = face_location[:4], face_location[4]
-        #         left = int(face_location[0])
-        #         top = int(face_location[1])
-        #         right = int(face_location[2])
-        #         bottom = int(face_location[3])
-
-        #         area = (right - left)*(bottom - top)
-        #         if area > max_area:
-        #             glo_va.face_location = (top, bottom, left, right)
-        #             max_area = area
-        # except:
-        #     return -2
-
         # locate faces in the images
         fra = MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
         resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
@@ -163,3 +151,6 @@ def Locating_Faces():
             return -1
 
     return -1
+
+def is_new_user():
+    return sg.popup_yes_no("Are you new user?", title="New user?", font=('Oswald SemiBold', 20),keep_on_top=True)

@@ -53,6 +53,11 @@ CAM_EXAM_LAYOUT_HEIGHT = 360
 INFOR_SENSOR_LAYOUT_WIDTH = 400
 INFOR_SENSOR_LAYOUT_HEIGHT = 360
 
+# Parameters for timer
+TIMES_MISSING_FACE = 5
+TIMEOUT_VALIDATE = 5
+OPT_TIMER_VALIDATE = 0
+
 
 show_fps = True
 
@@ -67,7 +72,7 @@ class GlobalVariable:
         self.patient_id = None
 
         # STATE of the program
-        self.STATE = 0
+        self.STATE = 1
 
         # self.cuda_ctx = None
 
@@ -83,6 +88,8 @@ class GlobalVariable:
         self.face_location = None
         self.embedded_face = None
         self.list_embedded_face = ""
+        self.times_missing_face = 0
+        self.validation_id = None
 
         # flag init
         self.flg_init_count_face = False
@@ -91,6 +98,7 @@ class GlobalVariable:
         self.flg_init_face_detector = False
         self.flg_server_connected = False
         self.flg_init_face_recognition = False
+        self.flg_init_timer = False
 
         # Server para
         self.has_response_server = False
@@ -104,7 +112,20 @@ class GlobalVariable:
 
         # Measuring biological parameters
         self.measuring_sensor = False
-    
+
+        # Parameters for new user
+        self.list_embedded_face_new_user = ""
+        self.embedded_face_new_user = None
+        self.num_images_new_user = 0
+        self.has_capture = False
+
+        self.lock_response_server = None
+        self.lock_timer_expir = False
+
+        # Timer
+        self.timer = None
+        self.timer_expir = False
+        self.current_timer_id_validation = None
 
 class User_Infor:
     def __init__(self):
