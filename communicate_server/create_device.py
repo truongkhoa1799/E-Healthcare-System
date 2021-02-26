@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/E-Healthcare-System')
 import pickle
 from azure.iot.hub import IoTHubRegistryManager
 from utils.parameters import *
