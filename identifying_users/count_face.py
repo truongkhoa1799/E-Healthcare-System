@@ -17,10 +17,10 @@ class CountFace:
 
     def Count_Second(self):
         if self.__num_imgs > NUMBER_DETECTED_FACE_TRANSMITED and glo_va.STATE == 1 and glo_va.is_sending_message == False:
-            glo_va.is_sending_message = True
             glo_va.list_embedded_face = self.__list_faces
-            glo_va.server.Validate_User()
             glo_va.timer.Start_Timer(OPT_TIMER_VALIDATE)
+            glo_va.server.Validate_User()
+            glo_va.is_sending_message = True
 
         self.__list_faces = ""
         self.__num_imgs = 0

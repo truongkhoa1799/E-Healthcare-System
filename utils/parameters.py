@@ -58,6 +58,9 @@ TIMES_MISSING_FACE = 5
 TIMEOUT_VALIDATE = 5
 OPT_TIMER_VALIDATE = 0
 
+TIMEOUT_GET_EXAMINATION_ROOM = 5
+OPT_TIMER_GET_EXAMINATION_ROOM = 1
+
 
 show_fps = True
 
@@ -72,7 +75,7 @@ class GlobalVariable:
         self.patient_id = None
 
         # STATE of the program
-        self.STATE = 1
+        self.STATE = 4
 
         # self.cuda_ctx = None
 
@@ -110,8 +113,6 @@ class GlobalVariable:
         self.eventhub_connection = None
         self.eventhub_name = None
 
-        # Measuring biological parameters
-        self.measuring_sensor = False
 
         # Parameters for new user
         self.list_embedded_face_new_user = ""
@@ -126,6 +127,28 @@ class GlobalVariable:
         self.timer = None
         self.timer_expir = False
         self.current_timer_id_validation = None
+        # -1: none, 1 server
+        self.turn = -1 
+
+        # Examination Room
+        self.has_examination_room = False
+        # self.list_examination_room = [
+        # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
+        # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
+        # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
+        # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
+        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'}, 
+        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
+        # ]
+        self.list_examination_room = []
+        self.map_num_departments = {3: 15, 6: 7, 9: 4, 12: 3, 15:2, 18: 1}
+        self.examination_room_layout = []
+
+        # Sensor
+        self.has_sensor_values = False
+        self.measuring_sensor = False
 
 class User_Infor:
     def __init__(self):

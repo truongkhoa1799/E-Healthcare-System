@@ -41,15 +41,18 @@ class Server:
         while True:
             method_request = connection.receive_method_request()
             timer_id = method_request.payload['request_id']
+
             glo_va.lock_response_server.acquire()
-            if glo_va.current_timer_id_validation == timer_id:
-                glo_va.lock_timer_expir = True
+            if glo_va.is_sending_message == True:
+                glo_va.turn = 1
+                glo_va.timer.Clear_Timer()
                 glo_va.lock_response_server.release()
 
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Received response of timer_id: {timer_id} for validating message from server.".format(time=current_time, timer_id=timer_id))
+                print("[{time}]: Received response of timer_id: {timer_id} for {name}.".format(time=current_time, timer_id=timer_id, name=method_request.name))
                 
-                if method_request.name == "Validate_User":
+                # Validation response
+                if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
                     response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                     response_status = 200
 
@@ -60,7 +63,20 @@ class Server:
                         glo_va.times_missing_face += 1
 
                     glo_va.has_response_server = True
-                    glo_va.lock_timer_expir = False
+
+                # Get examination room response
+                elif method_request.name == "Get_Examination_Room" and glo_va.timer.timer_id == timer_id:
+                    response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
+                    response_status = 200
+
+                    ret_msg = int(method_request.payload['return'])
+                    if glo_va.STATE == 3 and ret_msg == 0:
+                        glo_va.has_examination_room = True
+                        glo_va.list_examination_room = method_request.payload['msg']
+                    else:
+                        glo_va.has_examination_room = False
+
+                    glo_va.has_response_server = True
                 else:
                     response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
                     response_status = 404
@@ -77,9 +93,9 @@ class Server:
             event_data_batch = self.__producer.create_batch()
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Send validating message to server with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.current_timer_id_validation))
+                print("[{time}]: Send validating message to server with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 data = EventData(glo_va.list_embedded_face)
-                data.properties = {'request_id':glo_va.current_timer_id_validation,'type_request':"0", 'device_ID': str(self.__device_ID)}
+                data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"0", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)
             except Exception as e:
                 print(e)
@@ -87,6 +103,23 @@ class Server:
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
             print("Has error at module Validate_User in server.py: {}".format(e))
+            glo_va.STATE = -1
+    
+    def Get_Examination_Room(self):
+        try:
+            event_data_batch = self.__producer.create_batch()
+            try:
+                current_time = time.strftime("%H:%M:%S", time.localtime())
+                print("[{time}]: Get Examination Room with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
+                data = EventData("")
+                data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"4", 'device_ID': str(self.__device_ID)}
+                event_data_batch.add(data)
+            except Exception as e:
+                print(e)
+                glo_va.STATE = -1
+            self.__producer.send_batch(event_data_batch)
+        except Exception as e:
+            print("Has error at module Get_Examination_Room in server.py: {}".format(e))
             glo_va.STATE = -1
 
     def Close(self):

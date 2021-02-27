@@ -116,34 +116,34 @@ def Stop_Timer():
 # INIT FUNCTION                                                         #
 #########################################################################
 def Init():
-    glo_va.has_response_server = False
+    if glo_va.STATE == 1:
+        # Init face recognition
+        Start_Face_Recognition()
+        glo_va.flg_init_face_recognition = True
 
-    # Init face recognition
-    Start_Face_Recognition()
-    glo_va.flg_init_face_recognition = True
+        # Init camera detecting
+        Start_Camera_Detecting()
+        glo_va.flg_init_camera = True
+        
+        # Init count face
+        Start_Count_Face()
+        glo_va.flg_init_count_face = True
 
-    # Init camera detecting
-    Start_Camera_Detecting()
-    glo_va.flg_init_camera = True
+        # Init server connection
+        Start_Server_Connection()
+        # glo_va.flg_server_connected = True
+
+        # Init Timer
+        Start_Timer()
+        glo_va.flg_init_timer = True
     
-    # Init count face
-    Start_Count_Face()
-    glo_va.flg_init_count_face = True
-
-    # Init server connection
-    Start_Server_Connection()
-    # glo_va.flg_server_connected = True
+        # Init lock response from server and timer
+        glo_va.lock_response_server = Lock()
 
     # Init GUI
     Start_GUI()
     glo_va.flg_init_GUI = True
 
-    # Init Timer
-    Start_Timer()
-    glo_va.flg_init_timer = True
-
-    # Init lock response from server and timer
-    glo_va.lock_response_server = Lock()
 
 #########################################################################
 # End FUNCTION                                                          #
@@ -216,7 +216,6 @@ if __name__ == "__main__":
                         glo_va.STATE = 5
                         glo_va.times_missing_face = 0
 
-                        
                     glo_va.is_sending_message = False
                     glo_va.has_response_server = False
 
@@ -242,6 +241,20 @@ if __name__ == "__main__":
                     glo_va.measuring_sensor = True
                     # glo_va.STATE = 0
 
+                if event == 'Confirm':
+                    if glo_va.has_examination_room == True and glo_va.has_sensor_values == True:
+                        glo_va.STATE = 4
+                        glo_va.has_response_server = False
+                        glo_va.is_sending_message = False
+                        glo_va.has_examination_room = False
+                        glo_va.has_sensor_values = False
+                        glo_va.measuring_sensor = False
+                        Render_Examanination_Room_Table()
+                        glo_va.window_GUI[f'-COL2-'].update(visible=False)
+                        glo_va.window_GUI[f'-COL4-'].update(visible=True)
+                    else:
+                        do_not_done_yet()
+
                 if glo_va.measuring_sensor == True:
                     progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
                     for i in range(10):
@@ -251,12 +264,28 @@ if __name__ == "__main__":
                     sensor.Update_Sensor(sensor_info)
                     sensor.Update_Screen()
                     glo_va.measuring_sensor = False
+                    glo_va.has_sensor_values = True
+                
+                if glo_va.has_response_server == True:
+                    if glo_va.has_examination_room == False:
+                        glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
+                        glo_va.server.Get_Examination_Room()
+                        glo_va.has_response_server = False
+                        glo_va.is_sending_message = True
+                    else:
+                        pass
+                
+                if glo_va.is_sending_message == False and glo_va.has_examination_room == False:
+                    glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
+                    glo_va.server.Get_Examination_Room()
+                    glo_va.is_sending_message = True
 
-                    glo_va.STATE = 4
 
             # STATE CLASSIFYING ROOM
             elif glo_va.STATE == 4:
-                continue
+                temp = event.split('\n')
+                print(temp[-1])
+                time.sleep(1)
             
             # STATE CONFIRM NEW USER
             elif glo_va.STATE == 5:

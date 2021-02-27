@@ -84,13 +84,21 @@ def InitGUI():
         ],
     ]
 
+    Render_Examanination_Room_Table()
+    
+    layout_choose_department = [
+        [
+            sg.Column(glo_va.examination_room_layout, size=(740,360))
+        ]
+    ]
 
     main_layout = [
         [sg.Text('Smart E-Healthcare', size=(40, 1), justification='center', font='Helvetica 20')],
         [
-            sg.Column(layout1, visible=True, key='-COL1-'),
+            sg.Column(layout1, visible=False, key='-COL1-'),
             sg.Column(layout2, visible=False, key='-COL2-'),
             sg.Column(layout_new_user, visible=False, key='-COL3-'),
+            sg.Column(layout_choose_department, visible=True, key='-COL4-'),
         ], 
         [
             sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
@@ -100,9 +108,7 @@ def InitGUI():
     ]
     # create the window and show it without the plot
 
-
     glo_va.window_GUI = sg.Window('Demo Application - OpenCV Integration', main_layout, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
-
     # original_logo = cv2.imread('/home/thesis/Documents/E-Healthcare-System/model_engine/logo.jpg')
     # original_logo = cv2.cvtColor(original_logo, cv2.COLOR_RGB2BGR)
     # original_logo = cv2.resize(original_logo, (300,300))
@@ -154,3 +160,34 @@ def Locating_Faces():
 
 def is_new_user():
     return sg.popup_yes_no("Are you new user?", title="New user?", font=('Oswald SemiBold', 20),keep_on_top=True)
+
+def do_not_done_yet():
+    return sg.popup("You not done yet?", title="Warning?", font=('Oswald SemiBold', 20),keep_on_top=True)
+
+def Render_Examanination_Room_Table():
+    size_row = -1
+    list_keys = list(glo_va.map_num_departments.keys())
+    first_key = list_keys[0]
+    if len(glo_va.list_examination_room) <= first_key:
+        size_row = first_key
+    else:
+        for i in range(1, len(list_keys)):
+            if size_row < len(glo_va.list_examination_room) and len(glo_va.list_examination_room) <= list_keys[i]:
+                size_row = list_keys[i]
+                break
+    
+    if size_row == -1:
+        size_row = list_keys[-1]
+    
+    print(len(glo_va.list_examination_room))
+    print(size_row)
+    
+    glo_va.examination_room_layout = []
+    rows = (len(glo_va.list_examination_room) // 3) + 1
+    for i in range(rows):
+        temp_1 = []
+        for j in range(3):
+            if i*3 + j < len(glo_va.list_examination_room):
+                name = glo_va.list_examination_room[i*3 + j]['dep_name'] + '\n'+ str(glo_va.list_examination_room[i*3 + j]['dep_ID'])
+                temp_1.append(sg.Button(f'{name}', size=(21, glo_va.map_num_departments[size_row]), font='Helvetica 14'))
+        glo_va.examination_room_layout.append(temp_1)
