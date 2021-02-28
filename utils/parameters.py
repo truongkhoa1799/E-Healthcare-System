@@ -76,10 +76,9 @@ class GlobalVariable:
         self.display_image = None
         self.window_GUI = None
         self.examination_GUI = None
-        self.patient_id = None
 
         # STATE of the program
-        self.STATE = 7
+        self.STATE = 1
 
         # self.cuda_ctx = None
 
@@ -147,9 +146,10 @@ class GlobalVariable:
         # ]
         self.list_examination_room = []
         self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
-        self.examination_room_layout = []
+        self.hospital_ID = None
         self.dep_ID_chosen = None
-        self.patient_id = None
+        self.patient_ID = None
+        self.return_stt = None
 
         # Sensor
         self.has_sensor_values = False
@@ -162,7 +162,7 @@ class User_Infor:
         self.__birthday = None
         self.__phone = None
         self.__address = None
-        self.patient_id = None
+        self.patient_ID = None
         self.Clear()
 
     def Clear(self):
@@ -171,7 +171,7 @@ class User_Infor:
         self.__birthday = "None"
         self.__phone = "None"
         self.__address = "None"
-        self.patient_id = None
+        self.patient_ID = None
     
     def Update_Info(self, user_info):
         self.__status = 0
@@ -179,7 +179,7 @@ class User_Infor:
         self.__birthday = user_info['birthday']
         self.__phone = user_info['phone']
         self.__address = user_info['address']
-        self.patient_id = user_info['user_ID']
+        self.patient_ID = user_info['user_ID']
 
     def Update_Screen(self):
         glo_va.window_GUI['-NAME-'].update(str(self.__name))
@@ -215,6 +215,9 @@ class Sensor:
         glo_va.window_GUI['-PULSE-'].update(str(self.__pulse))
         glo_va.window_GUI['-THERMAL-'].update(str(self.__thermal))
         glo_va.window_GUI['-SPO2-'].update(str(self.__spo2))
+    
+    def Get_Data(self):
+        return self.__blood_pressure, self.__pulse, self.__thermal, self.__spo2
 
 class Examination:
     def __init__(self):
@@ -233,6 +236,10 @@ class Examination:
     def Update_Screen(self):
         glo_va.window_GUI['-DEPARTMENT-'].update(str(self.__department))
         glo_va.window_GUI['-ROOM-'].update(str(self.__room))
+    
+    def Get_Buidling_Room(self):
+        temp = self.__room.split('-')
+        return temp[0], temp[1]
 
 glo_va = GlobalVariable()
 user_infor = User_Infor()

@@ -185,3 +185,7 @@ def popUpWarning(msg):
 
 def popUpYesNo(msg):
     return sg.popup_yes_no(msg, title="Question?", font=('Oswald SemiBold', 14),keep_on_top=True)
+
+def Submit_Again():
+    return sg.popup('Has error when submit. Please try again.', title="Warning", font=('Oswald SemiBold', 14),keep_on_top=True)
+                

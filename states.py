@@ -46,11 +46,11 @@ def State_1():
 def State_2(event):
     # If user confirm, press button 3
     if event == 'button_3':
-        glo_va.window_GUI[f'-COL1-'].update(visible=False)
         glo_va.window_GUI[f'-COL2-'].update(visible=True)
+        glo_va.window_GUI[f'-COL1-'].update(visible=False)
 
         # Get and save patient id for examination
-        glo_va.patient_id = user_infor.patient_id
+        glo_va.patient_ID = user_infor.patient_ID
 
         # Change Button 3 from Confirm to Measure
         #        Button 2 from reject to Confirm
@@ -162,8 +162,8 @@ def State_5(event):
         glo_va.STATE = 1
     else:
         glo_va.STATE = 6
-        glo_va.window_GUI[f'-COL1-'].update(visible=False)
         glo_va.window_GUI[f'-COL3-'].update(visible=True)
+        glo_va.window_GUI[f'-COL1-'].update(visible=False)
     
     if event == 'exist':
         ret = popUpYesNo('Are you sure?')
@@ -221,11 +221,21 @@ def State_7(event):
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
-    elif event == 'button_3':
-        glo_va.timer.Start_Timer(OPT_TIMER_SUBMIT_EXAMINATION)
-        glo_va.is_sending_message = True
-        glo_va.server.Submit_Examination()
-
+    elif event == 'button_3' and glo_va.is_sending_message == False:
+        ret = popUpYesNo('Are you sure?')
+        if ret == 'Yes':
+            glo_va.timer.Start_Timer(OPT_TIMER_SUBMIT_EXAMINATION)
+            glo_va.is_sending_message = True
+            glo_va.server.Submit_Examination()
+    
+    if glo_va.has_response_server == True:
+        if glo_va.return_stt is not None:
+            print(glo_va.return_stt)
+            time.sleep(5)
+            glo_va.STATE = -1
+        else:
+            ret = Submit_Again()
+            glo_va.is_sending_message = False
 
     # time.sleep(1)
 
@@ -236,7 +246,7 @@ def Init_State():
         # If user reject, Clear user_infor, Ui and go to first state
         user_infor.Clear()
         user_infor.Update_Screen()
-        glo_va.patient_id = None
+        glo_va.patient_ID = None
 
         # State 1
         glo_va.STATE = 1
@@ -259,8 +269,9 @@ def Init_State():
         progress_bar.UpdateBar(0)
 
         # For examination
-        glo_va.patient_id = None
+        glo_va.patient_ID = None
         glo_va.list_examination_room = []
+        glo_va.hospital_ID = None
         glo_va.has_examination_room = False
 
         # Set Ui for STATE 1
@@ -279,8 +290,9 @@ def Init_State():
         progress_bar.UpdateBar(0)
 
         # Clear patient_Id and list of examination room
-        glo_va.patient_id = None
+        glo_va.patient_ID = None
         glo_va.list_examination_room = []
+        glo_va.hospital_ID = None
 
         # STATE 1
         glo_va.STATE = 1
@@ -306,8 +318,9 @@ def Init_State():
         progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
         progress_bar.UpdateBar(0)
 
-        # Clear patient_Id and list of examination room
-        glo_va.patient_id = None
+        # Clear patient_ID and list of examination room
+        glo_va.patient_ID = None
+        glo_va.hospital_ID = None
         glo_va.list_examination_room = []
 
         # Clear Examination

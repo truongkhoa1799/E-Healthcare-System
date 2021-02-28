@@ -1,4 +1,5 @@
 from utils.parameters import *
+from identifying_users.identifying_users_functions import Submit_Again
 from threading import Timer
 import time
 import uuid
@@ -63,7 +64,7 @@ class Timer:
         if self.__timeout_get_examination_room >= TIMEOUT_GET_EXAMINATION_ROOM:
             current_time = time.strftime("%H:%M:%S", time.localtime())
             print("\t[{time}]: Timer for getting examination room is expired".format(time=current_time))
-
+            ret = Submit_Again()
             glo_va.lock_response_server.acquire()
             if glo_va.turn == -1:
                 glo_va.is_sending_message = False
@@ -77,6 +78,8 @@ class Timer:
         
         # Get the examaniation room
         if self.__timeout_submit_examination >= TIMEOUT_SUBMIT_EXAMINATION:
+            current_time = time.strftime("%H:%M:%S", time.localtime())
+            print("\t[{time}]: Timer for submit examination is expired".format(time=current_time))
             glo_va.lock_response_server.acquire()
             if glo_va.turn == -1:
                 glo_va.is_sending_message = False
