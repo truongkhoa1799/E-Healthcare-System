@@ -11,11 +11,7 @@ def ConvertToDisplay(image):
     display_image = ImageTk.PhotoImage(display_image)  # to ImageTk format
     return display_image
 
-def InitGUI():
-    # sg.theme('Black')
-
-    # define the window layout
-    # 370 ngang, 330 doc
+def InitMainGui():
     camera_layout = [[sg.Image(filename='', key='image', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
     
     take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(CAM_EXAM_LAYOUT_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
@@ -31,8 +27,8 @@ def InitGUI():
     examination_info = [
         [sg.Text('NOTE: Please put your hand on sensors\nand press "Measure\" button', size=(50, 4),border_width=1, justification='left', text_color='red', font='Helvetica 13')],
     
-        [sg.Text('STT', size=(35, 1), justification='left', font='Helvetica 15')],
-        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-STT-', text_color='black')],
+        [sg.Text('Department', size=(35, 1), justification='left', font='Helvetica 15')],
+        [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-DEPARTMENT-', text_color='black')],
         [sg.Text('\nRoom', size=(35, 2), justification='left', font='Helvetica 15')],
         [sg.Text("None", size=(35, 1), justification='left', border_width=1, background_color='white', font='Helvetica 14', key='-ROOM-', text_color='black')],
         [sg.Text('\nMeasuring sensor', size=(35, 2), justification='left', font='Helvetica 15')],
@@ -73,7 +69,8 @@ def InitGUI():
             sg.Column(examination_info, size=(CAM_EXAM_LAYOUT_WIDTH,CAM_EXAM_LAYOUT_HEIGHT)), 
             sg.VSeparator(),
             sg.Column(sensor_information_layout, size=(INFOR_SENSOR_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT))
-        ],
+        ]
+    # create the window and show it without the plot,
     ]
 
     layout_new_user = [
@@ -84,41 +81,63 @@ def InitGUI():
         ],
     ]
 
-    Render_Examanination_Room_Table()
-    
-    layout_choose_department = [
-        [
-            sg.Column(glo_va.examination_room_layout, size=(740,360))
-        ]
-    ]
-
     main_layout = [
         [sg.Text('Smart E-Healthcare', size=(40, 1), justification='center', font='Helvetica 20')],
         [
-            sg.Column(layout1, visible=False, key='-COL1-'),
+            sg.Column(layout1, visible=True, key='-COL1-'),
             sg.Column(layout2, visible=False, key='-COL2-'),
             sg.Column(layout_new_user, visible=False, key='-COL3-'),
-            sg.Column(layout_choose_department, visible=True, key='-COL4-'),
         ], 
         [
-            sg.Button('Reject', size=(15, 1), font='Helvetica 14'),
-            sg.Button('Confirm', size=(15, 1), font='Helvetica 14'),
-            sg.Button('Capture', size=(34, 1), font='Helvetica 14'),
+            sg.Button('Exist', size=(15, 1), font='Helvetica 14', key='exist'),
+            sg.Button('Reject', size=(15, 1), font='Helvetica 14', key='button_2'),
+            sg.Button('Confirm', size=(34, 1), font='Helvetica 14', key='button_3'),
         ],
     ]
-    # create the window and show it without the plot
 
-    glo_va.window_GUI = sg.Window('Demo Application - OpenCV Integration', main_layout, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
-    # original_logo = cv2.imread('/home/thesis/Documents/E-Healthcare-System/model_engine/logo.jpg')
-    # original_logo = cv2.cvtColor(original_logo, cv2.COLOR_RGB2BGR)
-    # original_logo = cv2.resize(original_logo, (300,300))
-
-    # display_image = ConvertToDisplay(original_logo)
-    # glo_va.window_GUI['review_photo'].update(data=display_image)
-
-    # cv2.imshow('test', display_image)
-    # cv2.waitKey(2000)
+    ret_gui = sg.Window('E-HealthCare System', main_layout, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
     print("OPENED GUI")
+    return ret_gui
+
+def Render_Examanination_Room_Table():
+    size_row = -1
+    list_keys = list(glo_va.map_num_departments.keys())
+    first_key = list_keys[0]
+    if len(glo_va.list_examination_room) <= first_key:
+        size_row = first_key
+    else:
+        for i in range(1, len(list_keys)):
+            if size_row < len(glo_va.list_examination_room) and len(glo_va.list_examination_room) <= list_keys[i]:
+                size_row = list_keys[i]
+                break
+    
+    if size_row == -1:
+        size_row = list_keys[-1]
+    
+    # print(len(glo_va.list_examination_room))
+    # print(size_row)
+    
+    examination_room_layout = []
+    rows = (len(glo_va.list_examination_room) // 3) + 1
+    for i in range(rows):
+        temp_1 = []
+        for j in range(3):
+            if i*3 + j < len(glo_va.list_examination_room):
+                name = glo_va.list_examination_room[i*3 + j]['dep_name'] + '\n'+ str(glo_va.list_examination_room[i*3 + j]['dep_ID'])
+                temp_1.append(sg.Button(f'{name}', size=(22, glo_va.map_num_departments[size_row]), font='Helvetica 14'))
+        examination_room_layout.append(temp_1)
+    
+    layout_choose_department = [
+        [
+            sg.Column(examination_room_layout, size=(WIDTH_GUI, 400))
+        ],
+        [
+            sg.Button('Exist', size=(15, 2), font='Helvetica 14', key='exist_exam_room'),
+        ]
+    ]
+
+    ret_gui = sg.Window('Choose your department', layout_choose_department, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    return ret_gui
 
 def Locating_Faces():
     face_area = 0
@@ -158,36 +177,11 @@ def Locating_Faces():
 
     return -1
 
-def is_new_user():
-    return sg.popup_yes_no("Are you new user?", title="New user?", font=('Oswald SemiBold', 20),keep_on_top=True)
+def isNewUser():
+    return sg.popup_yes_no("Are you new user?", title="New user?", font=('Oswald SemiBold', 14),keep_on_top=True)
 
-def do_not_done_yet():
-    return sg.popup("You not done yet?", title="Warning?", font=('Oswald SemiBold', 20),keep_on_top=True)
+def popUpWarning(msg):
+    return sg.popup(msg, title="Warning?", font=('Oswald SemiBold', 14),keep_on_top=True)
 
-def Render_Examanination_Room_Table():
-    size_row = -1
-    list_keys = list(glo_va.map_num_departments.keys())
-    first_key = list_keys[0]
-    if len(glo_va.list_examination_room) <= first_key:
-        size_row = first_key
-    else:
-        for i in range(1, len(list_keys)):
-            if size_row < len(glo_va.list_examination_room) and len(glo_va.list_examination_room) <= list_keys[i]:
-                size_row = list_keys[i]
-                break
-    
-    if size_row == -1:
-        size_row = list_keys[-1]
-    
-    print(len(glo_va.list_examination_room))
-    print(size_row)
-    
-    glo_va.examination_room_layout = []
-    rows = (len(glo_va.list_examination_room) // 3) + 1
-    for i in range(rows):
-        temp_1 = []
-        for j in range(3):
-            if i*3 + j < len(glo_va.list_examination_room):
-                name = glo_va.list_examination_room[i*3 + j]['dep_name'] + '\n'+ str(glo_va.list_examination_room[i*3 + j]['dep_ID'])
-                temp_1.append(sg.Button(f'{name}', size=(21, glo_va.map_num_departments[size_row]), font='Helvetica 14'))
-        glo_va.examination_room_layout.append(temp_1)
+def popUpYesNo(msg):
+    return sg.popup_yes_no(msg, title="Question?", font=('Oswald SemiBold', 14),keep_on_top=True)

@@ -1,39 +1,30 @@
 import PySimpleGUI as sg
 
-# ----------- Create the 3 layouts this Window will display -----------
-layout1 = [
-    [sg.Text('This is layout 1 - It is all Checkboxes')],
-           *[[sg.CB(f'Checkbox {i}')] for i in range(5)]
-]
+num_buttons = 2
+layout = [[sg.Text('Your typed chars appear here:'), sg.Text('', key='_OUTPUT_')],
+            [sg.Input(do_not_clear=True, key='_IN_')],
+            *[[sg.Button('Button'),] for i in range(num_buttons)],
+            [sg.Button('Add Rows'), sg.Button('Delete Rows' ), sg.Button('Exit')]]
 
-layout2 = [
-    [sg.Text('This is layout 2')],
-    [sg.Input(key='-IN-')],
-    [sg.Input(key='-IN2-')]
-]
+location = (600,600)
+window = sg.Window('Window Title', location=location).Layout(layout)
 
-layout3 = [[sg.Text('This is layout 3 - It is all Radio Buttons')],
-           *[[sg.R(f'Radio {i}', 1)] for i in range(8)]]
 
-# ----------- Create actual layout using Columns and a row of Buttons
-layout = [
-    [sg.Column(layout1, key='-COL1-'), sg.Column(layout2, visible=False, key='-COL2-'), sg.Column(layout3, visible=False, key='-COL3-')],
-    [sg.Button('Cycle Layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('Exit')]]
-
-window = sg.Window('Swapping the contents of a window', layout)
-
-layout = 1  # The currently visible layout
-while True:
-    event, values = window.read()
+num_buttons = 2
+while True:             # Event Loop
+    event, values = window.Read()
     print(event, values)
-    if event in (None, 'Exit'):
+    if event is None or event == 'Exit':
         break
-    if event == 'Cycle Layout':
-        window[f'-COL{layout}-'].update(visible=False)
-        layout = layout + 1 if layout < 3 else 1
-        window[f'-COL{layout}-'].update(visible=True)
-    elif event in '123':
-        window[f'-COL{layout}-'].update(visible=False)
-        layout = int(event)
-        window[f'-COL{layout}-'].update(visible=True)
-window.close()
+    if event == 'Add Rows' or event == 'Delete Rows':
+        num_buttons +=  -2 if event == 'Delete Rows' else 2
+
+        layout = [[sg.Text('Your typed chars appear here:'), sg.Text('', key='_OUTPUT_')],
+                    [sg.Input(do_not_clear=True, key='_IN_')],
+                    *[[sg.Button('Button'),] for i in range(num_buttons)],
+                  [sg.Button('Add Rows'), sg.Button('Delete Rows'), sg.Button('Exit')]]
+        window1 = sg.Window('Window Title', location=location).Layout(layout)
+        window.Close()
+        window = window1
+
+window.Close()

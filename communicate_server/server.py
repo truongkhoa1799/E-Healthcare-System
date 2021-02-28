@@ -43,16 +43,22 @@ class Server:
             timer_id = method_request.payload['request_id']
 
             glo_va.lock_response_server.acquire()
+            # if timer did not time out, receive timer and clear timer
             if glo_va.is_sending_message == True:
+                # Notify the timer that server is in lock
                 glo_va.turn = 1
+
+                # Clear timer
                 glo_va.timer.Clear_Timer()
+
+                # Release lock
                 glo_va.lock_response_server.release()
 
                 current_time = time.strftime("%H:%M:%S", time.localtime())
                 print("[{time}]: Received response of timer_id: {timer_id} for {name}.".format(time=current_time, timer_id=timer_id, name=method_request.name))
                 
                 # Validation response
-                if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
+                if method_request.name == "Validate_User" and glo_va.STATE == 1 and glo_va.timer.timer_id == timer_id:
                     response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                     response_status = 200
 
@@ -65,7 +71,7 @@ class Server:
                     glo_va.has_response_server = True
 
                 # Get examination room response
-                elif method_request.name == "Get_Examination_Room" and glo_va.timer.timer_id == timer_id:
+                elif method_request.name == "Get_Examination_Room" and glo_va.STATE == 3 and glo_va.timer.timer_id == timer_id:
                     response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                     response_status = 200
 
@@ -81,6 +87,7 @@ class Server:
                     response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
                     response_status = 404
             else:
+                # if timer did timeout first, discard this response and wait for next response
                 glo_va.lock_response_server.release()
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
@@ -111,6 +118,23 @@ class Server:
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
                 print("[{time}]: Get Examination Room with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
+                data = EventData("")
+                data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"4", 'device_ID': str(self.__device_ID)}
+                event_data_batch.add(data)
+            except Exception as e:
+                print(e)
+                glo_va.STATE = -1
+            self.__producer.send_batch(event_data_batch)
+        except Exception as e:
+            print("Has error at module Get_Examination_Room in server.py: {}".format(e))
+            glo_va.STATE = -1
+    
+    def Submit_Examination(self):
+        try:
+            event_data_batch = self.__producer.create_batch()
+            try:
+                current_time = time.strftime("%H:%M:%S", time.localtime())
+                print("[{time}]: Submit Examination with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 data = EventData("")
                 data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"4", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)

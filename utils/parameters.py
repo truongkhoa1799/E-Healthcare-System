@@ -61,6 +61,9 @@ OPT_TIMER_VALIDATE = 0
 TIMEOUT_GET_EXAMINATION_ROOM = 5
 OPT_TIMER_GET_EXAMINATION_ROOM = 1
 
+TIMEOUT_SUBMIT_EXAMINATION = 5
+OPT_TIMER_SUBMIT_EXAMINATION = 2
+
 
 show_fps = True
 
@@ -72,10 +75,11 @@ class GlobalVariable:
         self.gui = None
         self.display_image = None
         self.window_GUI = None
+        self.examination_GUI = None
         self.patient_id = None
 
         # STATE of the program
-        self.STATE = 4
+        self.STATE = 7
 
         # self.cuda_ctx = None
 
@@ -137,14 +141,15 @@ class GlobalVariable:
         # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
         # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
         # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
-        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'}, 
-        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
         # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
         # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
         # ]
         self.list_examination_room = []
-        self.map_num_departments = {3: 15, 6: 7, 9: 4, 12: 3, 15:2, 18: 1}
+        self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.examination_room_layout = []
+        self.dep_ID_chosen = None
+        self.patient_id = None
 
         # Sensor
         self.has_sensor_values = False
@@ -157,6 +162,7 @@ class User_Infor:
         self.__birthday = None
         self.__phone = None
         self.__address = None
+        self.patient_id = None
         self.Clear()
 
     def Clear(self):
@@ -165,6 +171,7 @@ class User_Infor:
         self.__birthday = "None"
         self.__phone = "None"
         self.__address = "None"
+        self.patient_id = None
     
     def Update_Info(self, user_info):
         self.__status = 0
@@ -172,6 +179,7 @@ class User_Infor:
         self.__birthday = user_info['birthday']
         self.__phone = user_info['phone']
         self.__address = user_info['address']
+        self.patient_id = user_info['user_ID']
 
     def Update_Screen(self):
         glo_va.window_GUI['-NAME-'].update(str(self.__name))
@@ -210,20 +218,20 @@ class Sensor:
 
 class Examination:
     def __init__(self):
-        self.__stt = None
+        self.__department = None
         self.__room = None
         self.Clear()
     
     def Clear(self):
-        self.__stt = "None"
+        self.__department = "None"
         self.__room = "None"
     
     def Update_Examination(self, exam):
-        self.__stt = exam['sst']
+        self.__department = exam['dep']
         self.__room = exam['room']
     
     def Update_Screen(self):
-        glo_va.window_GUI['-STT-'].update(str(self.__stt))
+        glo_va.window_GUI['-DEPARTMENT-'].update(str(self.__department))
         glo_va.window_GUI['-ROOM-'].update(str(self.__room))
 
 glo_va = GlobalVariable()

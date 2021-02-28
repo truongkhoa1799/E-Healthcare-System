@@ -2,36 +2,18 @@
 from identifying_users.face_recognition import Face_Recognition
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
-
 from communicate_server.server import Server
+from utils.timer import Timer
 
 from utils.parameters import *
 from identifying_users.identifying_users_functions import *
-from utils.common_functions import Compose_Embedded_Face
-from utils.timer import Timer
+from states import *
 
-import time
+# import time
 from threading import Lock
-# import pycuda.driver as cuda
-
-from utils.common_functions import Preprocessing_Img
-
 #########################################################################
 # START FUNCTIONS                                                       #
 #########################################################################
-# def Start_Face_Detector():
-#     print("Starting init Face Detector")
-
-#     print('\tTrtThread: loading the TRT model...')
-#     glo_va.cuda_ctx = cuda.Device(0).make_context()  # GPU 0
-    
-#     print("\tLoad Face Detector model")
-#     glo_va.face_detector = FaceDetector(landmarks=False)
-
-#     time.sleep(0.5)
-#     print("Done start init Face Detector")
-#     print()
-
 def Start_Face_Recognition():
     print("Starting init Face Recognition")
     glo_va.face_recognition = Face_Recognition()
@@ -64,7 +46,8 @@ def Start_Timer():
 
 def Start_GUI():
     print("Starting Init GUI")
-    InitGUI()
+    glo_va.window_GUI = InitMainGui()
+    # glo_va.window_GUI = Render_Examanination_Room_Table()
     time.sleep(0.5)
     print("Done Init GUI")
     print()
@@ -179,9 +162,15 @@ if __name__ == "__main__":
         exit(-1)
         
     while True:
-        event, values = glo_va.window_GUI.read(timeout=1)
-        if event == sg.WIN_CLOSED:
-            glo_va.STATE = -1
+        if glo_va.examination_GUI is None:
+            event, values = glo_va.window_GUI.read(timeout=1)
+            if event == sg.WIN_CLOSED:
+                glo_va.STATE = -1
+        else:
+            event, values = glo_va.examination_GUI.read(timeout=1)
+            if event == sg.WIN_CLOSED:
+                glo_va.examination_GUI.close()
+                glo_va.examination_GUI = None
         try:
             # STATE INIT
             if glo_va.STATE == -1:
@@ -190,149 +179,31 @@ if __name__ == "__main__":
 
             # STATE DETECTING AND RECOGNIZING PATIENT
             elif glo_va.STATE == 1:
-                # Read camera
-                glo_va.camera.RunCamera()
-
-                # # Face detecting
-                ret = Locating_Faces()
-                if ret == -2:
-                    print("Error Face locations")
-                    glo_va.STATE = -1
-                    continue
-                elif ret == 0:
-                    # Face Identifying
-                    glo_va.face_recognition.Encoding_Face()
-                    glo_va.count_face.Count_Face()
-
-                display_image = ConvertToDisplay(glo_va.img)
-                glo_va.window_GUI['image'].update(data=display_image)
-
-                if glo_va.has_response_server == True:
-                    if user_infor.Get_Status() == 0:
-                        glo_va.STATE = 2
-                        glo_va.count_face.Clear()
-                        user_infor.Update_Screen()
-                    elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == TIMES_MISSING_FACE:
-                        glo_va.STATE = 5
-                        glo_va.times_missing_face = 0
-
-                    glo_va.is_sending_message = False
-                    glo_va.has_response_server = False
+                State_1()
 
             # STATE CONFIRMING PATIENT INFORMATION
             elif glo_va.STATE == 2:
-                if event == 'Confirm':
-                    glo_va.window_GUI[f'-COL1-'].update(visible=False)
-                    glo_va.window_GUI[f'-COL2-'].update(visible=True)
-                    user_infor.Clear()
-                    user_infor.Update_Screen()
-                    glo_va.STATE = 3
-                    glo_va.measuring_sensor = False
-                elif event == 'Reject':
-                    user_infor.Clear()
-                    user_infor.Update_Screen()
-                    glo_va.STATE = 1
+                State_2(event)
 
             # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
             elif glo_va.STATE == 3:
-                if event == 'Capture':
-                    # glo_va.window_GUI[f'-COL2-'].update(visible=False)
-                    # glo_va.window_GUI[f'-COL1-'].update(visible=True)
-                    glo_va.measuring_sensor = True
-                    # glo_va.STATE = 0
-
-                if event == 'Confirm':
-                    if glo_va.has_examination_room == True and glo_va.has_sensor_values == True:
-                        glo_va.STATE = 4
-                        glo_va.has_response_server = False
-                        glo_va.is_sending_message = False
-                        glo_va.has_examination_room = False
-                        glo_va.has_sensor_values = False
-                        glo_va.measuring_sensor = False
-                        Render_Examanination_Room_Table()
-                        glo_va.window_GUI[f'-COL2-'].update(visible=False)
-                        glo_va.window_GUI[f'-COL4-'].update(visible=True)
-                    else:
-                        do_not_done_yet()
-
-                if glo_va.measuring_sensor == True:
-                    progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-                    for i in range(10):
-                        progress_bar.UpdateBar(10*(i+1), 100)
-                        time.sleep(1)
-                    sensor_info = {'blood_pressure': 120, 'pulse':98, 'thermal':38, 'spo2':90}
-                    sensor.Update_Sensor(sensor_info)
-                    sensor.Update_Screen()
-                    glo_va.measuring_sensor = False
-                    glo_va.has_sensor_values = True
-                
-                if glo_va.has_response_server == True:
-                    if glo_va.has_examination_room == False:
-                        glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
-                        glo_va.server.Get_Examination_Room()
-                        glo_va.has_response_server = False
-                        glo_va.is_sending_message = True
-                    else:
-                        pass
-                
-                if glo_va.is_sending_message == False and glo_va.has_examination_room == False:
-                    glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
-                    glo_va.server.Get_Examination_Room()
-                    glo_va.is_sending_message = True
-
+                State_3(event)
 
             # STATE CLASSIFYING ROOM
             elif glo_va.STATE == 4:
-                temp = event.split('\n')
-                print(temp[-1])
-                time.sleep(1)
-            
+                State_4(event)
+
             # STATE CONFIRM NEW USER
             elif glo_va.STATE == 5:
-                if is_new_user() == 'No':
-                    glo_va.STATE = 1
-                else:
-                    glo_va.STATE = 6
-                    glo_va.window_GUI[f'-COL1-'].update(visible=False)
-                    glo_va.window_GUI[f'-COL3-'].update(visible=True)
-                continue
+                State_5(event)
             
             # STATE FOR NEW USER
             elif glo_va.STATE == 6:
-                if event == 'Capture':
-                    glo_va.embedded_face_new_user = glo_va.embedded_face
-                    review_image = cv2.resize(glo_va.detected_face, (300,300))
-                    display_review_image = ConvertToDisplay(review_image)
-                    glo_va.window_GUI['review_photo'].update(data=display_review_image)
-                    glo_va.has_capture = True
-                elif event == 'Confirm' and glo_va.has_capture == True:
-                    temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
-                    glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-                    glo_va.num_images_new_user += 1
-                    glo_va.has_capture = False
-                    glo_va.window_GUI['review_photo'].update('')
-                    if glo_va.num_images_new_user == 5:
-                        glo_va.START == 7
-                    glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
-
-                # Read camera
-                glo_va.camera.RunCamera()
-
-                # # Face detecting
-                ret = Locating_Faces()
-                if ret == -2:
-                    print("Error Face locations")
-                    glo_va.STATE = -1
-                    continue
-                elif ret == 0:
-                    # Face Identifying
-                    glo_va.face_recognition.Encoding_Face()
-
-                display_image_new_user = ConvertToDisplay(glo_va.img)
-                glo_va.window_GUI['photo_new_user'].update(data=display_image_new_user)
+                State_6(event)
             
+            # Confirm final submission
             elif glo_va.STATE == 7:
-                continue
+                State_7(event)
 
         except Exception as e:
             print("Error at module main in main: {}".format(e))
