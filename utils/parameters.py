@@ -17,8 +17,8 @@ IMAGE_SIZE = 150
 BASE_BRIGHTNESS = 180
 
 # Count Face
-CYCLE_COUNT_FACE_PERIOD = 1.5
-NUMBER_DETECTED_FACE_TRANSMITED = 20
+CYCLE_COUNT_FACE_PERIOD = 1
+NUMBER_DETECTED_FACE_TRANSMITED = 12
 
 # Display image
 CAMERA_DISPLAY_WIDTH=640
@@ -64,8 +64,10 @@ OPT_TIMER_GET_EXAMINATION_ROOM = 1
 TIMEOUT_SUBMIT_EXAMINATION = 5
 OPT_TIMER_SUBMIT_EXAMINATION = 2
 
+TIMEOUT_MISSING_FACE = 10
 
-show_fps = True
+
+show_fps = False
 
 class GlobalVariable:
     def __init__(self):
@@ -240,6 +242,9 @@ class Examination:
     def Get_Buidling_Room(self):
         temp = self.__room.split('-')
         return temp[0], temp[1]
+    
+    def Get_Room(self):
+        return self.__room
 
 glo_va = GlobalVariable()
 user_infor = User_Infor()

@@ -36,7 +36,8 @@ class Server:
             self.__device_iothub_connection = ret['device_iothub_connection']
             self.__eventhub_connection = ret['eventhub_connection']
             self.__eventhub_name = ret['eventhub_name']
-
+    # When server receive response:
+    #   1: Clear Timer, so that timer is not trigged
     def __Listen_Reponse_Server(self, connection):
         while True:
             try:
@@ -56,10 +57,10 @@ class Server:
                     glo_va.lock_response_server.release()
 
                     current_time = time.strftime("%H:%M:%S", time.localtime())
-                    print("[{time}]: Received response of timer_id: {timer_id} for {name}.".format(time=current_time, timer_id=timer_id, name=method_request.name))
+                    print("[{time}]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(time=current_time, request_name=method_request.name,timer_id=timer_id, name=method_request.name))
                     
                     # Validation response
-                    if method_request.name == "Validate_User" and glo_va.STATE == 1 and glo_va.timer.timer_id == timer_id:
+                    if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
                         response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                         response_status = 200
 
@@ -72,7 +73,7 @@ class Server:
                         glo_va.has_response_server = True
 
                     # Get examination room response
-                    elif method_request.name == "Get_Examination_Room" and glo_va.STATE == 3 and glo_va.timer.timer_id == timer_id:
+                    elif method_request.name == "Get_Examination_Room" and glo_va.timer.timer_id == timer_id:
                         response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                         response_status = 200
 
@@ -87,7 +88,7 @@ class Server:
                         glo_va.has_response_server = True
 
                         # Submit examination request response
-                    elif method_request.name == "Submit_Examination" and glo_va.STATE == 7 and glo_va.timer.timer_id == timer_id:
+                    elif method_request.name == "Submit_Examination" and glo_va.timer.timer_id == timer_id:
                         response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                         response_status = 200
 
@@ -166,7 +167,9 @@ class Server:
                     'blood_pressure': str(blood_pressure),
                     'pulse': str(pulse),
                     'thermal': str(thermal),
-                    'spo2': str(spo2)
+                    'spo2': str(spo2),
+                    'height': str(175.5),
+                    'weight': str(75.4)
                 }
                 data.properties = msg
                 event_data_batch.add(data)

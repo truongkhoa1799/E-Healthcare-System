@@ -23,6 +23,14 @@ def State_1():
     display_image = ConvertToDisplay(glo_va.img)
     glo_va.window_GUI['image'].update(data=display_image)
 
+    # If has_response_server:
+    #   1. Has user information:
+    #       change to state 2
+    #       Clear all face detected in disk
+    #   2. Do not has face
+    #       If number missing faces > threshold
+    #           Ask for new user
+    #   3. Set flag is_sending_message and has_response_server = False
     if glo_va.has_response_server == True:
         if user_infor.Get_Status() == 0:
             glo_va.STATE = 2
@@ -61,13 +69,17 @@ def State_2(event):
         user_infor.Clear()
         user_infor.Update_Screen()
         glo_va.STATE = 3
-    elif event == 'button_2':
+    
+    if event == 'button_2':
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
-    elif event == 'exist':
+        return
+    
+    if event == 'exist':
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            return
 
 # Button: Exist, Confirm, measure
 #           1       2       3
@@ -92,6 +104,10 @@ def State_3(event):
 
             # open examination room layout
             glo_va.examination_GUI = Render_Examanination_Room_Table()
+
+            # If you do not return, it will send request for get examination room
+            # in the below code
+            return
         else:
             if glo_va.has_sensor_values == False:
                 popUpWarning('You did not have sensor results yet')
@@ -99,6 +115,9 @@ def State_3(event):
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            # If you do not return, it will send request for get examination room
+            # in the below code
+            return
     
     if glo_va.measuring_sensor == True:
         # Read the signal from ESP with loop 1s to check whether they has values or not
@@ -114,14 +133,17 @@ def State_3(event):
         glo_va.measuring_sensor = False
         glo_va.has_sensor_values = True
     
-    if glo_va.has_response_server == True:
-        if glo_va.has_examination_room == False:
-            glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
-            glo_va.has_response_server = False
-            glo_va.is_sending_message = True
-            glo_va.server.Get_Examination_Room()
+    # If has_response_server:
+    #   1. Has examination room:
+    #       
+    #   2. Do not has examination room
+    #        = False. Therefore, next execution will send again message
+    #   3. Set has_response_server and is_sending_message = False
+    if glo_va.has_response_server == True:        
+        glo_va.is_sending_message = False
+        glo_va.has_response_server = False
     
-    if glo_va.is_sending_message == False and glo_va.has_examination_room == False and glo_va.STATE == 3:
+    if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
         glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
         glo_va.is_sending_message = True
         glo_va.server.Get_Examination_Room()
@@ -156,6 +178,7 @@ def State_4(event):
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            return
 
 def State_5(event):
     if isNewUser() == 'No':
@@ -169,6 +192,7 @@ def State_5(event):
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            return
 
 def State_6(event):
     if event == 'button_3':
@@ -190,6 +214,7 @@ def State_6(event):
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            return
 
     # Read camera
     glo_va.camera.RunCamera()
@@ -217,10 +242,12 @@ def State_7(event):
 
         glo_va.STATE = 4
         glo_va.examination_GUI = Render_Examanination_Room_Table()
+        return
     elif event == 'exist':
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
+            return
     elif event == 'button_3' and glo_va.is_sending_message == False:
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
@@ -230,12 +257,13 @@ def State_7(event):
     
     if glo_va.has_response_server == True:
         if glo_va.return_stt is not None:
-            print(glo_va.return_stt)
-            time.sleep(5)
-            glo_va.STATE = -1
+            ret = popUpWarning("Your STT: {}, at room: {}".format(glo_va.return_stt, exam.Get_Room()))
+            Init_State()
+            return
         else:
             ret = Submit_Again()
             glo_va.is_sending_message = False
+            glo_va.has_response_server = False
 
     # time.sleep(1)
 
@@ -246,7 +274,6 @@ def Init_State():
         # If user reject, Clear user_infor, Ui and go to first state
         user_infor.Clear()
         user_infor.Update_Screen()
-        glo_va.patient_ID = None
 
         # State 1
         glo_va.STATE = 1
@@ -326,6 +353,9 @@ def Init_State():
         # Clear Examination
         exam.Clear()
         exam.Update_Screen()
+
+        # Clear STT
+        glo_va.return_stt = None
 
         # Set Ui for STATE 1
         glo_va.STATE = 1

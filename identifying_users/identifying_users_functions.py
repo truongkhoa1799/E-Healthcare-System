@@ -95,7 +95,7 @@ def InitMainGui():
         ],
     ]
 
-    ret_gui = sg.Window('E-HealthCare System', main_layout, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    ret_gui = sg.Window('E-HealthCare System', main_layout, font=('Oswald SemiBold', 20),location=(0, 0), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
     print("OPENED GUI")
     return ret_gui
 
@@ -136,7 +136,7 @@ def Render_Examanination_Room_Table():
         ]
     ]
 
-    ret_gui = sg.Window('Choose your department', layout_choose_department, font=('Oswald SemiBold', 20),location=(400, 400), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    ret_gui = sg.Window('Choose your department', layout_choose_department, font=('Oswald SemiBold', 20),location=(0, 0), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
     return ret_gui
 
 def Locating_Faces():
