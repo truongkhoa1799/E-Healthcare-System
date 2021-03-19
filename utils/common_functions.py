@@ -21,7 +21,7 @@ def AdjustBright(img):
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) #convert it to hsv
         v = hsv_img[:, :, 2]
         mean_v = np.mean(v)
-        diff = BASE_BRIGHTNESS - mean_v
+        diff = glo_va.BASE_BRIGHTNESS - mean_v
                     
         if diff < 0:
             v = np.where(v < abs(diff), v, v + diff)
@@ -42,6 +42,20 @@ def Compose_Embedded_Face(encoded_img):
     return ret_string
         
 def Preprocessing_Img(img):
-    resized_img = cv2.resize(img, (IMAGE_SIZE,IMAGE_SIZE))
+    resized_img = cv2.resize(img, (glo_va.IMAGE_SIZE,glo_va.IMAGE_SIZE))
     RGB_resized_adjusted_bright_img = AdjustBright(resized_img)
     return RGB_resized_adjusted_bright_img
+
+def ConvertToDisplay(image):
+    display_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # to RGB
+    display_image = Image.fromarray(display_image)  # to PIL format
+    display_image = ImageTk.PhotoImage(display_image)  # to ImageTk format
+    return display_image
+
+def Capture_New_Patient():
+    # Get embedded face of new user
+    glo_va.embedded_face_new_user = glo_va.embedded_face
+    # Resize image and display for user reviewing
+    review_image = cv2.resize(glo_va.detected_face, (300,300))
+    display_review_image = ConvertToDisplay(review_image)
+    glo_va.window_GUI['review_photo'].update(data=display_review_image)

@@ -1,3 +1,5 @@
+import os
+import cv2
 import time
 import pickle
 import numpy as np
@@ -9,12 +11,13 @@ from utils.common_functions import Preprocessing_Img
 
 class Face_Recognition:
     def __init__(self):
-        self.__pose_predictor_5_point = dlib.shape_predictor(PREDICTOR_5_POINT_MODEL)
-        self.__face_encoder = dlib.face_recognition_model_v1(RESNET_MODEL)
+        self.__pose_predictor_5_point = dlib.shape_predictor(glo_va.PREDICTOR_5_POINT_MODEL)
+        self.__face_encoder = dlib.face_recognition_model_v1(glo_va.RESNET_MODEL)
         self.__face_detector = dlib.get_frontal_face_detector()
 
         test_img = None
-        with open ('/home/thesis/Documents/E-Healthcare-System/model_engine/test_encoding_img', mode='rb') as f1:
+        test_img_path = os.path.join(PROJECT_PATH, 'model_engine/test_encoding_img')
+        with open (test_img_path, mode='rb') as f1:
             test_img = pickle.load(f1)
 
         test_encoded = self.__face_encodings(test_img, [(1, 149, 1, 149)])
@@ -72,7 +75,7 @@ class Face_Recognition:
 
         return [self.__pose_predictor_5_point(face_image, face_location) for face_location in face_locations]
 
-    def Get_Face_Locations(self, img):
+    def __Get_Face_Locations(self, img):
         """
         Returns an array of bounding boxes of human faces in a image
         :param img: An image (as a numpy array)
@@ -83,9 +86,50 @@ class Face_Recognition:
         """
         return [self.__trim_css_to_bounds(self.__rect_to_css(face), img.shape) for face in self.__raw_face_locations(img, 1)]
 
+    def Get_Face(self):
+        face_area = 0
+        max_face_area = 0
+
+        if glo_va.img is not None:
+            # print("size display image: {}".format(glo_va.img.shape))
+            # locate faces in the images
+            fra = glo_va.MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+            resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
+            GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
+            # print("size resized image: {}".format(GRAY_resized_img.shape))
+            
+            face_locations = self.__Get_Face_Locations(GRAY_resized_img)
+
+            if len(face_locations) == 0:
+                return -1
+
+            try:
+                for face_location in face_locations:
+                    top = int(face_location[0] / fra)
+                    bottom = int(face_location[2] / fra)
+                    left = int(face_location[3] / fra)
+                    right = int(face_location[1] / fra)
+
+                    face_area = (right - left)*(bottom - top)
+                    if face_area > max_face_area:
+                        glo_va.face_location = (top, bottom, left, right)
+                        max_face_area = face_area
+            except:
+                return -2
+
+            if max_face_area > glo_va.MIN_FACE_AREA:
+                glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
+                cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+                return 0
+            else:
+                return -1
+
+        return -1
+
     def Encoding_Face(self):
         # Pre-processing
         RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
+        # print("size RGB_resized_adjusted_bright_img image: {}".format(RGB_resized_adjusted_bright_img.shape))
 
-        glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, IMAGE_SIZE, IMAGE_SIZE,0)])[0]
+        glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])[0]
         # glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)

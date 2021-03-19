@@ -1,73 +1,10 @@
-#######################################################################################
-# Define parameters                                                                   #
-#######################################################################################
+import os
+import sys
+import yaml
+import pathlib
 
-# FACE RECOGNITION MODEL
-CENTER_FACE_TRT_PATH = '/home/thesis/Documents/E-Healthcare-System/model_engine/face_detector_320_192.trt'
-PREDICTOR_5_POINT_MODEL = '/home/thesis/Documents/E-Healthcare-System/model_engine/shape_predictor_5_face_landmarks.dat'
-RESNET_MODEL = '/home/thesis/Documents/E-Healthcare-System/model_engine/dlib_face_recognition_resnet_model_v1.dat'
-
-# Connection server
-IOT_HUB_CONNECTION = "HostName=E-HealthCare.azure-devices.net;SharedAccessKeyName=ServerRight;SharedAccessKey=coR5OV6uuuBPCxSriI7DibJsw+XiCb6255cONqZ6JWg="
-CONNECTION_LIST_PATH = "/home/thesis/Documents/E-Healthcare-System/communicate_server/connection"
-RESPONSE_IOTHUB_CONNECTION = "HostName=E-HealthCare.azure-devices.net;DeviceId={};SharedAccessKey={}"
-
-# Parameters for image processing, and KNN model
-IMAGE_SIZE = 150
-BASE_BRIGHTNESS = 180
-
-# Count Face
-CYCLE_COUNT_FACE_PERIOD = 1
-NUMBER_DETECTED_FACE_TRANSMITED = 12
-
-# Display image
-CAMERA_DISPLAY_WIDTH=640
-CAMERA_DISPLAY_HEIGHT=360
-# DISPLAY_WIDTH=1280
-# DISPLAY_HEIGHT=720
-
-# 1920x1080, 30 fps
-SENSOR_MODE_1080=2
-# 1280x720, 60 fps
-SENSOR_MODE_720=3
-
-# size for display
-LOCATION_FACE_WIDTH = 360
-LOCATION_FACE_HEIGHT = 350
-
-# Min are to encoding
-MIN_FACE_AREA = 50000
-
-# MAX length for HOG face Detector
-MAX_LENGTH_IMG = 80
-
-# # image for center face
-# SCALE_WIDTH=320
-# SCALE_HEIGHT=192
-
-# Parameters for GUI
-WIDTH_GUI = 800
-HEIGHT_GUI = 480
-CAM_EXAM_LAYOUT_WIDTH = 370
-CAM_EXAM_LAYOUT_HEIGHT = 360
-INFOR_SENSOR_LAYOUT_WIDTH = 400
-INFOR_SENSOR_LAYOUT_HEIGHT = 360
-
-# Parameters for timer
-TIMES_MISSING_FACE = 5
-TIMEOUT_VALIDATE = 5
-OPT_TIMER_VALIDATE = 0
-
-TIMEOUT_GET_EXAMINATION_ROOM = 5
-OPT_TIMER_GET_EXAMINATION_ROOM = 1
-
-TIMEOUT_SUBMIT_EXAMINATION = 5
-OPT_TIMER_SUBMIT_EXAMINATION = 2
-
-TIMEOUT_MISSING_FACE = 10
-
-
-show_fps = False
+show_fps = True
+PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:
     def __init__(self):
@@ -156,6 +93,95 @@ class GlobalVariable:
         # Sensor
         self.has_sensor_values = False
         self.measuring_sensor = False
+
+        # PATH_PARA
+        config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
+        with open(config_para_path, 'r') as file:
+            documents = yaml.load(file, Loader=yaml.FullLoader)
+            # Connection server
+            self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
+            
+            # Parameters for image processing, and KNN model
+            self.IMAGE_SIZE = int(documents['preprocessing']['image_size'])
+            self.BASE_BRIGHTNESS = int(documents['preprocessing']['base_brightness'])
+            
+            # identifying_face
+            self.CYCLE_COUNT_FACE_PERIOD = int(documents['identifying_face']['cycle_count_face_period'])
+            self.NUMBER_DETECTED_FACE_TRANSMITED = int(documents['identifying_face']['number_deteced_face_allowed'])
+            # Min are to encoding
+            self.MIN_FACE_AREA = int(documents['identifying_face']['min_face_area'])
+            # MAX length for HOG face Detector
+            self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
+
+
+            # FACE RECOGNITION MODEL
+            self.PREDICTOR_5_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_5_point_model']))
+            self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
+
+            # Display image
+            self.CAMERA_DISPLAY_WIDTH = int(documents['camera']['camera_display_width'])
+            self.CAMERA_DISPLAY_HEIGHT = int(documents['camera']['camera_display_height'])
+            # 1920x1080, 30 fps
+            self.SENSOR_MODE_1080 = int(documents['camera']['camera_mode_1080'])
+            # 1280x720, 60 fps
+            self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
+
+            # size for display
+            self.LOCATION_FACE_WIDTH = int(documents['gui']['location_face_width'])
+            self.LOCATION_FACE_HEIGHT = int(documents['gui']['location_face_height'])
+
+            # Parameters for GUI
+            self.WIDTH_GUI = int(documents['gui']['width_gui'])
+            self.HEIGHT_GUI = int(documents['gui']['height_gui'])
+            self.CAM_EXAM_LAYOUT_WIDTH = int(documents['gui']['cam_exam_layout_width'])
+            self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
+            self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
+            self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
+
+            # Parameters for timer
+            self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
+            self.TIMEOUT_MISSING_FACE = int(documents['timer']['timeout_missing_face'])
+
+            self.TIMEOUT_VALIDATE = int(documents['timer']['timeout_validate'])
+            self.OPT_TIMER_VALIDATE = int(documents['timer']['opt_timer_validate'])
+
+            self.TIMEOUT_GET_EXAMINATION_ROOM = int(documents['timer']['timeout_get_examination_room'])
+            self.OPT_TIMER_GET_EXAMINATION_ROOM = int(documents['timer']['opt_timer_get_examination_room'])
+
+            self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
+            self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
+
+            # print(self.CONNECTION_AZURE_PATH)
+            # print(self.IMAGE_SIZE)
+            # print(self.BASE_BRIGHTNESS)
+            # print(self.CYCLE_COUNT_FACE_PERIOD)
+            # print(self.NUMBER_DETECTED_FACE_TRANSMITED)
+            # print(self.MIN_FACE_AREA)
+            # print(self.MAX_LENGTH_IMG)
+            # print(self.PREDICTOR_5_POINT_MODEL)
+            # print(self.RESNET_MODEL)
+            # print(self.CAMERA_DISPLAY_WIDTH)
+            # print(self.CAMERA_DISPLAY_HEIGHT)
+            # print(self.SENSOR_MODE_1080)
+            # print(self.SENSOR_MODE_720)
+            # print(self.LOCATION_FACE_WIDTH)
+            # print(self.LOCATION_FACE_HEIGHT)
+            # print(self.WIDTH_GUI)
+            # print(self.HEIGHT_GUI)
+            # print(self.CAM_EXAM_LAYOUT_WIDTH)
+            # print(self.CAM_EXAM_LAYOUT_HEIGHT)
+            # print(self.INFOR_SENSOR_LAYOUT_WIDTH)
+            # print(self.INFOR_SENSOR_LAYOUT_HEIGHT)
+            # print(self.TIMES_MISSING_FACE)
+            # print(self.TIMEOUT_MISSING_FACE)
+            # print(self.TIMEOUT_VALIDATE)
+            # print(self.OPT_TIMER_VALIDATE)
+            # print(self.TIMEOUT_GET_EXAMINATION_ROOM)
+            # print(self.OPT_TIMER_GET_EXAMINATION_ROOM)
+            # print(self.TIMEOUT_SUBMIT_EXAMINATION)
+            # print(self.OPT_TIMER_SUBMIT_EXAMINATION)
+
+
 
 class User_Infor:
     def __init__(self):

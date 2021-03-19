@@ -1,0 +1,60 @@
+path:
+  predictor_5_point_model: model_engine/shape_predictor_5_face_landmarks.dat
+  resnet_path: model_engine/dlib_face_recognition_resnet_model_v1.dat
+  azure_connection_path: communicate_server/connection
+
+azure:
+  eventhub_name: receivemsg
+  eventhub_connection: Endpoint=sb://thesisehealthcare.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AUeMD+PSZx675wFA4kPllGfSnMwhATPOGPPDWex5jSU=
+  iothub_connection: HostName=thesisehealthcare.azure-devices.net;SharedAccessKeyName=serviceAndRegistryRead;SharedAccessKey=mqDNZkuK8UnoS9ccbb3bGm2OI1VCKHRfbODo6BKlfb4=
+
+preprocessing:
+  image_size: 150
+  base_brightness: 180
+
+identifying_face:
+  cycle_count_face_period: 1
+  number_deteced_face_allowed: 12
+  # Min are to encoding
+  min_face_area: 20000
+  min_face_area: 50000
+  # MAX length for HOG face Detector
+  max_length_img: 80
+
+camera:
+  # Display image
+  camera_display_width: 640
+  camera_display_height: 360
+  # 1920x1080, 30 fps
+  camera_mode_1080: 2
+  # 1280x720, 60 fps
+  camera_mode_720: 3
+
+gui:
+  # size for display
+  location_face_width: 360
+  location_face_height: 350
+  # # image for center face
+  # SCALE_WIDTH=320
+  # SCALE_HEIGHT=192
+
+  # Parameters for GUI
+  width_gui: 800
+  height_gui: 480
+  cam_exam_layout_width: 370
+  cam_exam_layout_height: 360
+  sensor_exam_layout_width: 400
+  sensor_exam_layout_height: 360
+
+timer:
+  times_missing_face: 5
+  timeout_missing_face: 20
+
+  timeout_validate: 5
+  opt_timer_validate: 0
+
+  timeout_get_examination_room: 5
+  opt_timer_get_examination_room: 1
+
+  timeout_submit_examination: 5
+  opt_timer_submit_examination: 2

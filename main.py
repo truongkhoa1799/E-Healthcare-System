@@ -153,6 +153,7 @@ def End():
 #########################################################################
 # Main FUNCTION                                                         #
 #########################################################################
+# import cv2
 if __name__ == "__main__":
     try:
         Init()
@@ -214,3 +215,5 @@ if __name__ == "__main__":
             End()
             break
     print("Turn off E-Healthcare system")
+    # cv2.imshow('test', glo_va.detected_face)
+    # cv2.waitKey(2000)

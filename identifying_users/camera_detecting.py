@@ -14,11 +14,11 @@ class CameraDetecting(Thread):
         self.__csi_camera = CSI_Camera()
         self.__csi_camera.create_gstreamer_pipeline(
             sensor_id=0,
-            sensor_mode=SENSOR_MODE_720,
+            sensor_mode=glo_va.SENSOR_MODE_720,
             framerate=30,
             flip_method=2,
-            display_height=CAMERA_DISPLAY_HEIGHT,
-            display_width=CAMERA_DISPLAY_WIDTH,
+            display_height=glo_va.CAMERA_DISPLAY_HEIGHT,
+            display_width=glo_va.CAMERA_DISPLAY_WIDTH,
         )
 
         print("Init camera")
@@ -46,10 +46,10 @@ class CameraDetecting(Thread):
     def RunCamera(self):
         _ , original_img = self.__csi_camera.read()
 
-        margin_width = int((original_img.shape[1] - LOCATION_FACE_WIDTH) / 2)
-        margin_height = int((original_img.shape[0] - LOCATION_FACE_HEIGHT) / 2)
+        margin_width = int((original_img.shape[1] - glo_va.LOCATION_FACE_WIDTH) / 2)
+        margin_height = int((original_img.shape[0] - glo_va.LOCATION_FACE_HEIGHT) / 2)
 
-        glo_va.img = original_img[margin_height:LOCATION_FACE_HEIGHT+margin_height , margin_width:LOCATION_FACE_WIDTH+margin_width]
+        glo_va.img = original_img[margin_height:glo_va.LOCATION_FACE_HEIGHT+margin_height , margin_width:glo_va.LOCATION_FACE_WIDTH+margin_width]
         
         if show_fps == True:
             # show_fps:

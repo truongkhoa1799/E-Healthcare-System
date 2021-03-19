@@ -1,5 +1,7 @@
 from identifying_users.identifying_users_functions import *
 from utils.common_functions import Compose_Embedded_Face
+from utils.common_functions import Capture_New_Patient
+from utils.common_functions import ConvertToDisplay
 from utils.parameters import *
 import time
 
@@ -10,7 +12,7 @@ def State_1():
     glo_va.camera.RunCamera()
 
     # Face detecting
-    ret = Locating_Faces()
+    ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
         print("Error Face locations")
         glo_va.STATE = -1
@@ -40,7 +42,7 @@ def State_1():
 
             # Update UI
             user_infor.Update_Screen()
-        elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == TIMES_MISSING_FACE:
+        elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
             # Go to state for new User
             glo_va.STATE = 5
             glo_va.times_missing_face = 0
@@ -144,7 +146,7 @@ def State_3(event):
         glo_va.has_response_server = False
     
     if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
-        glo_va.timer.Start_Timer(OPT_TIMER_GET_EXAMINATION_ROOM)
+        glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
         glo_va.is_sending_message = True
         glo_va.server.Get_Examination_Room()
 
@@ -185,6 +187,11 @@ def State_5(event):
         glo_va.STATE = 1
     else:
         glo_va.STATE = 6
+        # Change button
+        glo_va.window_GUI['button_3'].update('Capture')
+        glo_va.window_GUI['button_2'].update('Confirm')
+
+        # Change layout
         glo_va.window_GUI[f'-COL3-'].update(visible=True)
         glo_va.window_GUI[f'-COL1-'].update(visible=False)
     
@@ -196,19 +203,27 @@ def State_5(event):
 
 def State_6(event):
     if event == 'button_3':
-        glo_va.embedded_face_new_user = glo_va.embedded_face
-        review_image = cv2.resize(glo_va.detected_face, (300,300))
-        display_review_image = ConvertToDisplay(review_image)
-        glo_va.window_GUI['review_photo'].update(data=display_review_image)
+        Capture_New_Patient()
         glo_va.has_capture = True
-    elif event == 'Confirm' and glo_va.has_capture == True:
+    elif event == 'button_2' and glo_va.has_capture == True:
+        # Compose embedded image and append to list
         temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
         glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
         glo_va.num_images_new_user += 1
+
         glo_va.has_capture = False
+        # Clear review image
         glo_va.window_GUI['review_photo'].update('')
         if glo_va.num_images_new_user == 5:
-            glo_va.START == 7
+            # Change layout
+            glo_va.window_GUI[f'-COL2-'].update(visible=True)
+            glo_va.window_GUI[f'-COL3-'].update(visible=False)
+
+            # Change Button 3 from Confirm to Measure
+            #        Button 2 from reject to Confirm
+            glo_va.window_GUI['button_3'].update('Measure')
+            glo_va.window_GUI['button_2'].update('Confirm')
+            glo_va.STATE = 3
         glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
     elif event == 'exist':
         ret = popUpYesNo('Are you sure?')
@@ -220,7 +235,7 @@ def State_6(event):
     glo_va.camera.RunCamera()
 
     # # Face detecting
-    ret = Locating_Faces()
+    ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
         print("Error Face locations")
         glo_va.STATE = -1
@@ -251,7 +266,7 @@ def State_7(event):
     elif event == 'button_3' and glo_va.is_sending_message == False:
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
-            glo_va.timer.Start_Timer(OPT_TIMER_SUBMIT_EXAMINATION)
+            glo_va.timer.Start_Timer(glo_va.OPT_TIMER_SUBMIT_EXAMINATION)
             glo_va.is_sending_message = True
             glo_va.server.Submit_Examination()
     
@@ -326,11 +341,6 @@ def Init_State():
         glo_va.window_GUI[f'-COL1-'].update(visible=True)
         glo_va.window_GUI[f'-COL2-'].update(visible=False)
     elif glo_va.STATE == 6:
-        glo_va.list_embedded_face_new_user = ""
-        glo_va.embedded_face_new_user = None
-        glo_va.num_images_new_user = 0
-        glo_va.has_capture = False
-
         glo_va.window_GUI['review_photo'].update('')
         glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
         glo_va.window_GUI['photo_new_user'].update(data='')
@@ -365,4 +375,10 @@ def Init_State():
     # config button at STATE 1
     glo_va.window_GUI['button_3'].update('Confirm')
     glo_va.window_GUI['button_2'].update('Reject')
+
+    # Clear list embedded face, embedded face and num images
+    glo_va.list_embedded_face_new_user = ""
+    glo_va.embedded_face_new_user = None
+    glo_va.num_images_new_user = 0
+    glo_va.has_capture = False
 

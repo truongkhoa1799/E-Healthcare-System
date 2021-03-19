@@ -5,7 +5,9 @@ import sys
 import time
 import pickle
 import threading
-sys.path.append('/home/thesis/Documents/E-Healthcare-System')
+
+PROJECT_PATH = '/home/thesis/Documents/thesis/E-Healthcare-System/'
+sys.path.append(PROJECT_PATH)
 from utils.parameters import *
 
 class Server:
@@ -30,12 +32,16 @@ class Server:
         self.__listening_server_thread.start()
 
     def __LoadConnection(self):
-        with open (CONNECTION_LIST_PATH, 'rb') as fp_1:
+        with open (glo_va.CONNECTION_AZURE_PATH, 'rb') as fp_1:
             ret = pickle.load(fp_1)
             self.__device_ID = ret['device_ID']
             self.__device_iothub_connection = ret['device_iothub_connection']
             self.__eventhub_connection = ret['eventhub_connection']
             self.__eventhub_name = ret['eventhub_name']
+            # print(self.__device_iothub_connection)
+            # print(self.__eventhub_connection)
+            # print(self.__eventhub_name)
+            
     # When server receive response:
     #   1: Clear Timer, so that timer is not trigged
     def __Listen_Reponse_Server(self, connection):
@@ -153,7 +159,7 @@ class Server:
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
                 print("[{time}]: Submit Examination with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
-                data = EventData("")
+                
                 building_code, room_code = exam.Get_Buidling_Room()
                 blood_pressure, pulse, thermal, spo2 = sensor.Get_Data()
                 msg = {
@@ -163,7 +169,6 @@ class Server:
                     'hospital_ID': str(glo_va.hospital_ID),
                     'building_code': building_code,
                     'room_code': room_code,
-                    'patient_ID': str(glo_va.patient_ID),
                     'blood_pressure': str(blood_pressure),
                     'pulse': str(pulse),
                     'thermal': str(thermal),
@@ -171,6 +176,15 @@ class Server:
                     'height': str(175.5),
                     'weight': str(75.4)
                 }
+                
+                # Check is new user
+                if len(glo_va.list_embedded_face_new_user) != 0:
+                    data = EventData(glo_va.list_embedded_face_new_user)
+                    msg['patient_ID'] = str(-1)
+                else:
+                    data = EventData("")
+                    msg['patient_ID'] = str(glo_va.patient_ID)
+
                 data.properties = msg
                 event_data_batch.add(data)
             except Exception as e:

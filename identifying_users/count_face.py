@@ -12,14 +12,14 @@ class CountFace:
     def __init__(self):
         self.__list_faces = ""
         self.__num_imgs = 0
-        self.__counter=RepeatTimer(CYCLE_COUNT_FACE_PERIOD, self.Count_Second)
+        self.__counter=RepeatTimer(glo_va.CYCLE_COUNT_FACE_PERIOD, self.Count_Second)
         self.__counter.start()
 
     def Count_Second(self):
-        print("State: {}, is_sending_message: {}, has_response_server: {}, num_images: {}".format(glo_va.STATE, glo_va.is_sending_message, glo_va.has_response_server, self.__num_imgs))
-        if glo_va.STATE == 1 and self.__num_imgs > NUMBER_DETECTED_FACE_TRANSMITED and glo_va.is_sending_message == False:
+        # print("State: {}, is_sending_message: {}, has_response_server: {}, num_images: {}".format(glo_va.STATE, glo_va.is_sending_message, glo_va.has_response_server, self.__num_imgs))
+        if glo_va.STATE == 1 and self.__num_imgs > glo_va.NUMBER_DETECTED_FACE_TRANSMITED and glo_va.is_sending_message == False:
             glo_va.list_embedded_face = self.__list_faces
-            glo_va.timer.Start_Timer(OPT_TIMER_VALIDATE)
+            glo_va.timer.Start_Timer(glo_va.OPT_TIMER_VALIDATE)
             glo_va.is_sending_message = True
             glo_va.server.Validate_User()
 

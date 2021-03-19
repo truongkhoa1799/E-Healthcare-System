@@ -4,8 +4,6 @@ if [ $# -ne 1 ]
     echo "No device ID"
     exit -1
 fi
-EVENT_HUB_CONNECTION="Endpoint=sb://receivemsgsfromdevices.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=lM4liPS83Rni9DE72LJg2swfELncFmBKOIYTKm81eQY="
-EVENT_HUB_NAME="receivemsg"
 
 python3 communicate_server/create_device.py $1 $EVENT_HUB_CONNECTION $EVENT_HUB_NAME
 ret=$?

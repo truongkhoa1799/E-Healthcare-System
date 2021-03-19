@@ -1,27 +1,20 @@
-import cv2
 import numpy as np
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
 
 from utils.parameters import *
-    
-def ConvertToDisplay(image):
-    display_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # to RGB
-    display_image = Image.fromarray(display_image)  # to PIL format
-    display_image = ImageTk.PhotoImage(display_image)  # to ImageTk format
-    return display_image
 
 def InitMainGui():
-    camera_layout = [[sg.Image(filename='', key='image', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
+    camera_layout = [[sg.Image(filename='', key='image', size=(glo_va.LOCATION_FACE_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],]
     
-    take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(CAM_EXAM_LAYOUT_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],]
+    take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],]
     
     review_cam_layout = [
         [
             sg.Text('Number of images:', size=(15, 1), justification='left', font='Helvetica 16'),
             sg.Text("0", size=(15, 1), justification='left', font='Helvetica 14', key='-NUM_IMAGES-')
         ],
-        [sg.Image(filename='', key='review_photo', size=(LOCATION_FACE_WIDTH,LOCATION_FACE_HEIGHT), visible=True)],
+        [sg.Image(filename='', key='review_photo', size=(glo_va.LOCATION_FACE_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],
     ]
 
     examination_info = [
@@ -58,26 +51,26 @@ def InitMainGui():
    
     layout1 = [
         [
-            sg.Column(camera_layout, size=(CAM_EXAM_LAYOUT_WIDTH,CAM_EXAM_LAYOUT_HEIGHT)), 
+            sg.Column(camera_layout, size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.CAM_EXAM_LAYOUT_HEIGHT)), 
             sg.VSeparator(),
-            sg.Column(information_layout, size=(INFOR_SENSOR_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT))
+            sg.Column(information_layout, size=(glo_va.INFOR_SENSOR_LAYOUT_WIDTH,glo_va.INFOR_SENSOR_LAYOUT_HEIGHT))
         ],
     ]
 
     layout2 = [
         [
-            sg.Column(examination_info, size=(CAM_EXAM_LAYOUT_WIDTH,CAM_EXAM_LAYOUT_HEIGHT)), 
+            sg.Column(examination_info, size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.CAM_EXAM_LAYOUT_HEIGHT)), 
             sg.VSeparator(),
-            sg.Column(sensor_information_layout, size=(INFOR_SENSOR_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT))
+            sg.Column(sensor_information_layout, size=(glo_va.INFOR_SENSOR_LAYOUT_WIDTH,glo_va.INFOR_SENSOR_LAYOUT_HEIGHT))
         ]
     # create the window and show it without the plot,
     ]
 
     layout_new_user = [
         [
-            sg.Column(review_cam_layout, size=(CAM_EXAM_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT)), 
+            sg.Column(review_cam_layout, size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.INFOR_SENSOR_LAYOUT_HEIGHT)), 
             sg.VSeparator(),
-            sg.Column(take_photo_layout, size=(INFOR_SENSOR_LAYOUT_WIDTH,INFOR_SENSOR_LAYOUT_HEIGHT))
+            sg.Column(take_photo_layout, size=(glo_va.INFOR_SENSOR_LAYOUT_WIDTH,glo_va.INFOR_SENSOR_LAYOUT_HEIGHT))
         ],
     ]
 
@@ -95,7 +88,7 @@ def InitMainGui():
         ],
     ]
 
-    ret_gui = sg.Window('E-HealthCare System', main_layout, font=('Oswald SemiBold', 20),location=(0, 0), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    ret_gui = sg.Window('E-HealthCare System', main_layout, font=('Oswald SemiBold', 20),location=(0, 0), size=(glo_va.WIDTH_GUI, glo_va.HEIGHT_GUI), element_justification='c')
     print("OPENED GUI")
     return ret_gui
 
@@ -129,53 +122,15 @@ def Render_Examanination_Room_Table():
     
     layout_choose_department = [
         [
-            sg.Column(examination_room_layout, size=(WIDTH_GUI, 400))
+            sg.Column(examination_room_layout, size=(glo_va.WIDTH_GUI, 400))
         ],
         [
             sg.Button('Exist', size=(15, 2), font='Helvetica 14', key='exist_exam_room'),
         ]
     ]
 
-    ret_gui = sg.Window('Choose your department', layout_choose_department, font=('Oswald SemiBold', 20),location=(0, 0), size=(WIDTH_GUI, HEIGHT_GUI), element_justification='c')
+    ret_gui = sg.Window('Choose your department', layout_choose_department, font=('Oswald SemiBold', 20),location=(0, 0), size=(glo_va.WIDTH_GUI, glo_va.HEIGHT_GUI), element_justification='c')
     return ret_gui
-
-def Locating_Faces():
-    face_area = 0
-    max_face_area = 0
-
-    if glo_va.img is not None:
-        # locate faces in the images
-        fra = MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
-        resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
-        GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
-        
-        face_locations = glo_va.face_recognition.Get_Face_Locations(GRAY_resized_img)
-
-        if len(face_locations) == 0:
-            return -1
-
-        try:
-            for face_location in face_locations:
-                top = int(face_location[0] / fra)
-                bottom = int(face_location[2] / fra)
-                left = int(face_location[3] / fra)
-                right = int(face_location[1] / fra)
-
-                face_area = (right - left)*(bottom - top)
-                if face_area > max_face_area:
-                    glo_va.face_location = (top, bottom, left, right)
-                    max_face_area = face_area
-        except:
-            return -2
-
-        if max_face_area > MIN_FACE_AREA:
-            glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
-            cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
-            return 0
-        else:
-            return -1
-
-    return -1
 
 def isNewUser():
     return sg.popup_yes_no("Are you new user?", title="New user?", font=('Oswald SemiBold', 14),keep_on_top=True)
