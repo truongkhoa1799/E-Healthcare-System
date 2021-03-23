@@ -10,6 +10,7 @@ from identifying_users.identifying_users_functions import *
 from states import *
 
 # import time
+import cv2
 from threading import Lock
 #########################################################################
 # START FUNCTIONS                                                       #
@@ -199,7 +200,7 @@ if __name__ == "__main__":
                 State_5(event)
             
             # STATE FOR NEW USER
-            elif glo_va.STATE == 6:
+            elif glo_va.STATE == glo_va.STATE_NEW_PATIENT:
                 State_6(event)
             
             # Confirm final submission
@@ -215,5 +216,5 @@ if __name__ == "__main__":
             End()
             break
     print("Turn off E-Healthcare system")
-    # cv2.imshow('test', glo_va.detected_face)
-    # cv2.waitKey(2000)
+    cv2.imshow('test', glo_va.detected_face)
+    cv2.waitKey(2000)

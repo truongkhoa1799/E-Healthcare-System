@@ -61,6 +61,11 @@ class GlobalVariable:
         self.embedded_face_new_user = None
         self.num_images_new_user = 0
         self.has_capture = False
+        # up : 0, down : 1, left : 2, right : 3, forward : 4
+        self.num_face_new_user = 5
+        self.current_shape = 0
+        self.user_pose = None
+        self.list_shape_face = ['Looking up', 'Looking down', 'Looking left', 'Looking right', 'Looking foward']
 
         self.lock_response_server = None
         self.lock_timer_expir = False
@@ -108,14 +113,18 @@ class GlobalVariable:
             # identifying_face
             self.CYCLE_COUNT_FACE_PERIOD = int(documents['identifying_face']['cycle_count_face_period'])
             self.NUMBER_DETECTED_FACE_TRANSMITED = int(documents['identifying_face']['number_deteced_face_allowed'])
-            # Min are to encoding
-            self.MIN_FACE_AREA = int(documents['identifying_face']['min_face_area'])
             # MAX length for HOG face Detector
             self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
+            self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
+
+
+            self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
+            self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
 
 
             # FACE RECOGNITION MODEL
             self.PREDICTOR_5_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_5_point_model']))
+            self.PREDICTOR_68_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_68_point_model']))
             self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
 
             # Display image
@@ -150,13 +159,14 @@ class GlobalVariable:
 
             self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
-
+            
+            # STATES
+            self.STATE_NEW_PATIENT = int(documents['state']['state_new_patient'])
             # print(self.CONNECTION_AZURE_PATH)
             # print(self.IMAGE_SIZE)
             # print(self.BASE_BRIGHTNESS)
             # print(self.CYCLE_COUNT_FACE_PERIOD)
             # print(self.NUMBER_DETECTED_FACE_TRANSMITED)
-            # print(self.MIN_FACE_AREA)
             # print(self.MAX_LENGTH_IMG)
             # print(self.PREDICTOR_5_POINT_MODEL)
             # print(self.RESNET_MODEL)

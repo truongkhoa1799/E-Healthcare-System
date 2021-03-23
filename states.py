@@ -44,6 +44,8 @@ def State_1():
             user_infor.Update_Screen()
         elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
             # Go to state for new User
+            # Ask patient to looking up
+            print(glo_va.list_shape_face[glo_va.current_shape])
             glo_va.STATE = 5
             glo_va.times_missing_face = 0
         
@@ -202,30 +204,30 @@ def State_5(event):
             return
 
 def State_6(event):
-    if event == 'button_3':
-        Capture_New_Patient()
-        glo_va.has_capture = True
-    elif event == 'button_2' and glo_va.has_capture == True:
-        # Compose embedded image and append to list
-        temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
-        glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-        glo_va.num_images_new_user += 1
+    # if event == 'button_3':
+    #     Capture_New_Patient()
+    #     glo_va.has_capture = True
+    # elif event == 'button_2' and glo_va.has_capture == True:
+    #     # Compose embedded image and append to list
+    #     temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
+    #     glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+    #     glo_va.num_images_new_user += 1
 
-        glo_va.has_capture = False
-        # Clear review image
-        glo_va.window_GUI['review_photo'].update('')
-        if glo_va.num_images_new_user == 5:
-            # Change layout
-            glo_va.window_GUI[f'-COL2-'].update(visible=True)
-            glo_va.window_GUI[f'-COL3-'].update(visible=False)
+    #     glo_va.has_capture = False
+    #     # Clear review image
+    #     glo_va.window_GUI['review_photo'].update('')
+    #     if glo_va.num_images_new_user == 5:
+    #         # Change layout
+    #         glo_va.window_GUI[f'-COL2-'].update(visible=True)
+    #         glo_va.window_GUI[f'-COL3-'].update(visible=False)
 
-            # Change Button 3 from Confirm to Measure
-            #        Button 2 from reject to Confirm
-            glo_va.window_GUI['button_3'].update('Measure')
-            glo_va.window_GUI['button_2'].update('Confirm')
-            glo_va.STATE = 3
-        glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
-    elif event == 'exist':
+    #         # Change Button 3 from Confirm to Measure
+    #         #        Button 2 from reject to Confirm
+    #         glo_va.window_GUI['button_3'].update('Measure')
+    #         glo_va.window_GUI['button_2'].update('Confirm')
+    #         glo_va.STATE = 3
+    #     glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
+    if event == 'exist':
         ret = popUpYesNo('Are you sure?')
         if ret == 'Yes':
             Init_State()
@@ -243,6 +245,34 @@ def State_6(event):
     elif ret == 0:
         # Face Identifying
         glo_va.face_recognition.Encoding_Face()
+    
+        if glo_va.user_pose == glo_va.current_shape:
+            # save the current embedded face
+            temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
+            glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+
+            # Increase and display number of face
+            glo_va.num_images_new_user += 1
+            glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
+
+            # Change to take next pose of user
+            glo_va.current_shape += 1
+
+            if glo_va.current_shape == glo_va.num_face_new_user:
+                print('Done get face new user')
+                # Change layout
+                glo_va.window_GUI[f'-COL2-'].update(visible=True)
+                glo_va.window_GUI[f'-COL3-'].update(visible=False)
+
+                # Change Button 3 from Confirm to Measure
+                #        Button 2 from reject to Confirm
+                glo_va.window_GUI['button_3'].update('Measure')
+                glo_va.window_GUI['button_2'].update('Confirm')
+                glo_va.STATE = 3
+            
+            # Ask patient to add new face
+            else:
+                print(glo_va.list_shape_face[glo_va.current_shape])
 
     display_image_new_user = ConvertToDisplay(glo_va.img)
     glo_va.window_GUI['photo_new_user'].update(data=display_image_new_user)
@@ -381,4 +411,6 @@ def Init_State():
     glo_va.embedded_face_new_user = None
     glo_va.num_images_new_user = 0
     glo_va.has_capture = False
+    glo_va.current_shape = 0
+    glo_va.user_pose = None
 

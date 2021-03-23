@@ -1,5 +1,6 @@
 path:
   predictor_5_point_model: model_engine/shape_predictor_5_face_landmarks.dat
+  predictor_68_point_model: model_engine/shape_predictor_68_face_landmarks.dat
   resnet_path: model_engine/dlib_face_recognition_resnet_model_v1.dat
   azure_connection_path: communicate_server/connection
 
@@ -14,12 +15,13 @@ preprocessing:
 
 identifying_face:
   cycle_count_face_period: 1
+  # number_deteced_face_allowed: 30
   number_deteced_face_allowed: 12
-  # Min are to encoding
-  min_face_area: 20000
-  min_face_area: 50000
+  max_edge: 0
   # MAX length for HOG face Detector
-  max_length_img: 80
+  max_length_img: 100
+  face_detector_model: cnn
+  shape_predictor_model: 68
 
 camera:
   # Display image
@@ -47,7 +49,7 @@ gui:
   sensor_exam_layout_height: 360
 
 timer:
-  times_missing_face: 5
+  times_missing_face: 1
   timeout_missing_face: 20
 
   timeout_validate: 5
@@ -58,3 +60,6 @@ timer:
 
   timeout_submit_examination: 5
   opt_timer_submit_examination: 2
+
+state:
+  state_new_patient: 6
