@@ -58,7 +58,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.page)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
