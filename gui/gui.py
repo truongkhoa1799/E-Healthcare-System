@@ -56,9 +56,9 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.recognize_frame)
         self.stackedWidget.addWidget(self.measure_sensor_frame)
         self.stackedWidget.addWidget(self.add_new_patient_frame)
-        self.stackedWidget.addWidget(self.page)
+        self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
+        self.stackedWidget.setCurrentWidget(self.view_departments)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
@@ -70,8 +70,8 @@ class GUI(QtWidgets.QMainWindow):
 
         self.list_shape_face = [self.up_face, self.down_face, self.left_face, self.right_face, self.front_face]
 
-        # img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
-        img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
+        img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
+        # img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
         img = cv2.resize(img, (430,400))
         qp_image = self.__Convert_To_Display(img)
         self.image_patient.setPixmap(qp_image)
