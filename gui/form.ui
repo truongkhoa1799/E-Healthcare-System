@@ -212,7 +212,7 @@ color: rgb(255, 255, 255);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(27, 29, 35, 200)</string>
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -296,20 +296,21 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>450</x>
-          <y>-10</y>
-          <width>340</width>
-          <height>430</height>
+          <y>10</y>
+          <width>330</width>
+          <height>400</height>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background: transparent;</string>
+         <string notr="true">background: rgb(19, 18, 19);
+border-radius: 15px;</string>
         </property>
         <widget class="QFrame" name="name_label_frame_2">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>18</x>
            <y>0</y>
-           <width>340</width>
+           <width>310</width>
            <height>40</height>
           </rect>
          </property>
@@ -318,6 +319,11 @@ color: rgb(255, 255, 255);</string>
            <width>16777215</width>
            <height>40</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>15</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background: transparent;</string>
@@ -334,13 +340,13 @@ color: rgb(255, 255, 255);</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>14</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>Name:</string>
@@ -352,9 +358,9 @@ color: rgb(255, 255, 255);</string>
         <widget class="QFrame" name="birthday_label_frame_2">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>18</x>
            <y>100</y>
-           <width>340</width>
+           <width>310</width>
            <height>40</height>
           </rect>
          </property>
@@ -363,6 +369,11 @@ color: rgb(255, 255, 255);</string>
            <width>16777215</width>
            <height>40</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>15</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background: transparent;</string>
@@ -379,13 +390,13 @@ color: rgb(255, 255, 255);</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>14</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>Birthday:</string>
@@ -397,9 +408,9 @@ color: rgb(255, 255, 255);</string>
         <widget class="QFrame" name="phone_label_frame_3">
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>205</y>
-           <width>338</width>
+           <x>18</x>
+           <y>200</y>
+           <width>310</width>
            <height>40</height>
           </rect>
          </property>
@@ -408,6 +419,11 @@ color: rgb(255, 255, 255);</string>
            <width>16777215</width>
            <height>40</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background: transparent;</string>
@@ -424,13 +440,13 @@ color: rgb(255, 255, 255);</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>14</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>Phone:</string>
@@ -439,104 +455,12 @@ color: rgb(255, 255, 255);</string>
           </item>
          </layout>
         </widget>
-        <widget class="QFrame" name="phone_text_frame_2">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>255</y>
-           <width>321</width>
-           <height>40</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(39, 44, 54);
-border-radius: 10px;</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_18">
-          <item>
-           <widget class="QLabel" name="patient_phone">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>13</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QFrame" name="name_text_frame_2">
-         <property name="geometry">
-          <rect>
-           <x>7</x>
-           <y>45</y>
-           <width>321</width>
-           <height>40</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(39, 44, 54);
-border-radius: 10px;</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_19">
-          <item>
-           <widget class="QLabel" name="patient_name">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>13</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QFrame" name="birthday_text_frame_2">
          <property name="geometry">
           <rect>
-           <x>7</x>
-           <y>150</y>
-           <width>321</width>
+           <x>20</x>
+           <y>140</y>
+           <width>290</width>
            <height>40</height>
           </rect>
          </property>
@@ -547,8 +471,7 @@ border-radius: 10px;</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(39, 44, 54);
-border-radius: 10px;</string>
+          <string notr="true">background-color: transparent;</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -556,33 +479,53 @@ border-radius: 10px;</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_20">
-          <item>
-           <widget class="QLabel" name="patient_birthday">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>13</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="patient_birthday">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>12</y>
+            <width>266</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>16</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>khoa</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>35</y>
+            <width>266</width>
+            <height>1</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background: rgb(255, 255, 255)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </widget>
         <widget class="QPushButton" name="confirm_user_but">
          <property name="geometry">
           <rect>
            <x>60</x>
-           <y>330</y>
-           <width>221</width>
+           <y>315</y>
+           <width>215</width>
            <height>61</height>
           </rect>
          </property>
@@ -596,19 +539,162 @@ border-radius: 10px;</string>
 	border: 2px solid rgb(52, 59, 72);
 	border-radius: 5px;	
 	background-color: rgb(52, 59, 72);
+	color: rgb(255, 255, 255);
 }
 QPushButton:hover {
 	background-color: rgb(57, 65, 80);
 	border: 2px solid rgb(61, 70, 86);
+	color: rgb(255, 255, 255);
 }
 QPushButton:pressed {	
 	background-color: rgb(35, 40, 49);
 	border: 2px solid rgb(43, 50, 61);
+	color: rgb(255, 255, 255);
 }</string>
          </property>
          <property name="text">
           <string>Confirm</string>
          </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/24x24/cil-check.png</normaloff>icons/24x24/cil-check.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QFrame" name="name_text_frame">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>290</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="patient_name">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>12</y>
+            <width>266</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>16</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>khoa</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_2">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>35</y>
+            <width>266</width>
+            <height>1</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background: rgb(255, 255, 255)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="phone_text_frame">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>240</y>
+           <width>290</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="patient_phone">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>12</y>
+            <width>266</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>16</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>khoa</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_3">
+          <property name="geometry">
+           <rect>
+            <x>12</x>
+            <y>35</y>
+            <width>266</width>
+            <height>1</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background: rgb(255, 255, 255)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </widget>
        </widget>
       </widget>
@@ -2057,7 +2143,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2065,7 +2151,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2122,7 +2208,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2130,7 +2216,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2187,7 +2273,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2195,7 +2281,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </disabled>
          </palette>
         </property>
