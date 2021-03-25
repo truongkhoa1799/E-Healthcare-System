@@ -72,6 +72,7 @@ class Server:
 
                         ret_msg = int(method_request.payload['return'])
                         if ret_msg == 0:
+                            # print(method_request.payload)
                             user_infor.Update_Info(method_request.payload)
                         elif glo_va.STATE == 1 and ret_msg == -1:
                             glo_va.times_missing_face += 1

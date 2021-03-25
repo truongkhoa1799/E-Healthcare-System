@@ -3,7 +3,7 @@ import sys
 import yaml
 import pathlib
 
-show_fps = True
+show_fps = False
 PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:
@@ -18,6 +18,8 @@ class GlobalVariable:
 
         # STATE of the program
         self.STATE = 1
+        self.ENABLE_RUN = True
+        self.START_RUN = False
 
         # self.cuda_ctx = None
 
@@ -161,7 +163,18 @@ class GlobalVariable:
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
             
             # STATES
-            self.STATE_NEW_PATIENT = int(documents['state']['state_new_patient'])
+            self.STATE_RECOGNIZE_PATIENT = 1
+            self.STATE_CONFIRM_PATIENT = 2
+            self.STATE_MEASURE_SENSOR = 3
+            self.STATE_CONFIRM_NEW_PATIENT = 5
+            self.STATE_NEW_PATIENT = 6
+            
+            self.button = -1
+            self.BUTTON_EXIST = 0
+            self.BUTTON_CANCEL_CONFIRM_PATIENT = 1
+            self.BUTTON_ACCEPT_CONFIRM_PATIENT = 2
+            self.BUTTON_VIEW_LIST_DEP = 3
+            self.BUTTON_CAPTURE_SENSOR = 4
             # print(self.CONNECTION_AZURE_PATH)
             # print(self.IMAGE_SIZE)
             # print(self.BASE_BRIGHTNESS)
@@ -196,27 +209,30 @@ class GlobalVariable:
 class User_Infor:
     def __init__(self):
         self.__status = -1
-        self.__name = None
-        self.__birthday = None
-        self.__phone = None
-        self.__address = None
+        # self.__name = None
+        # self.__birthday = None
+        # self.__phone = None
+        # self.__address = None
         self.patient_ID = None
+        self.user_info = None
         self.Clear()
 
     def Clear(self):
         self.__status = -1
-        self.__name = "None"
-        self.__birthday = "None"
-        self.__phone = "None"
-        self.__address = "None"
+        # self.__name = "None"
+        # self.__birthday = "None"
+        # self.__phone = "None"
+        # self.__address = "None"
+        self.user_info = None
         self.patient_ID = None
     
     def Update_Info(self, user_info):
         self.__status = 0
-        self.__name = user_info['name']
-        self.__birthday = user_info['birthday']
-        self.__phone = user_info['phone']
-        self.__address = user_info['address']
+        # self.__name = user_info['name']
+        # self.__birthday = user_info['birthday']
+        # self.__phone = user_info['phone']
+        # self.__address = user_info['address']
+        self.user_info = user_info
         self.patient_ID = user_info['user_ID']
 
     def Update_Screen(self):

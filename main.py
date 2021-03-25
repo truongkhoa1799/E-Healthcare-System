@@ -5,6 +5,11 @@ from identifying_users.count_face import CountFace
 from communicate_server.server import Server
 from utils.timer import Timer
 
+from gui.gui import GUI
+from PyQt5 import QtWidgets
+
+import threading
+
 from utils.parameters import *
 from identifying_users.identifying_users_functions import *
 from states import *
@@ -101,6 +106,7 @@ def Stop_Timer():
 #########################################################################
 def Init():
     if glo_va.STATE == 1:
+        print('Start init program')
         # Init face recognition
         Start_Face_Recognition()
         glo_va.flg_init_face_recognition = True
@@ -125,8 +131,7 @@ def Init():
         glo_va.lock_response_server = Lock()
 
     # Init GUI
-    Start_GUI()
-    glo_va.flg_init_GUI = True
+    # Start_GUI()
 
 
 #########################################################################
@@ -135,22 +140,82 @@ def Init():
 def End():
     if glo_va.flg_init_count_face:
         Stop_Count_Face()
+        glo_va.flg_init_count_face = False
 
     if glo_va.flg_init_timer:
         Stop_Timer()
+        glo_va.flg_init_timer = False
 
     if glo_va.flg_init_GUI:
-        glo_va.window_GUI.close()
+        # glo_va.window_GUI.close()
+        glo_va.gui.close()
+        glo_va.flg_init_GUI = False
 
     if glo_va.flg_init_camera:
         Stop_Camera_Detecting()
+        glo_va.flg_init_camera = False
     
     if glo_va.flg_init_face_recognition:
         Stop_Face_Recognition()
+        glo_va.flg_init_face_recognition = False
 
     if glo_va.flg_server_connected:
         Stop_Connecting_Server()
-        
+        glo_va.flg_server_connected = False
+
+import time
+def main():
+    while glo_va.ENABLE_RUN:
+        if glo_va.START_RUN == False:
+            continue
+
+        try:
+            event = 1
+            if glo_va.STATE == -1:
+                End()
+                break
+
+            # STATE DETECTING AND RECOGNIZING PATIENT
+            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
+                State_1()
+
+            # STATE CONFIRMING PATIENT INFORMATION
+            elif glo_va.STATE == glo_va.STATE_CONFIRM_PATIENT:
+                State_2()
+
+            # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
+            elif glo_va.STATE == glo_va.STATE_MEASURE_SENSOR:
+                State_3()
+
+            # STATE CLASSIFYING ROOM
+            elif glo_va.STATE == 4:
+                State_4(event)
+
+            # STATE CONFIRM NEW USER
+            elif glo_va.STATE == glo_va.STATE_CONFIRM_NEW_PATIENT:
+                State_5()
+            
+            # STATE FOR NEW USER
+            elif glo_va.STATE == glo_va.STATE_NEW_PATIENT:
+                State_6()
+            
+            # Confirm final submission
+            elif glo_va.STATE == 7:
+                State_7(event)
+
+            # time.sleep(5)
+            # End()
+            # return    
+
+        except Exception as e:
+            print("Error at module main in main: {}".format(e))
+            End()
+            return
+        except KeyboardInterrupt:
+            print('Interrupted')
+            End()
+            return
+    
 #########################################################################
 # Main FUNCTION                                                         #
 #########################################################################
@@ -158,63 +223,23 @@ def End():
 if __name__ == "__main__":
     try:
         Init()
+        main_thread = threading.Thread(target=main, args=())
+        main_thread.daemon = True
+        main_thread.start()
+
+        app = QtWidgets.QApplication(sys.argv)
+        glo_va.gui = GUI()
+        glo_va.gui.show()
+        glo_va.flg_init_GUI = True
+        glo_va.START_RUN = True
+        app.exec_()
     except Exception as e:
         print("Error at Init module: {}".format(e))
-        End()
-        exit(-1)
-        
-    while True:
-        if glo_va.examination_GUI is None:
-            event, values = glo_va.window_GUI.read(timeout=1)
-            if event == sg.WIN_CLOSED:
-                glo_va.STATE = -1
-        else:
-            event, values = glo_va.examination_GUI.read(timeout=1)
-            if event == sg.WIN_CLOSED:
-                glo_va.examination_GUI.close()
-                glo_va.examination_GUI = None
-        try:
-            # STATE INIT
-            if glo_va.STATE == -1:
-                End()
-                break
 
-            # STATE DETECTING AND RECOGNIZING PATIENT
-            elif glo_va.STATE == 1:
-                State_1()
-
-            # STATE CONFIRMING PATIENT INFORMATION
-            elif glo_va.STATE == 2:
-                State_2(event)
-
-            # STATE MEASURING PATIENT' BIOLOGICAL PARAMETERS
-            elif glo_va.STATE == 3:
-                State_3(event)
-
-            # STATE CLASSIFYING ROOM
-            elif glo_va.STATE == 4:
-                State_4(event)
-
-            # STATE CONFIRM NEW USER
-            elif glo_va.STATE == 5:
-                State_5(event)
-            
-            # STATE FOR NEW USER
-            elif glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-                State_6(event)
-            
-            # Confirm final submission
-            elif glo_va.STATE == 7:
-                State_7(event)
-
-        except Exception as e:
-            print("Error at module main in main: {}".format(e))
-            End()
-            break
-        except KeyboardInterrupt:
-            print('Interrupted')
-            End()
-            break
-    print("Turn off E-Healthcare system")
-    cv2.imshow('test', glo_va.detected_face)
-    cv2.waitKey(2000)
+    glo_va.START_RUN = False
+    glo_va.ENABLE_RUN = False
+    main_thread.join()
+    End()
+    # print("Turn off E-Healthcare system")
+    # cv2.imshow('test', glo_va.detected_face)
+    # cv2.waitKey(2000)

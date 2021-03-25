@@ -5,6 +5,7 @@ import numpy as np
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
 from threading import Lock, Timer
+from PyQt5.QtGui import QImage, QPixmap
 
 from utils.parameters import *
 
@@ -59,3 +60,21 @@ def Capture_New_Patient():
     review_image = cv2.resize(glo_va.detected_face, (300,300))
     display_review_image = ConvertToDisplay(review_image)
     glo_va.window_GUI['review_photo'].update(data=display_review_image)
+
+# def Convert_To_Display(img):
+#     # Get ndarray and return QImage
+#     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#     image = QImage(img, img.shape[1], img.shape[0], img.shape[1]*3, QImage.Format_RGB888)
+#     qp_image = QPixmap(image)
+
+#     return qp_image
+    
+# def UpdateImage(img):
+#     # margin_width = int((img.shape[1] - 460) / 2)
+#     # margin_height = int((img.shape[0] - 430) / 2)
+#     # print("{}, {}".format(margin_width, margin_height))
+
+#     # cut_img = img[margin_height:430+margin_height , margin_width:460+margin_width]
+
+#     qp_image = Convert_To_Display(img)
+#     glo_va.gui.image_patient.setPixmap(qp_image)
