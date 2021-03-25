@@ -3,9 +3,11 @@ from PyQt5.QtWidgets import QDialog, QLabel
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 import cv2
-from utils.parameters import *
+import sys
+# from utils.parameters import *
 
-TestQDialog = uic.loadUiType("gui/dialog.ui")[0]
+# TestQDialog = uic.loadUiType("gui/dialog.ui")[0]
+TestQDialog = uic.loadUiType("dialog.ui")[0]
 
 class QDialogClass(QDialog, TestQDialog):
     def __init__(self, ret, text, parent=None):
@@ -34,7 +36,8 @@ class QDialogClass(QDialog, TestQDialog):
 class GUI(QtWidgets.QMainWindow):
     def __init__(self):
         super(GUI, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi('gui/form.ui', self) # Load the .ui file
+        # uic.loadUi('gui/form.ui', self) # Load the .ui file
+        uic.loadUi('form.ui', self) # Load the .ui file
         
         # register listenning button
         # Button recognize state
@@ -194,3 +197,9 @@ class GUI(QtWidgets.QMainWindow):
                 background-repeat: no-repeat;
             }
         ''')
+
+
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()

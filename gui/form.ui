@@ -100,6 +100,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(0, 0, 0)</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -157,7 +160,7 @@ background-repeat: no-repeat;
           </property>
           <property name="styleSheet">
            <string notr="true">background: transparent;
-</string>
+color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
            <string notr="true">E-Healthcare System</string>
@@ -209,7 +212,7 @@ background-repeat: no-repeat;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgba(27, 29, 35, 200)</string>
+    <string notr="true">background-color: rgb(27, 29, 35, 200)</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -239,48 +242,55 @@ background-repeat: no-repeat;
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <widget class="QFrame" name="image_frame">
         <property name="geometry">
          <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>460</width>
-          <height>430</height>
+          <x>10</x>
+          <y>10</y>
+          <width>430</width>
+          <height>400</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QLabel" name="image_patient">
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background: transparent;
+        <property name="styleSheet">
+         <string notr="true">border-radius: 12px;</string>
+        </property>
+        <widget class="QLabel" name="image_patient">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>430</width>
+           <height>400</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: transparent;
 </string>
-           </property>
-           <property name="text">
-            <string notr="true">E-Healthcare System</string>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         </property>
+         <property name="text">
+          <string notr="true">E-Healthcare System</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </widget>
        <widget class="QFrame" name="infor_patient_frame">
         <property name="geometry">
@@ -469,7 +479,7 @@ border-radius: 10px;</string>
              <string notr="true"/>
             </property>
             <property name="text">
-             <string></string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -515,7 +525,7 @@ border-radius: 10px;</string>
              <string notr="true"/>
             </property>
             <property name="text">
-             <string></string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -561,7 +571,7 @@ border-radius: 10px;</string>
              <string notr="true"/>
             </property>
             <property name="text">
-             <string></string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -2047,7 +2057,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2055,7 +2065,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2112,7 +2122,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2120,7 +2130,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2177,7 +2187,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2185,7 +2195,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </disabled>
          </palette>
         </property>
@@ -2287,7 +2297,7 @@ QHeaderView::section:vertical
          <number>20</number>
         </property>
         <attribute name="horizontalHeaderVisible">
-         <bool>true</bool>
+         <bool>false</bool>
         </attribute>
         <attribute name="horizontalHeaderCascadingSectionResizes">
          <bool>true</bool>
