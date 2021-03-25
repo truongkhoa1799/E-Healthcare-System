@@ -70,10 +70,10 @@ class GUI(QtWidgets.QMainWindow):
 
         self.list_shape_face = [self.up_face, self.down_face, self.left_face, self.right_face, self.front_face]
 
-        img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
-        img = cv2.resize(img, (430,400))
-        qp_image = self.__Convert_To_Display(img)
-        self.image_patient.setPixmap(qp_image)
+        img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
+        img = cv2.resize(img, (200,200))
+        self.image_display = img
+        self.__UpdateImage()
 
     def __OnConfirmInforListenning(self):
         # opt = 1: confirm user

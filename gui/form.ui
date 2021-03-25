@@ -2143,7 +2143,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2151,7 +2151,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2208,7 +2208,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2216,7 +2216,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2273,7 +2273,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>210</red>
@@ -2281,7 +2281,7 @@ border-radius: 5px;</string>
               <blue>210</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </disabled>
          </palette>
         </property>
