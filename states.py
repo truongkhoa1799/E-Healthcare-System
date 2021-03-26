@@ -83,6 +83,9 @@ def State_2():
         # send request change ui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
+        
+        glo_va.button = -1
+        return
     
     elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT:
         # If user reject, Clear user_infor, Ui and go to first state
@@ -93,7 +96,6 @@ def State_2():
         Init_State()
         return
     
-    glo_va.button = -1
 
 # Button: Exist, Confirm, measure
 #           1       2       3
@@ -101,13 +103,27 @@ def State_3():
     # print(glo_va.button)
     if glo_va.button == glo_va.BUTTON_CAPTURE_SENSOR:
         glo_va.measuring_sensor = True
+        glo_va.done_measuring_sensor = False
+        # Clear button
+        glo_va.button = -1
         # Communicate with ESP to measuring patient information
+    
+    if glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == True:
+        self.measuring_sensor = False
+        self.done_measuring_sensor = False
+
+        sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
+        sensor.Update_Sensor(sensor_info)
+        request = {'type': glo_va.REQUEST_UPDATE_SENSOR, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
+    else glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == False:
+        # print('Measuring sensor')
+        return
 
     # When user press confirm, check:
     #   1: whether Jetson has sensor values or not
     #   2: whether Jetson has examination room or not
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
-        print('Hello')
         if glo_va.has_examination_room == True:
             # Clear before get new exam room, easy to check when want to back from state 4
             exam.Clear()
@@ -135,32 +151,16 @@ def State_3():
         #     if glo_va.has_sensor_values == False:
         #         popUpWarning('You did not have sensor results yet')
     elif glo_va.button == glo_va.BUTTON_SUBMIT_EXAM:
-        if exam.status == 0 and sensor.status == 0 and patient_ID is not None:
+        if exam.status == 0 and sensor.status == 0 and glo_va.patient_ID is not None:
             print('send exam')
+
+        # Clear button
+        glo_va.button = -1
     elif glo_va.button == glo_va.BUTTON_EXIST:
         Init_State()
-        # If you do not return, it will send request for get examination room
-        # in the below code
         return
     
-    if glo_va.measuring_sensor == True:
-        # Read the signal from ESP with loop 1s to check whether they has values or not
-        # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-        # for i in range(10):
-        #     progress_bar.UpdateBar(10*(i+1), 100)
-        #     time.sleep(1)
-        # sensor_info = {'blood_pressure': 120, 'pulse':98, 'thermal':38, 'spo2':90}
-        # sensor.Update_Sensor(sensor_info)
-        # sensor.Update_Screen()
-        print('Measuring sensor')
-
-        # If ESP has values, enable flag has values
-        glo_va.measuring_sensor = False
-
-        sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
-        sensor.Update_Sensor(sensor_info)
-        request = {'type': glo_va.REQUEST_UPDATE_SENSOR, 'data': ''}
-        glo_va.gui.queue_request_states_thread.put(request)
+    
     
     # If has_response_server:
     #   1. Has examination room:
@@ -176,9 +176,6 @@ def State_3():
         glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
         glo_va.is_sending_message = True
         glo_va.server.Get_Examination_Room()
-    
-    # Clear button
-    glo_va.button = -1
 
 def State_4():
     if exam.status == 0:
@@ -190,8 +187,6 @@ def State_4():
         Init_State()
         return
 
-    glo_va.button = -1
-    return
 
 def State_5():
     if glo_va.button == -1:
@@ -200,6 +195,10 @@ def State_5():
     if glo_va.button == glo_va.BUTTON_DENY_NEW_PATIENT:
         Init_State()
     elif glo_va.button == glo_va.BUTTON_ACCEPT_NEW_PATIENT:
+        # Set patient_ID = -1 for new user
+        glo_va.patient_ID = -1
+
+        # Set state for next state
         glo_va.STATE = glo_va.STATE_NEW_PATIENT
         print(glo_va.list_shape_face[glo_va.current_shape])
 
@@ -207,8 +206,8 @@ def State_5():
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
     
-    glo_va.button = -1
-    return
+        glo_va.button = -1
+        return
 
 def State_6():
     if glo_va.button == glo_va.BUTTON_EXIST:

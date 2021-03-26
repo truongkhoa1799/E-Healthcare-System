@@ -14,22 +14,22 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: rgb(0, 0, 0);</string>
+   <string notr="true">background: rgb(255, 255, 255);</string>
   </property>
   <widget class="QProgressBar" name="progress_bar">
    <property name="geometry">
     <rect>
-     <x>27</x>
-     <y>31</y>
-     <width>251</width>
-     <height>31</height>
+     <x>20</x>
+     <y>35</y>
+     <width>260</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="value">
-    <number>94</number>
+    <number>67</number>
    </property>
    <property name="textVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="cancel_but">

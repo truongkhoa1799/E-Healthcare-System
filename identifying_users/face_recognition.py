@@ -122,7 +122,11 @@ class Face_Recognition:
         if glo_va.img is not None:
             # print("size display image: {}".format(glo_va.img.shape))
             # locate faces in the images
-            fra = glo_va.MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+            if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
+                fra = 150 / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+            else:
+                fra = glo_va.MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1])
+
             resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
             GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
             # print("size resized image: {}".format(GRAY_resized_img.shape))

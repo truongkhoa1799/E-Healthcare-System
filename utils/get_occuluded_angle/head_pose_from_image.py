@@ -52,34 +52,70 @@ def Get_Face_Angle(im, shape):
     # print("AxisZ: ", z)
 
 
-    print("Angle x:{} angle y:{}".format(angles[0], angles[1]))
-    # gaze = "Looking: "
+    # print("Angle x:{} angle y:{}".format(angles[0], angles[1]))
+    sign_vertical = -1 if angles[0] < 0 else 1
+    diff_vertical = 180 - abs(angles[0])
+
+    sign_horizontal = -1 if angles[1] < 0 else 1
+    diff_horizontal = abs(angles[1])
+
+    print('sign_v: {}, diff_v: {}, sign_h :{}, diff_h: {}'.format(sign_vertical, diff_vertical, sign_horizontal, diff_horizontal))
+
+
+    if diff_horizontal < 5 and diff_vertical < 5:
+        # Looking foward
+        print('front')
+        return 0
     
-    if angles[0] < 0 and abs(angles[0]) < 174:
-        if angles[1] <= 15 and angles[1] >= -15:
-            # Looking Down
-            return 1
-        else:
-            # None
-            return -1
-    elif angles[0] > 0 and angles[0] < 167:
-        if angles[1] <= 15 and angles[1] >= -15:
-            # Looking UP
-            return 0
-        else:
-            # None
-            return -1
-    
-    elif angles[0] <= -165 or angles[0] >= 165:
-        if angles[1] < -15:
-            # Looking Left
-            return 2
-        elif angles[1] > 15:
-            # Looking Right
+    if sign_horizontal == -1:
+        if diff_horizontal > 12 and diff_vertical < 5:
+            # Looking left
+            print('left')
             return 3
-        elif angles[1] <= 5 and angles[1] >= -5:
-            # Looking Forward
+
+    elif sign_horizontal == 1:
+        if diff_horizontal > 12 and diff_vertical < 5:
+            # Looking right
+            print('right')
             return 4
+
+    if sign_vertical == -1:
+        if diff_vertical > 5 and diff_horizontal < 5:
+            # Looking down
+            print('down')
+            return 2
+    elif sign_vertical == 1:
+        if diff_vertical > 15 and diff_horizontal < 5:
+            # Looking up
+            print('up')
+            return 1
+
+    
+    # if angles[0] < 0 and abs(angles[0]) < 177:
+    #     if angles[1] <= 15 and angles[1] >= -15:
+    #         # Looking Down
+    #         return 2
+    #     else:
+    #         # None
+    #         return -1
+    # elif angles[0] > 0 and angles[0] < 167:
+    #     if angles[1] <= 15 and angles[1] >= -15:
+    #         # Looking UP
+    #         return 1
+    #     else:
+    #         # None
+    #         return -1
+    
+    # elif angles[0] <= -175 or angles[0] >= 175:
+    #     if angles[1] < -15:
+    #         # Looking Left
+    #         return 3
+    #     elif angles[1] > 15:
+    #         # Looking Right
+    #         return 4
+    #     elif angles[1] <= 5 and angles[1] >= -5:
+    #         # Looking Forward
+    #         return 0
 
     return -1
     # print("Angle: ", angles)

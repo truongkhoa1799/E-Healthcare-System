@@ -3,18 +3,19 @@ from PyQt5.QtWidgets import QDialog, QLabel, QTableWidgetItem
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 import cv2
-import sys
+import sys, time
 
-# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
 
-TestQDialog = uic.loadUiType("gui/dialog.ui")[0]
-# TestQDialog = uic.loadUiType("dialog.ui")[0]
+YesNoQDialog = uic.loadUiType("gui/dialog.ui")[0]
+ProgressBarDialog = uic.loadUiType("gui/progressbar.ui")[0]
+# YesNoQDialog = uic.loadUiType("dialog.ui")[0]
 
-class QDialogClass(QDialog, TestQDialog):
+class QDialogClass(QDialog, YesNoQDialog):
     def __init__(self, ret, text, parent=None):
         QDialog.__init__(self, parent)
         self.ret = -2
@@ -38,6 +39,32 @@ class QDialogClass(QDialog, TestQDialog):
             self.ret = -1
             self.accept()
 
+class ProgressBarDialogClass(QDialog, ProgressBarDialog):
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+        self.reset_but.clicked.connect(lambda: self.__onButtonListenning(0))
+        self.cancel_but.clicked.connect(lambda: self.__onButtonListenning(1))
+
+        self.progress_bar.setValue(0)
+    
+    def __onButtonListenning(self, opt):
+        if opt == 0:
+            self.progress_bar.setValue(0)
+            self.measureSenSor()
+        elif opt == 1:
+            self.close()
+    
+    def measureSenSor(self):
+        for i in range(100):
+            self.progress_bar.setValue(i + 1)
+            time.sleep(0.05)
+
+
+    def closeEvent(self, event):
+        self.accept()
+
 class GUI(QtWidgets.QMainWindow):
     def __init__(self):
         super(GUI, self).__init__() # Call the inherited classes __init__ method
@@ -58,7 +85,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
@@ -74,16 +101,21 @@ class GUI(QtWidgets.QMainWindow):
         update_image_timer.timeout.connect(self.__UpdateImage)
         update_image_timer.start(33)
 
-        self.list_shape_face = [self.up_face, self.down_face, self.left_face, self.right_face, self.front_face]
+        self.list_shape_face = [self.front_face, self.up_face, self.down_face, self.left_face, self.right_face]
 
         # img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
         # img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
-        # img = cv2.resize(img, (430,400))
+        # img = cv2.resize(img, (700,400))
         # qp_image = self.__Convert_To_Display(img)
-        # self.image_patient.setPixmap(qp_image)
+        # self.img_new_user.setPixmap(qp_image)
 
         # self.__SetBackgroudMainFrame(1)
         # self.__UpdateListDepartments()
+
+        progress_bar = ProgressBarDialogClass()
+        progress_bar.show()
+        progress_bar.exec_()
+
 
     def __onButtonsListenning(self, opt):
         if opt == glo_va.BUTTON_EXIST:
@@ -188,6 +220,9 @@ class GUI(QtWidgets.QMainWindow):
         
         elif request['type'] == glo_va.REQUEST_CLEAR_DEPARTMENT_LIST:
             self.__ClearListDepartments()
+        
+        elif request['type'] == glo_va.REQUEST_MEASURE_SENSOR:
+            self.__MeasureSensor()
 
         return
 
@@ -198,6 +233,14 @@ class GUI(QtWidgets.QMainWindow):
         qp_image = QPixmap(image)
 
         return qp_image
+    
+    def __MeasureSensor(self):
+        progress_bar = ProgressBarDialogClass()
+        progress_bar.exec_()
+        sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
+        sensor.Update_Sensor(sensor_info)
+        self.__UpdateSensorInfo()
+        glo_va.done_measuring_sensor = True
     
     def __UpdateImage(self):
         if self.image_display is None:
@@ -221,13 +264,14 @@ class GUI(QtWidgets.QMainWindow):
         self.patient_phone.setText('')
     
     def __UpdateSensorInfo(self):
-        sensor_infor = sensor.Get_Data()
-        self.height.setText(sensor_infor['height'])
-        self.weight.setText(sensor_infor['weight'])
-        self.spo2.setText(sensor_infor['spo2'])
-        self.temperature.setText(sensor_infor['temperature'])
-        self.heart_pulse.setText(sensor_infor['heart_pulse'])
-        self.blood_pressure.setText(sensor_infor['blood_pressure'])
+        sensor_infor = sensor.sensor_infor
+
+        self.height.setText(str(sensor_infor['height']) + ' m')
+        self.weight.setText(str(sensor_infor['weight'])+ ' kg')
+        self.spo2.setText(str(sensor_infor['spo2']))
+        self.temperature.setText(str(sensor_infor['temperature'])+ ' C')
+        self.heart_pulse.setText(str(sensor_infor['heart_pulse']))
+        self.blood_pressure.setText(str(sensor_infor['blood_pressure']))
     
     def __ClearSensorInfo(self):
         self.blood_pressure.setText('')
@@ -247,8 +291,10 @@ class GUI(QtWidgets.QMainWindow):
         temp = dep_name.split(' ')
         ret_dep = ""
         for i in range(len(temp)):
-            if i % 2 == 0:
+            if i % 2 == 0 and i != 0:
                 ret_dep += '\n'
+            else:
+                ret_dep += ' '
             ret_dep += temp[i]
 
         self.building_code.setText(building)
@@ -296,7 +342,7 @@ class GUI(QtWidgets.QMainWindow):
     def __ActivateFaceRecored(self, direction):
         self.list_shape_face[direction].setStyleSheet('''
             QLabel {
-                border-radius: 38px;
+                border-radius: 30px;
                 background-color: rgb(255, 155, 54);
                 border: 5px solid rgb(255, 168, 75);
                 background-position: center;

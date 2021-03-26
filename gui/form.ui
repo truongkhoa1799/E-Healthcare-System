@@ -937,7 +937,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>16</pointsize>
+              <pointsize>18</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1846,8 +1846,8 @@ border-radius: 5px;</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>770</width>
-           <height>305</height>
+           <width>700</width>
+           <height>400</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -2208,7 +2208,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2216,7 +2216,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2273,7 +2273,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2281,7 +2281,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2338,7 +2338,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2346,7 +2346,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </disabled>
          </palette>
         </property>

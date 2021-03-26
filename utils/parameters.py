@@ -98,6 +98,7 @@ class GlobalVariable:
 
         # Sensor
         self.measuring_sensor = False
+        self.done_measuring_sensor = False
 
         # PATH_PARA
         config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
@@ -196,6 +197,7 @@ class GlobalVariable:
             self.REQUEST_CLEAR_DEPARTMENT_LIST = 10
             self.REQUEST_UPDATE_SENSOR = 7
             self.REQUEST_CLEAR_SENSOR = 8
+            self.REQUEST_MEASURE_SENSOR = 11
 
             # Dialog
             self.EXIST_DIALOG = 0
@@ -252,19 +254,16 @@ class User_Infor:
 class Sensor:
     def __init__(self):
         self.status = -1
-        self.__sensor_infor = None
+        self.sensor_infor = None
         self.Clear()
     
     def Clear(self):
         self.status = -1
-        self.__sensor_infor = None
+        self.sensor_infor = None
     
     def Update_Sensor(self, sensor):
         self.status = 0
-        self.__sensor_infor = None
-    
-    def Get_Data(self):
-        return self.__sensor_infor
+        self.sensor_infor = sensor
 
 class Examination:
     def __init__(self):

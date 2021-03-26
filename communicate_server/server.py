@@ -179,10 +179,10 @@ class Server:
                 }
                 
                 # Check is new user
-                if len(glo_va.list_embedded_face_new_user) != 0:
+                if glo_va.patient_ID is not None and glo_va.patient_ID == -1:
                     data = EventData(glo_va.list_embedded_face_new_user)
                     msg['patient_ID'] = str(-1)
-                else:
+                elif glo_va.patient_ID is not None and glo_va.patient_ID != -1:
                     data = EventData("")
                     msg['patient_ID'] = str(glo_va.patient_ID)
 
