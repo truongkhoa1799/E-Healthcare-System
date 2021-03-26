@@ -5,7 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -304,7 +305,7 @@ class GUI(QtWidgets.QMainWindow):
         ''')
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()

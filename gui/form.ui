@@ -242,7 +242,7 @@ color: rgb(255, 255, 255);</string>
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <widget class="QFrame" name="image_frame">
@@ -500,7 +500,7 @@ border-radius: 15px;</string>
            <string notr="true">color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
-           <string>khoa</string>
+           <string/>
           </property>
          </widget>
          <widget class="QLabel" name="label">
@@ -611,7 +611,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
-           <string>khoa</string>
+           <string/>
           </property>
          </widget>
          <widget class="QLabel" name="label_2">
@@ -676,7 +676,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
-           <string>khoa</string>
+           <string/>
           </property>
          </widget>
          <widget class="QLabel" name="label_3">
@@ -752,7 +752,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>1.74 m</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -849,7 +849,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>70 KG</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -946,7 +946,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>30</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -995,7 +995,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>80</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1140,7 +1140,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>112</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1189,7 +1189,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>78</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1353,7 +1353,7 @@ border-radius: 15px;</string>
            <string notr="true">color: rgb(246, 244, 248);</string>
           </property>
           <property name="text">
-           <string>C1</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1565,7 +1565,7 @@ border-radius: 15px;</string>
            <string notr="true">color: rgb(246, 244, 248);</string>
           </property>
           <property name="text">
-           <string>202</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1633,8 +1633,7 @@ border-radius: 15px;</string>
            <string notr="true">color: rgb(246, 244, 248);</string>
           </property>
           <property name="text">
-           <string>Xuong khop
-khoa</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1832,10 +1831,10 @@ QPushButton:pressed {
        <widget class="QFrame" name="horizontalFrame">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>89</x>
           <y>10</y>
-          <width>770</width>
-          <height>305</height>
+          <width>691</width>
+          <height>398</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1863,9 +1862,9 @@ border-radius: 5px;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>319</y>
-          <width>800</width>
-          <height>101</height>
+          <y>-1</y>
+          <width>81</width>
+          <height>421</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -1877,10 +1876,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="up_face">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>10</y>
-           <width>80</width>
-           <height>80</height>
+           <x>10</x>
+           <y>95</y>
+           <width>60</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -1891,8 +1890,8 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -1909,7 +1908,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 38px;
+	border-radius: 30px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -1929,10 +1928,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="down_face">
          <property name="geometry">
           <rect>
-           <x>200</x>
-           <y>10</y>
-           <width>80</width>
-           <height>80</height>
+           <x>10</x>
+           <y>180</y>
+           <width>60</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -1943,8 +1942,8 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -1961,7 +1960,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 38px;
+	border-radius: 30px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -1981,10 +1980,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="left_face">
          <property name="geometry">
           <rect>
-           <x>360</x>
-           <y>10</y>
-           <width>80</width>
-           <height>80</height>
+           <x>10</x>
+           <y>265</y>
+           <width>60</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -1995,8 +1994,8 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -2013,7 +2012,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 38px;
+	border-radius: 30px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2033,10 +2032,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="right_face">
          <property name="geometry">
           <rect>
-           <x>520</x>
-           <y>10</y>
-           <width>80</width>
-           <height>80</height>
+           <x>10</x>
+           <y>350</y>
+           <width>60</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -2047,8 +2046,8 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -2065,7 +2064,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 38px;
+	border-radius: 30px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2085,10 +2084,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="front_face">
          <property name="geometry">
           <rect>
-           <x>680</x>
+           <x>10</x>
            <y>10</y>
-           <width>80</width>
-           <height>80</height>
+           <width>60</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -2099,8 +2098,8 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -2117,7 +2116,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 38px;
+	border-radius: 30px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2209,7 +2208,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2217,7 +2216,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2274,7 +2273,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2282,7 +2281,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2339,7 +2338,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <!-- <colorrole role="PlaceholderText">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2347,7 +2346,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole> -->
+           </colorrole>
           </disabled>
          </palette>
         </property>
@@ -2532,12 +2531,12 @@ QHeaderView::section:vertical
         </column>
         <item row="0" column="0">
          <property name="text">
-          <string>Test</string>
+          <string/>
          </property>
         </item>
         <item row="0" column="1">
          <property name="text">
-          <string>Text</string>
+          <string/>
          </property>
         </item>
        </widget>
