@@ -39,8 +39,11 @@ gui:
   # location_face_width: 360
   # location_face_height: 350
 
-  location_face_width: 460
-  location_face_height: 430
+  # Width and height for patient face when recognizing
+  location_recognize_face_width: 425
+  location_recognize_face_height: 400
+  location_add_face_width: 400
+  location_add_face_height: 305
   # # image for center face
   # SCALE_WIDTH=320
   # SCALE_HEIGHT=192

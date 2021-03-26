@@ -262,7 +262,7 @@ color: rgb(255, 255, 255);</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>430</width>
+           <width>425</width>
            <height>400</height>
           </rect>
          </property>
@@ -1847,8 +1847,8 @@ border-radius: 5px;</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>800</width>
-           <height>320</height>
+           <width>770</width>
+           <height>305</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -2209,7 +2209,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2217,7 +2217,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </active>
           <inactive>
            <colorrole role="WindowText">
@@ -2274,7 +2274,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2282,7 +2282,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </inactive>
           <disabled>
            <colorrole role="WindowText">
@@ -2339,7 +2339,7 @@ border-radius: 5px;</string>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="PlaceholderText">
+           <!-- <colorrole role="PlaceholderText">
             <brush brushstyle="NoBrush">
              <color alpha="128">
               <red>255</red>
@@ -2347,7 +2347,7 @@ border-radius: 5px;</string>
               <blue>255</blue>
              </color>
             </brush>
-           </colorrole>
+           </colorrole> -->
           </disabled>
          </palette>
         </property>

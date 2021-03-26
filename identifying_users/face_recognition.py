@@ -47,6 +47,7 @@ class Face_Recognition:
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
             # print('Hello')
             glo_va.user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
+            # print("{} {}".format(glo_va.STATE, glo_va.user_pose))
 
         return [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
 

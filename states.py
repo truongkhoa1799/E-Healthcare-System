@@ -38,20 +38,23 @@ def State_1():
     #           Ask for new user
     #   3. Set flag is_sending_message and has_response_server = False
     if glo_va.has_response_server == True:
-        if user_infor.Get_Status() == 0:
+        if user_infor.status == 0:
             glo_va.STATE = glo_va.STATE_CONFIRM_PATIENT
 
             # Clear all previous detected faces
             glo_va.count_face.Clear()
 
-            # # Update UI
-            # user_infor.Update_Screen()
-            glo_va.gui.UpdatePatientInfo(user_infor.user_info)
-        elif user_infor.Get_Status() == -1 and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
+            # Update UI
+            request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
+            glo_va.gui.queue_request_states_thread.put(request)
+        elif user_infor.status == -1 and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
             # Go to state for new User
             # Ask patient to looking up
-            print(glo_va.list_shape_face[glo_va.current_shape])
             glo_va.STATE = glo_va.STATE_CONFIRM_NEW_PATIENT
+
+            # send request data to GUI
+            request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
+            glo_va.gui.queue_request_states_thread.put(request)
             glo_va.times_missing_face = 0
         
         # set parameters for receive response to server. Make sure that there will not has dump response
@@ -61,26 +64,25 @@ def State_1():
     return
 
 def State_2():
+    if glo_va.button == -1:
+        return
     # If user confirm, press button 3
     if glo_va.button == glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT:
-        # glo_va.window_GUI[f'-COL2-'].update(visible=True)
-        # glo_va.window_GUI[f'-COL1-'].update(visible=False)
-
-        # # Change Button 3 from Confirm to Measure
-        # #        Button 2 from reject to Confirm
-        # glo_va.window_GUI['button_3'].update('Measure')
-        # glo_va.window_GUI['button_2'].update('Confirm')
-
         # Get and save patient id for examination
         glo_va.patient_ID = user_infor.patient_ID
 
         # After user confrim their information, Clear user_infor, Ui and go to STATE measuring sensor
-        # user_infor.Clear()
-        # user_infor.Update_Screen()
 
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-        glo_va.gui.ClearPatientInfo()
-        glo_va.gui.ChangeUI()
+
+        # send request clear patient inof
+        user_infor.Clear()
+        request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
+
+        # send request change ui
+        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
     
     elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT:
         # If user reject, Clear user_infor, Ui and go to first state
@@ -96,35 +98,46 @@ def State_2():
 # Button: Exist, Confirm, measure
 #           1       2       3
 def State_3():
-    if glo_val.button == glo_va.BUTTON_CAPTURE_SENSOR:
+    # print(glo_va.button)
+    if glo_va.button == glo_va.BUTTON_CAPTURE_SENSOR:
         glo_va.measuring_sensor = True
         # Communicate with ESP to measuring patient information
 
     # When user press confirm, check:
     #   1: whether Jetson has sensor values or not
     #   2: whether Jetson has examination room or not
-    elif glo_val.button == glo_va.BUTTON_VIEW_LIST_DEP:
-        if glo_va.has_examination_room == True and glo_va.has_sensor_values == True:
-            glo_va.STATE = 4
+    elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
+        print('Hello')
+        if glo_va.has_examination_room == True:
+            # Clear before get new exam room, easy to check when want to back from state 4
+            exam.Clear()
+            glo_va.STATE = glo_va.STATE_VIEW_DEPARTMENTS
             # turn of parameters communication with server
-            glo_va.has_response_server = False
-            glo_va.is_sending_message = False
-            glo_va.has_examination_room = False
+            # glo_va.has_response_server = False
+            # glo_va.is_sending_message = False
+            # glo_va.has_examination_room = False
 
-            # Has sensor parameters
-            glo_va.has_sensor_values = False
-            glo_va.measuring_sensor = False
+            # # Has sensor parameters
+            # glo_va.has_sensor_values = False
+            # glo_va.measuring_sensor = False
 
             # # open examination room layout
             # glo_va.examination_GUI = Render_Examanination_Room_Table()
 
             # If you do not return, it will send request for get examination room
             # in the below code
+
+            request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+            glo_va.gui.queue_request_states_thread.put(request)
+            glo_va.button = -1
             return
         # else:
         #     if glo_va.has_sensor_values == False:
         #         popUpWarning('You did not have sensor results yet')
-    elif glo_val.button == glo_va.BUTTON_EXIST:
+    elif glo_va.button == glo_va.BUTTON_SUBMIT_EXAM:
+        if exam.status == 0 and sensor.status == 0 and patient_ID is not None:
+            print('send exam')
+    elif glo_va.button == glo_va.BUTTON_EXIST:
         Init_State()
         # If you do not return, it will send request for get examination room
         # in the below code
@@ -143,7 +156,11 @@ def State_3():
 
         # If ESP has values, enable flag has values
         glo_va.measuring_sensor = False
-        glo_va.has_sensor_values = True
+
+        sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
+        sensor.Update_Sensor(sensor_info)
+        request = {'type': glo_va.REQUEST_UPDATE_SENSOR, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
     
     # If has_response_server:
     #   1. Has examination room:
@@ -161,85 +178,39 @@ def State_3():
         glo_va.server.Get_Examination_Room()
     
     # Clear button
-    glo_val.button = -1
+    glo_va.button = -1
 
-def State_4(event):
-    if event != '__TIMEOUT__' and event != sg.WIN_CLOSED and event != 'exist_exam_room':
-        temp = event.split('\n')
-        msg = 'You chose department {}.\nAre you sure?'.format(temp[0])
-        answer = popUpYesNo(msg)
-        if answer == 'Yes':
-            glo_va.dep_ID_chosen = temp[-1]
-            glo_va.STATE = 7
+def State_4():
+    if exam.status == 0:
+        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
 
-            # Change Button 3 from Measure to Submit
-            #        Button 2 from Confirm to Back
-            glo_va.window_GUI['button_3'].update('Submit')
-            glo_va.window_GUI['button_2'].update('Back')
+    if glo_va.button == glo_va.BUTTON_EXIST:
+        Init_State()
+        return
 
-            # Get room and department for updating Examination
-            room = ""
-            for i in glo_va.list_examination_room:
-                if i['dep_ID'] == int(glo_va.dep_ID_chosen):
-                    room = i['building_code'] + '-' + i['room_code']
-            # Update department and room on UI
-            exam.Update_Examination({'dep':temp[0],'room':room})
-            exam.Update_Screen()
-
-            # Clear examination room layout
-            glo_va.examination_GUI.close()
-            glo_va.examination_GUI = None
-    elif event == 'exist_exam_room':
-        ret = popUpYesNo('Are you sure?')
-        if ret == 'Yes':
-            Init_State()
-            return
+    glo_va.button = -1
+    return
 
 def State_5():
-    if glo_va.gui.IsNewUser() == -1:
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-    else:
-        glo_va.STATE = glo_va.STATE_NEW_PATIENT
-        glo_va.gui.ChangeUI()
-        # # Change button
-        # glo_va.window_GUI['button_3'].update('Capture')
-        # glo_va.window_GUI['button_2'].update('Confirm')
+    if glo_va.button == -1:
+        return
 
-        # # Change layout
-        # glo_va.window_GUI[f'-COL3-'].update(visible=True)
-        # glo_va.window_GUI[f'-COL1-'].update(visible=False)
-    # print('Good')
+    if glo_va.button == glo_va.BUTTON_DENY_NEW_PATIENT:
+        Init_State()
+    elif glo_va.button == glo_va.BUTTON_ACCEPT_NEW_PATIENT:
+        glo_va.STATE = glo_va.STATE_NEW_PATIENT
+        print(glo_va.list_shape_face[glo_va.current_shape])
+
+        # send request change ui
+        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
     
-    # if event == 'exist':
-    #     ret = popUpYesNo('Are you sure?')
-    #     if ret == 'Yes':
-    #         Init_State()
-    #         return
+    glo_va.button = -1
+    return
 
 def State_6():
-    # if event == 'button_3':
-    #     Capture_New_Patient()
-    #     glo_va.has_capture = True
-    # elif event == 'button_2' and glo_va.has_capture == True:
-    #     # Compose embedded image and append to list
-    #     temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face_new_user)
-    #     glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-    #     glo_va.num_images_new_user += 1
-
-    #     glo_va.has_capture = False
-    #     # Clear review image
-    #     glo_va.window_GUI['review_photo'].update('')
-    #     if glo_va.num_images_new_user == 5:
-    #         # Change layout
-    #         glo_va.window_GUI[f'-COL2-'].update(visible=True)
-    #         glo_va.window_GUI[f'-COL3-'].update(visible=False)
-
-    #         # Change Button 3 from Confirm to Measure
-    #         #        Button 2 from reject to Confirm
-    #         glo_va.window_GUI['button_3'].update('Measure')
-    #         glo_va.window_GUI['button_2'].update('Confirm')
-    #         glo_va.STATE = 3
-    #     glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
     if glo_va.button == glo_va.BUTTON_EXIST:
         Init_State()
         return
@@ -247,7 +218,7 @@ def State_6():
     # Read camera
     glo_va.camera.RunCamera()
 
-    # # Face detecting
+    # Face detecting
     ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
         print("Error Face locations")
@@ -259,14 +230,12 @@ def State_6():
     
         if glo_va.user_pose == glo_va.current_shape:
             # Activate image in the UI
-            glo_va.gui.ActivateFaceRecored(glo_va.current_shape)
+            request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
+            glo_va.gui.queue_request_states_thread.put(request)
+
             # save the current embedded face
             temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
             glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-
-            # Increase and display number of face
-            glo_va.num_images_new_user += 1
-            # glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
 
             # Change to take next pose of user
             glo_va.current_shape += 1
@@ -282,14 +251,14 @@ def State_6():
                 # glo_va.window_GUI['button_3'].update('Measure')
                 # glo_va.window_GUI['button_2'].update('Confirm')
                 glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-                glo_va.gui.ChangeUI()
-            
-            # Ask patient to add new face
-            else:
-                print(glo_va.list_shape_face[glo_va.current_shape])
 
-    # display_image_new_user = ConvertToDisplay(glo_va.img)
-    # glo_va.window_GUI['photo_new_user'].update(data=display_image_new_user)
+                # send request change ui
+                request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+                glo_va.gui.queue_request_states_thread.put(request)
+            
+    #         # Ask patient to add new face
+    #         else:
+    #             print(glo_va.list_shape_face[glo_va.current_shape])
 
     # Update image to display
     glo_va.gui.image_display = glo_va.img
@@ -334,104 +303,89 @@ def State_7(event):
 
 def Init_State():
     print('Reset at STATE: {}'.format(glo_va.STATE))
-    if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
-        return
-    elif glo_va.STATE == glo_va.STATE_CONFIRM_PATIENT:
-        # # If user reject, Clear user_infor, Ui and go to first state
-        # user_infor.Clear()
-        # user_infor.Update_Screen()
-        # State 1
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-        glo_va.gui.ChangeUI()
-    elif glo_va.STATE == 3:
+    if glo_va.STATE == glo_va.STATE_MEASURE_SENSOR:
         # Clear timer preveting timeout getting examination room
         glo_va.timer.Clear_Timer()
 
-        # for server communiation
-        glo_va.has_response_server = False
-        glo_va.is_sending_message = False
-
-        # For sensor
-        glo_va.measuring_sensor = False
-        glo_va.has_sensor_values = False
-
         # Clear sensor values
-        sensor.Clear()
-        sensor.Update_Screen()
-        progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-        progress_bar.UpdateBar(0)
-
-        # For examination
-        glo_va.patient_ID = None
-        glo_va.list_examination_room = []
-        glo_va.hospital_ID = None
-        glo_va.has_examination_room = False
-
-        # Set Ui for STATE 1
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-        glo_va.window_GUI[f'-COL1-'].update(visible=True)
-        glo_va.window_GUI[f'-COL2-'].update(visible=False)
-    elif glo_va.STATE == 4:
+        # sensor.Clear()
+        # sensor.Update_Screen()
+        # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
+        # progress_bar.UpdateBar(0)
+    elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS:
         # Clear examination room layout
-        glo_va.examination_GUI.close()
-        glo_va.examination_GUI = None
+        # glo_va.examination_GUI.close()
+        # glo_va.examination_GUI = None
 
-        # Clear sensor values
-        sensor.Clear()
-        sensor.Update_Screen()
-        progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-        progress_bar.UpdateBar(0)
+        # # Clear sensor values
+        # sensor.Clear()
+        # sensor.Update_Screen()
+        # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
+        # progress_bar.UpdateBar(0)
+        print('gele')
 
-        # Clear patient_Id and list of examination room
-        glo_va.patient_ID = None
-        glo_va.list_examination_room = []
-        glo_va.hospital_ID = None
-
-        # STATE 1
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-        glo_va.window_GUI[f'-COL1-'].update(visible=True)
-        glo_va.window_GUI[f'-COL2-'].update(visible=False)
-    elif glo_va.STATE == 6:
-        # glo_va.window_GUI['review_photo'].update('')
-        # glo_va.window_GUI['-NUM_IMAGES-'].update(str(glo_va.num_images_new_user))
-        # glo_va.window_GUI['photo_new_user'].update(data='')
-
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-        # glo_va.window_GUI[f'-COL1-'].update(visible=True)
-        # glo_va.window_GUI[f'-COL3-'].update(visible=False)
     elif glo_va.STATE == 7:
         # Clear sensor values
-        sensor.Clear()
-        sensor.Update_Screen()
-        progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
-        progress_bar.UpdateBar(0)
+        # sensor.Clear()
+        # sensor.Update_Screen()
+        # progress_bar = glo_va.window_GUI.FindElement('sensor_progress')
+        # progress_bar.UpdateBar(0)
 
-        # Clear patient_ID and list of examination room
-        glo_va.patient_ID = None
-        glo_va.hospital_ID = None
-        glo_va.list_examination_room = []
 
         # Clear Examination
-        exam.Clear()
-        exam.Update_Screen()
+        # exam.Clear()
+        # exam.Update_Screen()
 
-        # Clear STT
-        glo_va.return_stt = None
 
-        # Set Ui for STATE 1
-        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-        glo_va.window_GUI[f'-COL1-'].update(visible=True)
-        glo_va.window_GUI[f'-COL2-'].update(visible=False)
+        print('gele')
 
-    # config button at STATE 1
-    glo_va.window_GUI['button_3'].update('Confirm')
-    glo_va.window_GUI['button_2'].update('Reject')
+    # Clear sensor, exam and patient
+    exam.Clear()
+    # send request clear exam room and dep lsit
+    request = {'type': glo_va.REQUEST_CLEAR_EXAM_ROOM, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+    request = {'type': glo_va.REQUEST_CLEAR_DEPARTMENT_LIST, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+
+    user_infor.Clear()
+    # send request clear patient inof
+    request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+
+    sensor.Clear()
+    request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
 
     # Clear list embedded face, embedded face and num images
     glo_va.list_embedded_face_new_user = ""
     glo_va.embedded_face_new_user = None
-    glo_va.num_images_new_user = 0
     glo_va.has_capture = False
+
     glo_va.current_shape = 0
     glo_va.user_pose = None
+
+    # for server communiation
+    glo_va.has_response_server = False
+    glo_va.is_sending_message = False
+
+    # For sensor
+    glo_va.measuring_sensor = False
+
+    # Clear patient_Id and list of examination room
+    glo_va.patient_ID = None
+    glo_va.list_examination_room = []
+    glo_va.hospital_ID = None
+    glo_va.has_examination_room = False
+
+    # Clear STT
+    glo_va.return_stt = None
+
+    # Clear button
+    glo_va.button = -1
+    
+    # STATE 1
+    glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
+    # send request change ui
+    request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
 

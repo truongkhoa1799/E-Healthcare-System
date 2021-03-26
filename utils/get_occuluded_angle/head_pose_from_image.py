@@ -52,32 +52,34 @@ def Get_Face_Angle(im, shape):
     # print("AxisZ: ", z)
 
 
-    # print("Angle x:{} angle y:{}".format(angles[0], angles[1]))
+    print("Angle x:{} angle y:{}".format(angles[0], angles[1]))
     # gaze = "Looking: "
-    if angles[0] <= -170 or angles[0] >= 170:
-        if angles[1] < -15:
-            # Looking Left
-            return 2
-        elif angles[1] > 15:
-            # Looking Right
-            return 3
-        else:
-            # Looking Forward
-            return 4
-    elif angles[0] < 0 and abs(angles[0]) < 170:
+    
+    if angles[0] < 0 and abs(angles[0]) < 174:
         if angles[1] <= 15 and angles[1] >= -15:
             # Looking Down
             return 1
         else:
             # None
             return -1
-    elif angles[0] > 0 and angles[0] < 170:
+    elif angles[0] > 0 and angles[0] < 167:
         if angles[1] <= 15 and angles[1] >= -15:
             # Looking UP
             return 0
         else:
             # None
             return -1
+    
+    elif angles[0] <= -165 or angles[0] >= 165:
+        if angles[1] < -15:
+            # Looking Left
+            return 2
+        elif angles[1] > 15:
+            # Looking Right
+            return 3
+        elif angles[1] <= 5 and angles[1] >= -5:
+            # Looking Forward
+            return 4
 
     return -1
     # print("Angle: ", angles)

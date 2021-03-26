@@ -5,16 +5,16 @@ from PIL import Image, ImageTk
 from utils.parameters import *
 
 def InitMainGui():
-    camera_layout = [[sg.Image(filename='', key='image', size=(glo_va.LOCATION_FACE_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],]
+    camera_layout = [[sg.Image(filename='', key='image', size=(glo_va.LOCATION_RECOGNIZE_FACE_WIDTH,glo_va.LOCATION_RECOGNIZE_FACE_HEIGHT), visible=True)],]
     
-    take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],]
+    take_photo_layout = [[sg.Image(filename='', key='photo_new_user', size=(glo_va.CAM_EXAM_LAYOUT_WIDTH,glo_va.LOCATION_RECOGNIZE_FACE_HEIGHT), visible=True)],]
     
     review_cam_layout = [
         [
             sg.Text('Number of images:', size=(15, 1), justification='left', font='Helvetica 16'),
             sg.Text("0", size=(15, 1), justification='left', font='Helvetica 14', key='-NUM_IMAGES-')
         ],
-        [sg.Image(filename='', key='review_photo', size=(glo_va.LOCATION_FACE_WIDTH,glo_va.LOCATION_FACE_HEIGHT), visible=True)],
+        [sg.Image(filename='', key='review_photo', size=(glo_va.LOCATION_RECOGNIZE_FACE_WIDTH,glo_va.LOCATION_RECOGNIZE_FACE_HEIGHT), visible=True)],
     ]
 
     examination_info = [

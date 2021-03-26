@@ -45,11 +45,19 @@ class CameraDetecting(Thread):
     
     def RunCamera(self):
         _ , original_img = self.__csi_camera.read()
+        
+        if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
+            margin_width = int((original_img.shape[1] - glo_va.LOCATION_RECOGNIZE_FACE_WIDTH) / 2)
+            margin_height = int((original_img.shape[0] - glo_va.LOCATION_RECOGNIZE_FACE_HEIGHT) / 2)
 
-        margin_width = int((original_img.shape[1] - glo_va.LOCATION_FACE_WIDTH) / 2)
-        margin_height = int((original_img.shape[0] - glo_va.LOCATION_FACE_HEIGHT) / 2)
+            glo_va.img = original_img[margin_height:glo_va.LOCATION_RECOGNIZE_FACE_HEIGHT+margin_height , margin_width:glo_va.LOCATION_RECOGNIZE_FACE_WIDTH+margin_width]
+        
+        elif glo_va.STATE == glo_va.STATE_NEW_PATIENT:
+            margin_width = int((original_img.shape[1] - glo_va.LOCATION_ADD_FACE_WIDTH) / 2)
+            margin_height = int((original_img.shape[0] - glo_va.LOCATION_ADD_FACE_HEIGHT) / 2)
 
-        glo_va.img = original_img[margin_height:glo_va.LOCATION_FACE_HEIGHT+margin_height , margin_width:glo_va.LOCATION_FACE_WIDTH+margin_width]
+            glo_va.img = original_img[margin_height:glo_va.LOCATION_ADD_FACE_HEIGHT+margin_height , margin_width:glo_va.LOCATION_ADD_FACE_WIDTH+margin_width]
+
         # print(margin_width)
         # print(margin_height)
         # print(original_img.shape)

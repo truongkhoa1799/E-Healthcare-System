@@ -61,13 +61,12 @@ class GlobalVariable:
         # Parameters for new user
         self.list_embedded_face_new_user = ""
         self.embedded_face_new_user = None
-        self.num_images_new_user = 0
         self.has_capture = False
         # up : 0, down : 1, left : 2, right : 3, forward : 4
         self.num_face_new_user = 5
         self.current_shape = 0
         self.user_pose = None
-        self.list_shape_face = ['Looking up', 'Looking down', 'Looking left', 'Looking right', 'Looking foward']
+        self.list_shape_face = ['Looking foward', 'Looking up', 'Looking down', 'Looking left', 'Looking right']
 
         self.lock_response_server = None
         self.lock_timer_expir = False
@@ -98,7 +97,6 @@ class GlobalVariable:
         self.return_stt = None
 
         # Sensor
-        self.has_sensor_values = False
         self.measuring_sensor = False
 
         # PATH_PARA
@@ -137,9 +135,12 @@ class GlobalVariable:
             # 1280x720, 60 fps
             self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
 
-            # size for display
-            self.LOCATION_FACE_WIDTH = int(documents['gui']['location_face_width'])
-            self.LOCATION_FACE_HEIGHT = int(documents['gui']['location_face_height'])
+            # size for display patient
+            self.LOCATION_RECOGNIZE_FACE_WIDTH = int(documents['gui']['location_recognize_face_width'])
+            self.LOCATION_RECOGNIZE_FACE_HEIGHT = int(documents['gui']['location_recognize_face_height'])
+            # size for displaying new patient
+            self.LOCATION_ADD_FACE_WIDTH = int(documents['gui']['location_add_face_width'])
+            self.LOCATION_ADD_FACE_HEIGHT = int(documents['gui']['location_add_face_height'])
 
             # Parameters for GUI
             self.WIDTH_GUI = int(documents['gui']['width_gui'])
@@ -166,15 +167,40 @@ class GlobalVariable:
             self.STATE_RECOGNIZE_PATIENT = 1
             self.STATE_CONFIRM_PATIENT = 2
             self.STATE_MEASURE_SENSOR = 3
+            self.STATE_VIEW_DEPARTMENTS = 4
             self.STATE_CONFIRM_NEW_PATIENT = 5
             self.STATE_NEW_PATIENT = 6
             
+            # Button
             self.button = -1
             self.BUTTON_EXIST = 0
+            self.BUTTON_CONFIRM_PATIENT = 7
             self.BUTTON_CANCEL_CONFIRM_PATIENT = 1
             self.BUTTON_ACCEPT_CONFIRM_PATIENT = 2
             self.BUTTON_VIEW_LIST_DEP = 3
+            self.BUTTON_CONFIRM_DEP = 9
             self.BUTTON_CAPTURE_SENSOR = 4
+            self.BUTTON_DENY_NEW_PATIENT = 5
+            self.BUTTON_ACCEPT_NEW_PATIENT = 6
+            self.BUTTON_SUBMIT_EXAM = 8
+
+            # request
+            self.REQUEST_CONFIRM_NEW_PATIENT = 0
+            self.REQUEST_CHANGE_GUI = 1
+            self.REQUEST_UPDATE_PATIENT_INFO = 2
+            self.REQUEST_CLEAR_PATIENT_INFO = 3
+            self.REQUEST_ACTIVATE_NEW_FACE = 4
+            self.REQUEST_UPDATE_EXAM_ROOM = 5
+            self.REQUEST_CLEAR_EXAM_ROOM = 6
+            self.REQUEST_UPDATE_DEPARTMENT_LIST = 9
+            self.REQUEST_CLEAR_DEPARTMENT_LIST = 10
+            self.REQUEST_UPDATE_SENSOR = 7
+            self.REQUEST_CLEAR_SENSOR = 8
+
+            # Dialog
+            self.EXIST_DIALOG = 0
+            self.CONFIRM_PATIENT_DIALOG = 1
+            self.CONFIRM_NEW_PATIENT_DIALOG = 2
             # print(self.CONNECTION_AZURE_PATH)
             # print(self.IMAGE_SIZE)
             # print(self.BASE_BRIGHTNESS)
@@ -208,95 +234,60 @@ class GlobalVariable:
 
 class User_Infor:
     def __init__(self):
-        self.__status = -1
-        # self.__name = None
-        # self.__birthday = None
-        # self.__phone = None
-        # self.__address = None
+        self.status = -1
         self.patient_ID = None
         self.user_info = None
         self.Clear()
 
     def Clear(self):
-        self.__status = -1
-        # self.__name = "None"
-        # self.__birthday = "None"
-        # self.__phone = "None"
-        # self.__address = "None"
+        self.status = -1
         self.user_info = None
         self.patient_ID = None
     
     def Update_Info(self, user_info):
-        self.__status = 0
-        # self.__name = user_info['name']
-        # self.__birthday = user_info['birthday']
-        # self.__phone = user_info['phone']
-        # self.__address = user_info['address']
+        self.status = 0
         self.user_info = user_info
         self.patient_ID = user_info['user_ID']
-
-    def Update_Screen(self):
-        glo_va.window_GUI['-NAME-'].update(str(self.__name))
-        glo_va.window_GUI['-BD-'].update(str(self.__birthday))
-        glo_va.window_GUI['-PHONE-'].update(str(self.__phone))
-        glo_va.window_GUI['-ADDRESS-'].update(str(self.__address))
-    
-    def Get_Status(self):
-        return self.__status
     
 class Sensor:
     def __init__(self):
-        self.__blood_pressure = None
-        self.__pulse = None
-        self.__thermal = None
-        self.__spo2 = None
+        self.status = -1
+        self.__sensor_infor = None
         self.Clear()
     
     def Clear(self):
-        self.__blood_pressure = "None"
-        self.__pulse = "None"
-        self.__thermal = "None"
-        self.__spo2 = "None"
+        self.status = -1
+        self.__sensor_infor = None
     
     def Update_Sensor(self, sensor):
-        self.__blood_pressure = sensor['blood_pressure']
-        self.__pulse = sensor['pulse']
-        self.__thermal = sensor['thermal']
-        self.__spo2 = sensor['spo2']
-    
-    def Update_Screen(self):
-        glo_va.window_GUI['-BLOOD_PRESSURE-'].update(str(self.__blood_pressure))
-        glo_va.window_GUI['-PULSE-'].update(str(self.__pulse))
-        glo_va.window_GUI['-THERMAL-'].update(str(self.__thermal))
-        glo_va.window_GUI['-SPO2-'].update(str(self.__spo2))
+        self.status = 0
+        self.__sensor_infor = None
     
     def Get_Data(self):
-        return self.__blood_pressure, self.__pulse, self.__thermal, self.__spo2
+        return self.__sensor_infor
 
 class Examination:
     def __init__(self):
+        self.status = -1
         self.__department = None
         self.__room = None
+        self.__building = None
         self.Clear()
     
     def Clear(self):
-        self.__department = "None"
-        self.__room = "None"
+        self.status = -1
+        self.__department = ""
+        self.__room = ""
+        self.__building = ''
     
-    def Update_Examination(self, exam):
-        self.__department = exam['dep']
-        self.__room = exam['room']
+    def Update_Examination(self, dep):
+        self.status = 0
+        self.__department = dep['dep_name']
+        self.__building = dep['building_code']
+        self.__room = dep['room_code']
     
-    def Update_Screen(self):
-        glo_va.window_GUI['-DEPARTMENT-'].update(str(self.__department))
-        glo_va.window_GUI['-ROOM-'].update(str(self.__room))
-    
-    def Get_Buidling_Room(self):
-        temp = self.__room.split('-')
-        return temp[0], temp[1]
-    
-    def Get_Room(self):
-        return self.__room
+    def Get_Exam_Room_Infor(self):
+        return self.__department, self.__building, self.__room
 
 glo_va = GlobalVariable()
 user_infor = User_Infor()

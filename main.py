@@ -188,8 +188,8 @@ def main():
                 State_3()
 
             # STATE CLASSIFYING ROOM
-            elif glo_va.STATE == 4:
-                State_4(event)
+            elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS:
+                State_4()
 
             # STATE CONFIRM NEW USER
             elif glo_va.STATE == glo_va.STATE_CONFIRM_NEW_PATIENT:
