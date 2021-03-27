@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QFrame" name="verticalFrame">
    <property name="geometry">
     <rect>
@@ -21,6 +24,9 @@
      <width>260</width>
      <height>160</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgb(255, 255, 255);</string>
    </property>
    <widget class="QFrame" name="horizontalFrame">
     <property name="geometry">
@@ -42,17 +48,20 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
-	border: 2px solid rgb(52, 59, 72);
+	border: 2px solid rgb(0, 114, 177);
 	border-radius: 5px;	
-	background-color: rgb(52, 59, 72);
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
 }
 QPushButton:hover {
-	background-color: rgb(57, 65, 80);
-	border: 2px solid rgb(61, 70, 86);
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
 }
 QPushButton:pressed {	
-	background-color: rgb(35, 40, 49);
-	border: 2px solid rgb(43, 50, 61);
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
 }</string>
      </property>
      <property name="text">
@@ -80,17 +89,20 @@ QPushButton:pressed {
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
-	border: 2px solid rgb(52, 59, 72);
+	border: 2px solid rgb(0, 114, 177);
 	border-radius: 5px;	
-	background-color: rgb(52, 59, 72);
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
 }
 QPushButton:hover {
-	background-color: rgb(57, 65, 80);
-	border: 2px solid rgb(61, 70, 86);
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
 }
 QPushButton:pressed {	
-	background-color: rgb(35, 40, 49);
-	border: 2px solid rgb(43, 50, 61);
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
 }</string>
      </property>
      <property name="text">
@@ -116,6 +128,9 @@ QPushButton:pressed {
       <width>261</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
      <string>TextLabel</string>

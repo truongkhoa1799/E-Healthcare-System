@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -66,10 +66,11 @@ class ProgressBarDialogClass(QDialog, ProgressBarDialog):
         self.ret = -2
         self.setupUi(self)
 
-        self.reset_but.clicked.connect(lambda: self.__onButtonListenning(0))
+        self.capture_but.clicked.connect(lambda: self.__onButtonListenning(0))
         self.cancel_but.clicked.connect(lambda: self.__onButtonListenning(1))
 
         self.progress_bar.setValue(0)
+        self.measureSenSor()
     
     def __onButtonListenning(self, opt):
         if opt == 0:
@@ -114,7 +115,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.view_departments)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
@@ -407,7 +408,7 @@ class GUI(QtWidgets.QMainWindow):
         ''')
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()
