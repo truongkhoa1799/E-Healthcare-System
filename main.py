@@ -199,9 +199,8 @@ def main():
             elif glo_va.STATE == glo_va.STATE_NEW_PATIENT:
                 State_6()
             
-            # Confirm final submission
-            elif glo_va.STATE == 7:
-                State_7(event)
+            elif glo_va.STATE == glo_va.STATE_WAITING_SUB_EXAM:
+                State_7()
 
             # time.sleep(5)
             # End()

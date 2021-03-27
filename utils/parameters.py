@@ -61,7 +61,6 @@ class GlobalVariable:
         # Parameters for new user
         self.list_embedded_face_new_user = ""
         self.embedded_face_new_user = None
-        self.has_capture = False
         # up : 0, down : 1, left : 2, right : 3, forward : 4
         self.num_face_new_user = 5
         self.current_shape = 0
@@ -93,8 +92,10 @@ class GlobalVariable:
         self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.hospital_ID = None
         self.dep_ID_chosen = None
-        self.patient_ID = None
+        self.patient_ID = -1
         self.return_stt = None
+        # Button used to check when return message of submitting examination
+        self.button_ok_pressed = True
 
         # Sensor
         self.measuring_sensor = False
@@ -171,19 +172,21 @@ class GlobalVariable:
             self.STATE_VIEW_DEPARTMENTS = 4
             self.STATE_CONFIRM_NEW_PATIENT = 5
             self.STATE_NEW_PATIENT = 6
+            self.STATE_WAITING_SUB_EXAM = 7
             
             # Button
             self.button = -1
             self.BUTTON_EXIST = 0
-            self.BUTTON_CONFIRM_PATIENT = 7
             self.BUTTON_CANCEL_CONFIRM_PATIENT = 1
             self.BUTTON_ACCEPT_CONFIRM_PATIENT = 2
             self.BUTTON_VIEW_LIST_DEP = 3
-            self.BUTTON_CONFIRM_DEP = 9
             self.BUTTON_CAPTURE_SENSOR = 4
             self.BUTTON_DENY_NEW_PATIENT = 5
             self.BUTTON_ACCEPT_NEW_PATIENT = 6
+            self.BUTTON_CONFIRM_PATIENT = 7
             self.BUTTON_SUBMIT_EXAM = 8
+            self.BUTTON_CONFIRM_DEP = 9
+            self.BUTTON_OKAY = 10
 
             # request
             self.REQUEST_CONFIRM_NEW_PATIENT = 0
@@ -198,6 +201,7 @@ class GlobalVariable:
             self.REQUEST_UPDATE_SENSOR = 7
             self.REQUEST_CLEAR_SENSOR = 8
             self.REQUEST_MEASURE_SENSOR = 11
+            self.REQUEST_NOTIFY_MESSAGE = 12
 
             # Dialog
             self.EXIST_DIALOG = 0

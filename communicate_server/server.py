@@ -161,8 +161,8 @@ class Server:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
                 print("[{time}]: Submit Examination with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 
-                building_code, room_code = exam.Get_Buidling_Room()
-                blood_pressure, pulse, thermal, spo2 = sensor.Get_Data()
+                dep_name, building_code, room_code = exam.Get_Exam_Room_Infor()
+                sensor_infor = sensor.sensor_infor
                 msg = {
                     'request_id':glo_va.timer.timer_id,
                     'type_request': "5",
@@ -170,12 +170,12 @@ class Server:
                     'hospital_ID': str(glo_va.hospital_ID),
                     'building_code': building_code,
                     'room_code': room_code,
-                    'blood_pressure': str(blood_pressure),
-                    'pulse': str(pulse),
-                    'thermal': str(thermal),
-                    'spo2': str(spo2),
-                    'height': str(175.5),
-                    'weight': str(75.4)
+                    'blood_pressure': str(sensor_infor['blood_pressure']),
+                    'pulse': str(sensor_infor['heart_pulse']),
+                    'thermal': str(sensor_infor['temperature']),
+                    'spo2': str(sensor_infor['spo2']),
+                    'height': str(sensor_infor['height']),
+                    'weight': str(sensor_infor['height'])
                 }
                 
                 # Check is new user
