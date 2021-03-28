@@ -212,7 +212,7 @@ color: rgb(255, 255, 255);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 0, 0);</string>
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -2279,7 +2279,7 @@ border-radius: 10px;
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
+         <string notr="true">color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>Selected
@@ -2342,9 +2342,9 @@ QPushButton:pressed {
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>10</y>
+          <y>59</y>
           <width>771</width>
-          <height>340</height>
+          <height>291</height>
          </rect>
         </property>
         <property name="minimumSize">
@@ -2440,7 +2440,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2448,7 +2448,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2505,7 +2505,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2513,7 +2513,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2570,7 +2570,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2578,7 +2578,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
@@ -2588,14 +2588,14 @@ QPushButton:pressed {
 	padding: 10px;
 	border-radius: 5px;
 	gridline-color: rgb(198, 201, 201);
-	border-bottom: px solid rgb(44, 49, 60);
+	border: 2px solid rgb(44, 49, 60);
 }
 QTableWidget::item{
 	border-color: rgb(44, 49, 60);
 	padding-left: 5px;
 	padding-right: 5px;
 	gridline-color: rgb(44, 49, 60);
-	color: rgb(255, 255, 255);
+	color: rgb(0, 0, 0);
 }
 QTableWidget::item:selected{
 	background-color: rgb(85, 170, 255);
@@ -2673,7 +2673,7 @@ QHeaderView::section:vertical
             <bool>false</bool>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
            <attribute name="horizontalHeaderCascadingSectionResizes">
             <bool>false</bool>
@@ -2814,6 +2814,52 @@ QHeaderView::section:vertical
           </widget>
          </item>
         </layout>
+       </widget>
+       <widget class="QFrame" name="frame_top_btns_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>9</y>
+          <width>770</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>771</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(0, 114, 177);
+border-top-left-radius: 7px;
+border-top-right-radius: 7px;
+border-bottom-left-radius: 2px;
+border-bottom-right-radius: 2px;
+color: rgb(255, 255, 255)</string>
+         </property>
+         <property name="text">
+          <string>  Exam Room                                       Department Name</string>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>
