@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -116,6 +116,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.view_departments)
         
         self.stackedWidget.setCurrentWidget(self.view_departments)
+        self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
