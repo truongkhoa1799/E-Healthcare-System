@@ -43,13 +43,25 @@ class Face_Recognition:
         # Get landmarks
         raw_landmarks = self.__raw_face_landmarks(face_image, known_face_locations)
 
+        # Get the embedded face
+        embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
+
         # If STATE = 6 (get face new user) check angle of face
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-            # print('Hello')
-            glo_va.user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
-            # print("{} {}".format(glo_va.STATE, glo_va.user_pose))
 
-        return [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
+            # glo_va.user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
+            user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
+            if user_pose in glo_va.dict_user_pose:
+                glo_va.dict_user_pose[user_pose] += 1
+            else:
+                glo_va.dict_user_pose[user_pose] = 1
+
+            glo_va.num_user_pose += 1
+            # print("{} {}".format(glo_va.num_user_pose, user_pose))
+            # Save this in the list embedded for new user
+            glo_va.list_embedded_face_origin_new_patient.append(embedded_face[0])
+
+        return embedded_face
 
     ###############################################################################################
     # _css_to_rect                                                                                #
@@ -157,6 +169,10 @@ class Face_Recognition:
                 # detected_face = img[top: bottom, left: right]
                 glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
                 cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+
+                # img_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/img_written'
+                # os.chdir(img_dir)
+                # cv2.imwrite("{}.jpg".format(time.time()), glo_va.detected_face)
                 return 0
             else:
                 return -1

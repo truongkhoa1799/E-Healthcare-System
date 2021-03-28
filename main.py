@@ -170,7 +170,6 @@ def main():
             continue
 
         try:
-            event = 1
             if glo_va.STATE == -1:
                 End()
                 break

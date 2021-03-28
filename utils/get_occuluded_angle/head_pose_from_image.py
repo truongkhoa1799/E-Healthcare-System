@@ -59,35 +59,35 @@ def Get_Face_Angle(im, shape):
     sign_horizontal = -1 if angles[1] < 0 else 1
     diff_horizontal = abs(angles[1])
 
-    print('sign_v: {}, diff_v: {}, sign_h :{}, diff_h: {}'.format(sign_vertical, diff_vertical, sign_horizontal, diff_horizontal))
+    # print('sign_v: {}, diff_v: {}, sign_h :{}, diff_h: {}'.format(sign_vertical, diff_vertical, sign_horizontal, diff_horizontal))
 
 
     if diff_horizontal < 5 and diff_vertical < 5:
         # Looking foward
-        print('front')
+        # print('front')
         return 0
     
     if sign_horizontal == -1:
         if diff_horizontal > 12 and diff_vertical < 5:
             # Looking left
-            print('left')
+            # print('left')
             return 3
 
     elif sign_horizontal == 1:
         if diff_horizontal > 12 and diff_vertical < 5:
             # Looking right
-            print('right')
+            # print('right')
             return 4
 
     if sign_vertical == -1:
         if diff_vertical > 5 and diff_horizontal < 5:
             # Looking down
-            print('down')
+            # print('down')
             return 2
     elif sign_vertical == 1:
         if diff_vertical > 15 and diff_horizontal < 5:
             # Looking up
-            print('up')
+            # print('up')
             return 1
 
     

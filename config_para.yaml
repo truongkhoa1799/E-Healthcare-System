@@ -17,7 +17,7 @@ identifying_face:
   cycle_count_face_period: 1
   # number_deteced_face_allowed: 30
   number_deteced_face_allowed: 12
-  max_edge: 0
+  max_edge: 150
   # MAX length for HOG face Detector
   max_length_img: 100
   face_detector_model: cnn

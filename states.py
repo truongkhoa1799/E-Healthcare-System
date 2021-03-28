@@ -215,26 +215,50 @@ def State_6():
     elif ret == 0:
         # Face Identifying
         glo_va.face_recognition.Encoding_Face()
-    
-        if glo_va.user_pose == glo_va.current_shape:
-            # Activate image in the UI
-            request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
-            glo_va.gui.queue_request_states_thread.put(request)
 
-            # save the current embedded face
-            temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
-            glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+        if glo_va.num_user_pose >= 14:
+            max_pose = -1
+            for i in glo_va.dict_user_pose:
+                if glo_va.dict_user_pose[i] > 10 and glo_va.dict_user_pose[i] > max_pose:
+                    max_pose = i
 
-            # Change to take next pose of user
-            glo_va.current_shape += 1
+            print("max_pose: {}, current_pose: {}".format(max_pose, glo_va.current_shape))
+            print(glo_va.dict_user_pose)
+            
+            if max_pose == glo_va.current_shape:
+                if glo_va.check_current_shape == False:
+                    glo_va.check_current_shape = True
+                elif glo_va.check_current_shape == True:
+                    glo_va.check_current_shape = False
+                    # Activate image in the UI
+                    request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
+                    glo_va.gui.queue_request_states_thread.put(request)
+                    
+                    # calculate the mean of all images in one pose
+                    mean_embedded_image = np.mean(glo_va.list_embedded_face_origin_new_patient ,axis=0)
+                    # save the current embedded face
+                    # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
+                    temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
 
-            if glo_va.current_shape == glo_va.num_face_new_user:
-                print('Done get face new user')
-                glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+                    glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
 
-                # send request change ui
-                request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
-                glo_va.gui.queue_request_states_thread.put(request)
+                    # Change to take next pose of user
+                    glo_va.current_shape += 1
+
+                    if glo_va.current_shape == glo_va.num_face_new_user:
+                        print('Done get face new user')
+                        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+
+                        # send request change ui
+                        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+                        glo_va.gui.queue_request_states_thread.put(request)
+            else:
+                glo_va.check_current_shape = False
+        
+            
+            glo_va.num_user_pose = 0
+            glo_va.dict_user_pose = {}
+            glo_va.list_embedded_face_origin_new_patient = []
             
     glo_va.gui.image_display = glo_va.img
 
@@ -286,6 +310,10 @@ def Init_State():
     glo_va.has_response_server = False
     glo_va.is_sending_message = False
 
+    # Clear gui add new user
+    request = {'type': glo_va.REQUEST_DEACTIVATE_NEW_FACE, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+
     # EXAMINATION PARAMETERS-----------------------------------------------
     exam.Clear()
     # send request clear exam room and dep lsit
@@ -314,7 +342,10 @@ def Init_State():
     glo_va.embedded_face_new_user = None
 
     glo_va.current_shape = 0
-    glo_va.user_pose = None
+    glo_va.check_current_shape = False
+    glo_va.num_user_pose = 0
+    glo_va.dict_user_pose = {}
+    glo_va.list_embedded_face_origin_new_patient = []
 
     # SENSOR PARAMETERS-----------------------------------------------
     sensor.Clear()

@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -70,7 +70,7 @@ class ProgressBarDialogClass(QDialog, ProgressBarDialog):
         self.cancel_but.clicked.connect(lambda: self.__onButtonListenning(1))
 
         self.progress_bar.setValue(0)
-        self.measureSenSor()
+        # self.measureSenSor()
     
     def __onButtonListenning(self, opt):
         if opt == 0:
@@ -115,8 +115,8 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.view_departments)
-        self.__SetBackgroudMainFrame(0)
+        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
@@ -255,6 +255,9 @@ class GUI(QtWidgets.QMainWindow):
             current_shape = request['data']
             self.__ActivateFaceRecored(current_shape)
         
+        elif request['type'] == glo_va.REQUEST_DEACTIVATE_NEW_FACE:
+            self.__DeactivateFaceRecored()
+        
         elif request['type'] == glo_va.REQUEST_UPDATE_SENSOR:
             self.__UpdateSensorInfo()
         
@@ -376,7 +379,7 @@ class GUI(QtWidgets.QMainWindow):
             self.stackedWidget.setCurrentWidget(self.recognize_frame)
         elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS:
             self.__UpdateListDepartments()
-            self.__SetBackgroudMainFrame(1)
+            self.__SetBackgroudMainFrame(0)
             self.stackedWidget.setCurrentWidget(self.view_departments)
         
         self.image_display = None
@@ -408,8 +411,20 @@ class GUI(QtWidgets.QMainWindow):
             }
         ''')
 
+    def __DeactivateFaceRecored(self):
+        for shape in self.list_shape_face:
+            shape.setStyleSheet('''
+                QLabel {
+                    border-radius: 30px;
+                    background-color: rgb(44, 49, 60);
+                    border: 5px solid rgb(39, 44, 54);
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
+            ''')
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()
