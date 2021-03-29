@@ -8,14 +8,12 @@ PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:
     def __init__(self):
+        self.main_thread = None
         self.camera = None
 
         # Parameters for GUI
         self.gui = None
         self.display_image = None
-        self.window_GUI = None
-        self.examination_GUI = None
-
         # STATE of the program
         self.STATE = 1
         self.ENABLE_RUN = True

@@ -1,9 +1,10 @@
-from identifying_users.identifying_users_functions import *
-from utils.common_functions import Compose_Embedded_Face
-from utils.common_functions import Capture_New_Patient
-from utils.parameters import *
-import time
+import sys, time, pathlib
+PROJECT_PATH = pathlib.Path().absolute()
+sys.path.append(PROJECT_PATH)
 
+from utils.parameters import *
+from utils.common_functions import Capture_New_Patient
+from utils.common_functions import Compose_Embedded_Face
 
 def State_1():
     # Read camera

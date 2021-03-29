@@ -1,8 +1,6 @@
 from utils.parameters import *
-from identifying_users.identifying_users_functions import Submit_Again
 from threading import Timer
-import time
-import uuid
+import time, uuid
 CYCLE_TIMER_PERIOD = 1
 
 class RepeatTimer(Timer):
@@ -27,6 +25,7 @@ class Timer:
         self.timer_id = None
 
         self.__counter=RepeatTimer(CYCLE_TIMER_PERIOD, self.Update_Timer)
+        self.__counter.daemon = True
         self.__counter.start()
     
     def Update_Timer(self):
