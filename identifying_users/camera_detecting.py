@@ -58,10 +58,6 @@ class CameraDetecting(Thread):
 
             glo_va.img = original_img[margin_height:glo_va.LOCATION_ADD_FACE_HEIGHT+margin_height , margin_width:glo_va.LOCATION_ADD_FACE_WIDTH+margin_width]
 
-        # print(margin_width)
-        # print(margin_height)
-        # print(original_img.shape)
-        # print(glo_va.img.shape)
         if show_fps == True:
             # show_fps:
             self.__DrawLabel(glo_va.img, "Frames Displayed (PS): "+str(self.__csi_camera.last_frames_displayed),(10,20))

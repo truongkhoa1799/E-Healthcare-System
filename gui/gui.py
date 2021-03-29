@@ -152,6 +152,8 @@ class GUI(QtWidgets.QMainWindow):
     # def __test(self):
     #     # print('hoho')
     #     self.dialog.setFinish('hooho')
+    def closeEvent(self, event):
+        glo_va.flg_init_GUI = False
 
 
     def __onButtonsListenning(self, opt):

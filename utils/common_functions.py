@@ -46,35 +46,3 @@ def Preprocessing_Img(img):
     resized_img = cv2.resize(img, (glo_va.IMAGE_SIZE,glo_va.IMAGE_SIZE))
     RGB_resized_adjusted_bright_img = AdjustBright(resized_img)
     return RGB_resized_adjusted_bright_img
-
-def ConvertToDisplay(image):
-    display_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # to RGB
-    display_image = Image.fromarray(display_image)  # to PIL format
-    display_image = ImageTk.PhotoImage(display_image)  # to ImageTk format
-    return display_image
-
-def Capture_New_Patient():
-    # Get embedded face of new user
-    glo_va.embedded_face_new_user = glo_va.embedded_face
-    # Resize image and display for user reviewing
-    review_image = cv2.resize(glo_va.detected_face, (300,300))
-    display_review_image = ConvertToDisplay(review_image)
-    glo_va.window_GUI['review_photo'].update(data=display_review_image)
-
-# def Convert_To_Display(img):
-#     # Get ndarray and return QImage
-#     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#     image = QImage(img, img.shape[1], img.shape[0], img.shape[1]*3, QImage.Format_RGB888)
-#     qp_image = QPixmap(image)
-
-#     return qp_image
-    
-# def UpdateImage(img):
-#     # margin_width = int((img.shape[1] - 460) / 2)
-#     # margin_height = int((img.shape[0] - 430) / 2)
-#     # print("{}, {}".format(margin_width, margin_height))
-
-#     # cut_img = img[margin_height:430+margin_height , margin_width:460+margin_width]
-
-#     qp_image = Convert_To_Display(img)
-#     glo_va.gui.image_patient.setPixmap(qp_image)

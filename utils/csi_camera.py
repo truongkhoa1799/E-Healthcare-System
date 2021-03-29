@@ -127,28 +127,30 @@ class CSI_Camera:
         display_width,
         display_height
     ):
+        # self._gstreamer_pipeline = (
+        #     "nvarguscamerasrc sensor-id=%d sensor-mode=%d ! "
+        #     "video/x-raw(memory:NVMM), "
+        #     "format=(string)NV12, framerate=(fraction)%d/1 ! "
+        #     "nvvidconv flip-method=%d ! "
+        #     "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        #     "videoconvert ! "
+        #     "video/x-raw, format=(string)BGR ! appsink"
+        #     % (
+        #         sensor_id,
+        #         sensor_mode,
+        #         framerate,
+        #         flip_method,
+        #         display_width,
+        #         display_height,
+        #     )
+        # )
         self._gstreamer_pipeline = (
-            "nvarguscamerasrc sensor-id=%d sensor-mode=%d ! "
-            "video/x-raw(memory:NVMM), "
-            "format=(string)NV12, framerate=(fraction)%d/1 ! "
-            "nvvidconv flip-method=%d ! "
-            "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-            "videoconvert ! "
-            "video/x-raw, format=(string)BGR ! appsink"
-            % (
-                sensor_id,
-                sensor_mode,
-                framerate,
-                flip_method,
-                display_width,
-                display_height,
-            )
+            '''nvarguscamerasrc exposuretimerange="10000000 10000000" ! video/x-raw(memory:NVMM), 
+            width=(int){}, height=(int){},format=(string)NV12, 
+            framerate=(fraction)29/1 ! nvvidconv flip-method=0 ! video/x-raw, 
+            format=(string)BGRx ! videoconvert ! video/x-raw, 
+            format=(string)BGR ! appsink max-buffers=1 drop=True'''.format(display_width, display_height)
         )
-        # self._gstreamer_pipeline 'nvarguscamerasrc exposuretimerange="10000000 10000000" ! video/x-raw(memory:NVMM), 
-        # width=(int)1920, height=(int)1080,format=(string)NV12, 
-        # framerate=(fraction)29/1 ! nvvidconv flip-method=2 ! video/x-raw, 
-        # format=(string)BGRx ! videoconvert ! video/x-raw, 
-        # format=(string)BGR ! appsink max-buffers=1 drop=True'
 
 
     

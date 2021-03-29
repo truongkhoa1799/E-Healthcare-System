@@ -9,23 +9,31 @@ PROJECT_PATH = pathlib.Path().absolute()
 class GlobalVariable:
     def __init__(self):
         self.main_thread = None
-        self.camera = None
 
-        # Parameters for GUI
+        # parameters for services
         self.gui = None
-        self.display_image = None
-        # STATE of the program
-        self.STATE = 1
-        self.ENABLE_RUN = True
-        self.START_RUN = False
-
-        # self.cuda_ctx = None
-
+        self.timer = None
+        self.camera = None
+        self.server = None
         self.count_face = None
-
-        # face recognition
-        # self.face_detector = None
         self.face_recognition = None
+
+        # flag init
+        self.flg_init_GUI = False
+        self.flg_init_timer = False
+        self.flg_init_camera = False
+        self.flg_init_count_face = False
+        self.flg_server_connected = False
+        self.flg_init_face_recognition = False
+        
+        # Server para and timer parameters
+        self.is_sending_message = False
+        self.has_response_server = False
+        self.lock_response_server = None
+        self.has_examination_room = False
+        # Timer
+        # -1: none, 1 server
+        self.turn = -1 
 
         # Parameters for face recognition
         self.img = None
@@ -34,54 +42,24 @@ class GlobalVariable:
         self.embedded_face = None
         self.list_embedded_face = ""
         self.times_missing_face = 0
-        self.validation_id = None
 
-        # flag init
-        self.flg_init_count_face = False
-        self.flg_init_GUI = False
-        self.flg_init_camera = False
-        self.flg_init_face_detector = False
-        self.flg_server_connected = False
-        self.flg_init_face_recognition = False
-        self.flg_init_timer = False
-
-        # Server para
-        self.has_response_server = False
-        self.server = None
-        self.is_sending_message = False
-
+        # Parameter for connection of iot hub
         self.device_ID = None
-        self.device_iothub_connection = None
-        self.eventhub_connection = None
         self.eventhub_name = None
-
+        self.eventhub_connection = None
+        self.device_iothub_connection = None
 
         # Parameters for new user
         self.list_embedded_face_new_user = ""
-        self.embedded_face_new_user = None
         # up : 0, down : 1, left : 2, right : 3, forward : 4
         self.num_face_new_user = 5
         self.current_shape = 0
         self.check_current_shape = False
         self.list_shape_face = ['Looking foward', 'Looking up', 'Looking down', 'Looking left', 'Looking right']
-        
         self.dict_user_pose = {}
         self.num_user_pose = 0
         self.list_embedded_face_origin_new_patient = []
 
-
-        self.lock_response_server = None
-        self.lock_timer_expir = False
-
-        # Timer
-        self.timer = None
-        self.timer_expir = False
-        self.current_timer_id_validation = None
-        # -1: none, 1 server
-        self.turn = -1 
-
-        # Examination Room
-        self.has_examination_room = False
         # self.list_examination_room = [
         # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
         # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
@@ -91,19 +69,22 @@ class GlobalVariable:
         # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
         # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
         # ]
-        self.list_examination_room = []
-        self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
+        self.patient_ID = -1
         self.hospital_ID = None
         self.dep_ID_chosen = None
-        self.patient_ID = -1
+        self.list_examination_room = []
+        self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.return_stt = None
-        # Button used to check when return message of submitting examination
-        self.button_ok_pressed = True
 
         # Sensor
         self.measuring_sensor = False
         self.done_measuring_sensor = False
-
+        
+        # STATE of the program
+        self.STATE = 1
+        self.ENABLE_RUN = True
+        self.START_RUN = False
+        
         # STATES
         self.STATE_RECOGNIZE_PATIENT = 1
         self.STATE_CONFIRM_PATIENT = 2
@@ -115,6 +96,9 @@ class GlobalVariable:
         
         # Button
         self.button = -1
+        # Button used to check when return message of submitting examination
+        self.button_ok_pressed = True
+
         self.BUTTON_EXIST = 0
         self.BUTTON_CANCEL_CONFIRM_PATIENT = 1
         self.BUTTON_ACCEPT_CONFIRM_PATIENT = 2
@@ -170,10 +154,10 @@ class GlobalVariable:
             self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
             self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
 
-
             # FACE RECOGNITION MODEL
             self.PREDICTOR_5_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_5_point_model']))
             self.PREDICTOR_68_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_68_point_model']))
+            self.CNN_FACE_DETECTOR = os.path.join(PROJECT_PATH, str(documents['path']['cnn_face_detector_model']))
             self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
 
             # Display image
@@ -211,37 +195,7 @@ class GlobalVariable:
 
             self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
-            
-            # print(self.CONNECTION_AZURE_PATH)
-            # print(self.IMAGE_SIZE)
-            # print(self.BASE_BRIGHTNESS)
-            # print(self.CYCLE_COUNT_FACE_PERIOD)
-            # print(self.NUMBER_DETECTED_FACE_TRANSMITED)
-            # print(self.MAX_LENGTH_IMG)
-            # print(self.PREDICTOR_5_POINT_MODEL)
-            # print(self.RESNET_MODEL)
-            # print(self.CAMERA_DISPLAY_WIDTH)
-            # print(self.CAMERA_DISPLAY_HEIGHT)
-            # print(self.SENSOR_MODE_1080)
-            # print(self.SENSOR_MODE_720)
-            # print(self.LOCATION_FACE_WIDTH)
-            # print(self.LOCATION_FACE_HEIGHT)
-            # print(self.WIDTH_GUI)
-            # print(self.HEIGHT_GUI)
-            # print(self.CAM_EXAM_LAYOUT_WIDTH)
-            # print(self.CAM_EXAM_LAYOUT_HEIGHT)
-            # print(self.INFOR_SENSOR_LAYOUT_WIDTH)
-            # print(self.INFOR_SENSOR_LAYOUT_HEIGHT)
-            # print(self.TIMES_MISSING_FACE)
-            # print(self.TIMEOUT_MISSING_FACE)
-            # print(self.TIMEOUT_VALIDATE)
-            # print(self.OPT_TIMER_VALIDATE)
-            # print(self.TIMEOUT_GET_EXAMINATION_ROOM)
-            # print(self.OPT_TIMER_GET_EXAMINATION_ROOM)
-            # print(self.TIMEOUT_SUBMIT_EXAMINATION)
-            # print(self.OPT_TIMER_SUBMIT_EXAMINATION)
-
-
+     
 
 class User_Infor:
     def __init__(self):

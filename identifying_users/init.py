@@ -40,6 +40,8 @@ def Init():
     
         # Init lock response from server and timer
         glo_va.lock_response_server = Lock()
+    
+    time.sleep(2)
 
 #########################################################################
 # START FUNCTIONS                                                       #
@@ -72,13 +74,6 @@ def Start_Timer():
     glo_va.timer = Timer()
     time.sleep(0.5)
     print("Done start Timer")
-    print()
-
-def Start_GUI():
-    print("Starting Init GUI")
-    glo_va.window_GUI = InitMainGui()
-    time.sleep(0.5)
-    print("Done Init GUI")
     print()
 
 def Start_Server_Connection():

@@ -2,8 +2,9 @@ import sys, time, pathlib
 PROJECT_PATH = pathlib.Path().absolute()
 sys.path.append(PROJECT_PATH)
 
+import numpy as np
+
 from utils.parameters import *
-from utils.common_functions import Capture_New_Patient
 from utils.common_functions import Compose_Embedded_Face
 
 def State_1():
@@ -65,16 +66,13 @@ def State_2():
     if glo_va.button == glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT:
         # Get and save patient id for examination
         glo_va.patient_ID = user_infor.patient_ID
-
-        # After user confrim their information, Clear user_infor, Ui and go to STATE measuring sensor
-
-        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-
         # send request clear patient inof
         user_infor.Clear()
         request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
+        # After user confrim their information, Clear user_infor, Ui and go to STATE measuring sensor
+        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
         # send request change ui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
@@ -82,15 +80,10 @@ def State_2():
         glo_va.button = -1
         return
     
-    elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT:
+    elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT or glo_va.button == glo_va.BUTTON_EXIST:
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
         return
-    
-    elif glo_va.button == glo_va.BUTTON_EXIST:
-        Init_State()
-        return
-    
 
 def State_3():
     # print(glo_va.button)
@@ -102,8 +95,6 @@ def State_3():
 
         request = {'type': glo_va.REQUEST_MEASURE_SENSOR, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
-
-        # Communicate with ESP to measuring patient information
 
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
         if glo_va.has_examination_room == True:
@@ -240,7 +231,6 @@ def State_6():
                     # save the current embedded face
                     # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
                     temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
-
                     glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
 
                     # Change to take next pose of user
@@ -249,7 +239,6 @@ def State_6():
                     if glo_va.current_shape == glo_va.num_face_new_user:
                         print('Done get face new user')
                         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-
                         # send request change ui
                         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
                         glo_va.gui.queue_request_states_thread.put(request)
@@ -276,18 +265,17 @@ def State_7():
             request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': message}
             glo_va.gui.queue_request_states_thread.put(request)
 
-            glo_va.has_response_server = False
-            glo_va.is_sending_message = False
-
             glo_va.button_ok_pressed = False
+
+            glo_va.is_sending_message = False
+            glo_va.has_response_server = False
+
         elif glo_va.has_response_server == False and glo_va.is_sending_message == False:
             message = 'False to submit examination.\nPlease try again.'
             request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': message}
             glo_va.gui.queue_request_states_thread.put(request)
-            glo_va.button_ok_pressed = False
 
-            glo_va.has_response_server = False
-            glo_va.is_sending_message = False
+            glo_va.button_ok_pressed = False
     
     elif glo_va.button_ok_pressed == False:
         if glo_va.button == glo_va.BUTTON_OKAY:
@@ -305,15 +293,32 @@ def Init_State():
 
     # SERVER PARAMETERS-----------------------------------------------
     # Clear timer preveting timeout getting examination room
+    glo_va.turn = -1 
     glo_va.timer.Clear_Timer()
-
     # for server communiation
-    glo_va.has_response_server = False
     glo_va.is_sending_message = False
+    glo_va.has_response_server = False
 
     # Clear gui add new user
     request = {'type': glo_va.REQUEST_DEACTIVATE_NEW_FACE, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
+
+    # USER PARAMETERS-----------------------------------------------
+    user_infor.Clear()
+    # send request clear patient inof
+    request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+
+    # Clear list embedded face, embedded face and num images
+    glo_va.patient_ID = -1
+    glo_va.list_embedded_face_new_user = ""
+
+    glo_va.current_shape = 0
+    glo_va.check_current_shape = False
+
+    glo_va.num_user_pose = 0
+    glo_va.dict_user_pose = {}
+    glo_va.list_embedded_face_origin_new_patient = []
 
     # EXAMINATION PARAMETERS-----------------------------------------------
     exam.Clear()
@@ -327,26 +332,9 @@ def Init_State():
     glo_va.return_stt = None
     glo_va.button_ok_pressed = True
     # Clear patient_Id and list of examination room
-    glo_va.patient_ID = -1
-    glo_va.list_examination_room = []
     glo_va.hospital_ID = None
+    glo_va.list_examination_room = []
     glo_va.has_examination_room = False
-
-    # USER PARAMETERS-----------------------------------------------
-    user_infor.Clear()
-    # send request clear patient inof
-    request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
-    glo_va.gui.queue_request_states_thread.put(request)
-
-    # Clear list embedded face, embedded face and num images
-    glo_va.list_embedded_face_new_user = ""
-    glo_va.embedded_face_new_user = None
-
-    glo_va.current_shape = 0
-    glo_va.check_current_shape = False
-    glo_va.num_user_pose = 0
-    glo_va.dict_user_pose = {}
-    glo_va.list_embedded_face_origin_new_patient = []
 
     # SENSOR PARAMETERS-----------------------------------------------
     sensor.Clear()
@@ -358,7 +346,6 @@ def Init_State():
 
     # Clear button
     glo_va.button = -1
-    
     # STATE 1
     glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
     # send request change ui

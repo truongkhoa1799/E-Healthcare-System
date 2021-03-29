@@ -10,8 +10,6 @@ from utils.parameters import *
 from utils.get_occuluded_angle.head_pose_from_image import Get_Face_Angle
 from utils.common_functions import Preprocessing_Img
 
-CNN_FACE_DETECTOR = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/mmod_human_face_detector.dat'
-
 class Face_Recognition:
     def __init__(self):
         if glo_va.SHAPE_PREDICTOR_MODEL == '68':
@@ -28,7 +26,7 @@ class Face_Recognition:
             self.__face_detector = dlib.get_frontal_face_detector()
         else:
             print("\tLoad face detector CNN model")
-            self.__face_detector_cnn = dlib.cnn_face_detection_model_v1(CNN_FACE_DETECTOR)
+            self.__face_detector_cnn = dlib.cnn_face_detection_model_v1(glo_va.CNN_FACE_DETECTOR)
 
         test_img = None
         test_img_path = os.path.join(PROJECT_PATH, 'model_engine/test_encoding_img')
@@ -132,7 +130,6 @@ class Face_Recognition:
         max_edge = 0
 
         if glo_va.img is not None:
-            # print("size display image: {}".format(glo_va.img.shape))
             # locate faces in the images
             if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
                 fra = 150 / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
@@ -141,10 +138,8 @@ class Face_Recognition:
 
             resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
             GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
-            # print("size resized image: {}".format(GRAY_resized_img.shape))
             
             face_locations = self.__Get_Face_Locations(GRAY_resized_img)
-            # face_locations = self.__Get_Face_Locations(GRAY_resized_img)
 
             if len(face_locations) == 0:
                 return -1
@@ -165,14 +160,9 @@ class Face_Recognition:
 
             if max_edge > glo_va.MAX_EDGE:
                 # print("height: {}, width: {}".format(glo_va.face_location[1] - glo_va.face_location[0], glo_va.face_location[3] - glo_va.face_location[2]))
-
                 # detected_face = img[top: bottom, left: right]
                 glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
                 cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
-
-                # img_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/img_written'
-                # os.chdir(img_dir)
-                # cv2.imwrite("{}.jpg".format(time.time()), glo_va.detected_face)
                 return 0
             else:
                 return -1

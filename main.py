@@ -9,7 +9,6 @@ from utils.parameters import *
 
 import cv2
 import time, threading
-
 from signal import signal, SIGINT
 
 def EndProcHandler(signal_received, frame):

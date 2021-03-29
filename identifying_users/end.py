@@ -33,6 +33,11 @@ def Stop_Timer():
     print("Stop Timer")
     print()
 
+def Stop_GUI():
+    glo_va.gui.close()
+    print("Stop GUI")
+    print()
+
 #########################################################################
 # End FUNCTION                                                          #
 #########################################################################
@@ -52,7 +57,7 @@ def End():
 
     if glo_va.flg_init_GUI:
         # glo_va.window_GUI.close()
-        glo_va.gui.close()
+        Stop_GUI()
         glo_va.flg_init_GUI = False
 
     if glo_va.flg_init_camera:

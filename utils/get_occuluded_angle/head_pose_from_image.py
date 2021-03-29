@@ -35,22 +35,9 @@ def Get_Face_Angle(im, shape):
     noseEndPoints3D = np.array([[0, 0, 1000.0]], dtype=np.float64)
     noseEndPoint2D, jacobian = cv2.projectPoints(noseEndPoints3D, rotationVector, translationVector, cameraMatrix, mdists)
 
-    # draw nose line 
-    # p1 = (int(refImgPts[0, 0]), int(refImgPts[0, 1]))
-    # p2 = (int(noseEndPoint2D[0, 0, 0]), int(noseEndPoint2D[0, 0, 1]))
-    # cv2.line(im, p1, p2, (110, 220, 0), thickness=2, lineType=cv2.LINE_AA)
-
     # calculating angle
     rmat, jac = cv2.Rodrigues(rotationVector)
     angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
-    # print(f"Qx:{Qx}\tQy:{Qy}\tQz:{Qz}\t")
-    # x = np.arctan2(Qx[2][1], Qx[2][2])
-    # y = np.arctan2(-Qy[2][0], np.sqrt((Qy[2][1] * Qy[2][1] ) + (Qy[2][2] * Qy[2][2])))
-    # z = np.arctan2(Qz[0][0], Qz[1][0])
-    # print("AxisX: ", x)
-    # print("AxisY: ", y)
-    # print("AxisZ: ", z)
-
 
     # print("Angle x:{} angle y:{}".format(angles[0], angles[1]))
     sign_vertical = -1 if angles[0] < 0 else 1
@@ -90,37 +77,5 @@ def Get_Face_Angle(im, shape):
             # print('up')
             return 1
 
-    
-    # if angles[0] < 0 and abs(angles[0]) < 177:
-    #     if angles[1] <= 15 and angles[1] >= -15:
-    #         # Looking Down
-    #         return 2
-    #     else:
-    #         # None
-    #         return -1
-    # elif angles[0] > 0 and angles[0] < 167:
-    #     if angles[1] <= 15 and angles[1] >= -15:
-    #         # Looking UP
-    #         return 1
-    #     else:
-    #         # None
-    #         return -1
-    
-    # elif angles[0] <= -175 or angles[0] >= 175:
-    #     if angles[1] < -15:
-    #         # Looking Left
-    #         return 3
-    #     elif angles[1] > 15:
-    #         # Looking Right
-    #         return 4
-    #     elif angles[1] <= 5 and angles[1] >= -5:
-    #         # Looking Forward
-    #         return 0
-
     return -1
-    # print("Angle: ", angles)
-    # print(gaze)
-    # print('*' * 80)
-        # cv2.putText(im, gaze, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 80), 2)
-        # cv2.imshow("Head Pose", im)
 
