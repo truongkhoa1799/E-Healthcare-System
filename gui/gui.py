@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -115,7 +115,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.view_departments)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
@@ -405,7 +405,7 @@ class GUI(QtWidgets.QMainWindow):
     def __ActivateFaceRecored(self, direction):
         self.list_shape_face[direction].setStyleSheet('''
             QLabel {
-                border-radius: 30px;
+                border-radius: 45px;
                 background-color: rgb(255, 155, 54);
                 border: 5px solid rgb(255, 168, 75);
                 background-position: center;
@@ -417,7 +417,7 @@ class GUI(QtWidgets.QMainWindow):
         for shape in self.list_shape_face:
             shape.setStyleSheet('''
                 QLabel {
-                    border-radius: 30px;
+                    border-radius: 45px;
                     background-color: rgb(44, 49, 60);
                     border: 5px solid rgb(39, 44, 54);
                     background-position: center;
@@ -426,7 +426,7 @@ class GUI(QtWidgets.QMainWindow):
             ''')
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()

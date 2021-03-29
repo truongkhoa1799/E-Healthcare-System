@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>1024</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>480</height>
+    <width>1024</width>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
-    <height>480</height>
+    <width>1024</width>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -30,9 +30,21 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1024</width>
      <height>50</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1024</width>
+     <height>50</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1024</width>
+     <height>50</height>
+    </size>
    </property>
    <property name="styleSheet">
     <string notr="true">background: transparent;</string>
@@ -112,16 +124,22 @@
          <widget class="QFrame" name="frame_icon_top_bar">
           <property name="geometry">
            <rect>
-            <x>5</x>
-            <y>10</y>
-            <width>30</width>
-            <height>30</height>
+            <x>0</x>
+            <y>0</y>
+            <width>50</width>
+            <height>50</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>30</width>
-            <height>30</height>
+            <width>50</width>
+            <height>50</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -141,16 +159,28 @@ background-repeat: no-repeat;
          <widget class="QLabel" name="label_title_bar_top">
           <property name="geometry">
            <rect>
-            <x>50</x>
+            <x>60</x>
             <y>0</y>
-            <width>690</width>
-            <height>51</height>
+            <width>890</width>
+            <height>50</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>890</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>890</width>
+            <height>50</height>
+           </size>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>20</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -175,11 +205,23 @@ color: rgb(255, 255, 255);</string>
          <widget class="QPushButton" name="exist_but">
           <property name="geometry">
            <rect>
-            <x>740</x>
+            <x>945</x>
             <y>0</y>
-            <width>61</width>
-            <height>51</height>
+            <width>80</width>
+            <height>50</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
           </property>
           <property name="text">
            <string/>
@@ -207,9 +249,21 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>50</y>
-     <width>800</width>
-     <height>480</height>
+     <width>1024</width>
+     <height>550</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1024</width>
+     <height>550</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1024</width>
+     <height>550</height>
+    </size>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -245,14 +299,38 @@ color: rgb(255, 255, 255);</string>
        <number>3</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
+       <property name="minimumSize">
+        <size>
+         <width>1024</width>
+         <height>550</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>1024</width>
+         <height>550</height>
+        </size>
+       </property>
        <widget class="QFrame" name="image_frame">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>425</width>
-          <height>400</height>
+          <x>5</x>
+          <y>5</y>
+          <width>490</width>
+          <height>530</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>490</width>
+          <height>530</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>490</width>
+          <height>530</height>
+         </size>
         </property>
         <property name="styleSheet">
          <string notr="true">border-radius: 12px;</string>
@@ -262,9 +340,21 @@ color: rgb(255, 255, 255);</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>425</width>
-           <height>400</height>
+           <width>490</width>
+           <height>530</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>490</width>
+           <height>530</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>490</width>
+           <height>530</height>
+          </size>
          </property>
          <property name="font">
           <font>
@@ -295,10 +385,10 @@ color: rgb(255, 255, 255);</string>
        <widget class="QFrame" name="infor_patient_frame">
         <property name="geometry">
          <rect>
-          <x>450</x>
-          <y>10</y>
-          <width>330</width>
-          <height>400</height>
+          <x>500</x>
+          <y>5</y>
+          <width>510</width>
+          <height>530</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -310,14 +400,20 @@ border-radius: 15px;</string>
           <rect>
            <x>20</x>
            <y>10</y>
-           <width>310</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>470</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </size>
          </property>
          <property name="font">
@@ -337,10 +433,22 @@ border-radius: 15px;</string>
          <layout class="QVBoxLayout" name="verticalLayout_15">
           <item>
            <widget class="QLabel" name="name_lable_2">
+            <property name="minimumSize">
+             <size>
+              <width>370</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>370</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>20</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -359,15 +467,21 @@ border-radius: 15px;</string>
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>110</y>
-           <width>310</width>
-           <height>40</height>
+           <y>140</y>
+           <width>470</width>
+           <height>60</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>470</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </size>
          </property>
          <property name="font">
@@ -390,7 +504,7 @@ border-radius: 15px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>20</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -409,20 +523,26 @@ border-radius: 15px;</string>
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>210</y>
-           <width>310</width>
-           <height>40</height>
+           <y>270</y>
+           <width>470</width>
+           <height>60</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>470</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -440,7 +560,7 @@ border-radius: 15px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>20</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -459,15 +579,15 @@ border-radius: 15px;</string>
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>150</y>
-           <width>290</width>
-           <height>40</height>
+           <y>200</y>
+           <width>470</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -482,16 +602,16 @@ border-radius: 15px;</string>
          <widget class="QLabel" name="patient_birthday">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>12</y>
-            <width>266</width>
-            <height>16</height>
+            <x>10</x>
+            <y>0</y>
+            <width>450</width>
+            <height>60</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>22</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -500,17 +620,29 @@ border-radius: 15px;</string>
            <string notr="true">color: rgb(31, 119, 140);</string>
           </property>
           <property name="text">
-           <string/>
+           <string>01-07-1999</string>
           </property>
          </widget>
          <widget class="QLabel" name="label">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>35</y>
-            <width>266</width>
+            <x>10</x>
+            <y>50</y>
+            <width>450</width>
             <height>1</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>1</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>450</width>
+            <height>1</height>
+           </size>
           </property>
           <property name="styleSheet">
            <string notr="true">background: rgb(0, 0, 0);</string>
@@ -523,10 +655,10 @@ border-radius: 15px;</string>
         <widget class="QPushButton" name="confirm_user_but">
          <property name="geometry">
           <rect>
-           <x>60</x>
-           <y>315</y>
-           <width>215</width>
-           <height>61</height>
+           <x>115</x>
+           <y>420</y>
+           <width>300</width>
+           <height>80</height>
           </rect>
          </property>
          <property name="font">
@@ -570,15 +702,21 @@ QPushButton:pressed {
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>50</y>
-           <width>290</width>
-           <height>40</height>
+           <y>70</y>
+           <width>470</width>
+           <height>60</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>470</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>40</height>
+           <width>470</width>
+           <height>60</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -593,16 +731,16 @@ QPushButton:pressed {
          <widget class="QLabel" name="patient_name">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>12</y>
-            <width>266</width>
-            <height>16</height>
+            <x>10</x>
+            <y>0</y>
+            <width>450</width>
+            <height>60</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>22</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -611,17 +749,29 @@ QPushButton:pressed {
            <string notr="true">color: rgb(31, 119, 140);</string>
           </property>
           <property name="text">
-           <string>dasd</string>
+           <string>Truong Le Vinh Khoa</string>
           </property>
          </widget>
          <widget class="QLabel" name="label_2">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>35</y>
-            <width>266</width>
+            <x>10</x>
+            <y>50</y>
+            <width>450</width>
             <height>1</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>1</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>450</width>
+            <height>1</height>
+           </size>
           </property>
           <property name="styleSheet">
            <string notr="true">background: rgb(0, 0, 0);</string>
@@ -635,15 +785,21 @@ QPushButton:pressed {
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>250</y>
-           <width>290</width>
-           <height>40</height>
+           <y>330</y>
+           <width>470</width>
+           <height>60</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>60</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -658,16 +814,16 @@ QPushButton:pressed {
          <widget class="QLabel" name="patient_phone">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>12</y>
-            <width>266</width>
-            <height>16</height>
+            <x>10</x>
+            <y>0</y>
+            <width>450</width>
+            <height>60</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>22</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -676,15 +832,15 @@ QPushButton:pressed {
            <string notr="true">color: rgb(31, 119, 140);</string>
           </property>
           <property name="text">
-           <string/>
+           <string>0971155910</string>
           </property>
          </widget>
          <widget class="QLabel" name="label_3">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>35</y>
-            <width>266</width>
+            <x>10</x>
+            <y>50</y>
+            <width>450</width>
             <height>1</height>
            </rect>
           </property>
@@ -701,8 +857,8 @@ QPushButton:pressed {
           <rect>
            <x>5</x>
            <y>5</y>
-           <width>320</width>
-           <height>390</height>
+           <width>500</width>
+           <height>520</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -724,13 +880,25 @@ border-radius: 10px;</string>
        </widget>
       </widget>
       <widget class="QWidget" name="measure_sensor_frame">
+       <property name="minimumSize">
+        <size>
+         <width>1024</width>
+         <height>550</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>1024</width>
+         <height>550</height>
+        </size>
+       </property>
        <widget class="QFrame" name="sensor_infor_frame">
         <property name="geometry">
          <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>561</width>
-          <height>321</height>
+          <x>10</x>
+          <y>0</y>
+          <width>650</width>
+          <height>410</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -740,16 +908,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_3">
          <property name="geometry">
           <rect>
-           <x>37</x>
+           <x>70</x>
            <y>50</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>80</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -768,7 +942,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -777,7 +951,7 @@ border-radius: 10px;</string>
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>dsds</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -791,14 +965,20 @@ border-radius: 10px;</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>271</width>
-           <height>40</height>
+           <width>325</width>
+           <height>50</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>60</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -816,7 +996,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -837,16 +1017,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_4">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>400</x>
            <y>50</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>80</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -865,7 +1051,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -886,16 +1072,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_label_frame_4">
          <property name="geometry">
           <rect>
-           <x>293</x>
+           <x>325</x>
            <y>0</y>
-           <width>251</width>
-           <height>40</height>
+           <width>325</width>
+           <height>50</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -913,7 +1105,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -934,16 +1126,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_6">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>150</y>
+           <x>70</x>
+           <y>190</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>80</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -962,7 +1160,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -983,16 +1181,16 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_5">
          <property name="geometry">
           <rect>
-           <x>330</x>
-           <y>150</y>
+           <x>400</x>
+           <y>190</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1011,7 +1209,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1032,16 +1230,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_label_frame_5">
          <property name="geometry">
           <rect>
-           <x>3</x>
-           <y>100</y>
-           <width>271</width>
-           <height>40</height>
+           <x>0</x>
+           <y>140</y>
+           <width>325</width>
+           <height>50</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1059,7 +1263,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1080,17 +1284,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_label_frame_6">
          <property name="geometry">
           <rect>
-           <x>296</x>
-           <y>100</y>
-           <width>251</width>
-           <height>40</height>
+           <x>325</x>
+           <y>140</y>
+           <width>325</width>
+           <height>50</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>25</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background: transparent;</string>
@@ -1107,7 +1316,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1128,16 +1337,22 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_8">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>250</y>
+           <x>70</x>
+           <y>330</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>80</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1156,7 +1371,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1177,16 +1392,16 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_text_frame_7">
          <property name="geometry">
           <rect>
-           <x>330</x>
-           <y>250</y>
+           <x>400</x>
+           <y>330</y>
            <width>181</width>
-           <height>40</height>
+           <height>80</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>80</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1205,7 +1420,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>18</pointsize>
+              <pointsize>30</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1226,16 +1441,16 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_label_frame_7">
          <property name="geometry">
           <rect>
-           <x>3</x>
-           <y>200</y>
-           <width>271</width>
-           <height>40</height>
+           <x>0</x>
+           <y>280</y>
+           <width>325</width>
+           <height>50</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1253,7 +1468,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1274,16 +1489,16 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="birthday_label_frame_8">
          <property name="geometry">
           <rect>
-           <x>296</x>
-           <y>200</y>
-           <width>251</width>
-           <height>40</height>
+           <x>325</x>
+           <y>280</y>
+           <width>325</width>
+           <height>50</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -1301,7 +1516,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>14</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1323,10 +1538,10 @@ border-radius: 10px;</string>
        <widget class="QFrame" name="room_frame">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>690</x>
           <y>10</y>
-          <width>211</width>
-          <height>321</height>
+          <width>315</width>
+          <height>400</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1336,10 +1551,10 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="building_text_frame">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>50</y>
-           <width>151</width>
-           <height>45</height>
+           <x>0</x>
+           <y>60</y>
+           <width>310</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1360,18 +1575,18 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="building_code">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>12</y>
-            <width>127</width>
-            <height>21</height>
+            <x>0</x>
+            <y>0</y>
+            <width>310</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>20</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
+            <pointsize>30</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="styleSheet">
@@ -1387,9 +1602,9 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="label_4">
           <property name="geometry">
            <rect>
-            <x>30</x>
-            <y>40</y>
-            <width>95</width>
+            <x>100</x>
+            <y>50</y>
+            <width>110</width>
             <height>1</height>
            </rect>
           </property>
@@ -1405,9 +1620,9 @@ border-radius: 10px;</string>
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>5</y>
-           <width>211</width>
-           <height>45</height>
+           <y>0</y>
+           <width>310</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1415,6 +1630,11 @@ border-radius: 10px;</string>
            <width>16777215</width>
            <height>60</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background: transparent;</string>
@@ -1431,7 +1651,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>16</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1453,9 +1673,9 @@ border-radius: 10px;</string>
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>100</y>
-           <width>211</width>
-           <height>45</height>
+           <y>140</y>
+           <width>310</width>
+           <height>50</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1479,7 +1699,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>16</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1501,9 +1721,9 @@ border-radius: 10px;</string>
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>195</y>
-           <width>211</width>
-           <height>45</height>
+           <y>270</y>
+           <width>310</width>
+           <height>50</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1527,7 +1747,7 @@ border-radius: 10px;</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>16</pointsize>
+              <pointsize>25</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -1548,10 +1768,10 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="room_text_frame">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>145</y>
-           <width>151</width>
-           <height>45</height>
+           <x>0</x>
+           <y>190</y>
+           <width>310</width>
+           <height>60</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1572,18 +1792,18 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="room_code">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>12</y>
-            <width>127</width>
-            <height>21</height>
+            <x>0</x>
+            <y>0</y>
+            <width>310</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>20</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
+            <pointsize>30</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="styleSheet">
@@ -1599,9 +1819,9 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="label_5">
           <property name="geometry">
            <rect>
-            <x>30</x>
-            <y>40</y>
-            <width>95</width>
+            <x>100</x>
+            <y>50</y>
+            <width>115</width>
             <height>1</height>
            </rect>
           </property>
@@ -1616,10 +1836,10 @@ border-radius: 10px;</string>
         <widget class="QFrame" name="dep_text_frame">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>240</y>
-           <width>151</width>
-           <height>60</height>
+           <x>0</x>
+           <y>320</y>
+           <width>310</width>
+           <height>61</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -1640,16 +1860,16 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="dep_name">
           <property name="geometry">
            <rect>
-            <x>-2</x>
-            <y>12</y>
-            <width>161</width>
-            <height>36</height>
+            <x>0</x>
+            <y>0</y>
+            <width>311</width>
+            <height>51</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>25</pointsize>
             <weight>50</weight>
             <bold>false</bold>
            </font>
@@ -1667,9 +1887,9 @@ border-radius: 10px;</string>
          <widget class="QLabel" name="label_6">
           <property name="geometry">
            <rect>
-            <x>30</x>
-            <y>55</y>
-            <width>95</width>
+            <x>50</x>
+            <y>50</y>
+            <width>220</width>
             <height>1</height>
            </rect>
           </property>
@@ -1686,18 +1906,30 @@ border-radius: 10px;</string>
         <property name="geometry">
          <rect>
           <x>-1</x>
-          <y>340</y>
-          <width>791</width>
-          <height>81</height>
+          <y>430</y>
+          <width>1024</width>
+          <height>100</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>1024</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1024</width>
+          <height>100</height>
+         </size>
         </property>
         <widget class="QPushButton" name="submit_exam_but">
          <property name="geometry">
           <rect>
-           <x>590</x>
-           <y>10</y>
-           <width>171</width>
-           <height>61</height>
+           <x>690</x>
+           <y>0</y>
+           <width>315</width>
+           <height>100</height>
           </rect>
          </property>
          <property name="minimumSize">
@@ -1709,7 +1941,7 @@ border-radius: 10px;</string>
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>13</pointsize>
+           <pointsize>22</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -1735,22 +1967,22 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>icons/20x20/cil-task.png</normaloff>icons/20x20/cil-task.png</iconset>
+           <normaloff>icons/24x24/cil-task.png</normaloff>icons/24x24/cil-task.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
         <widget class="QPushButton" name="capture_sensor_but">
          <property name="geometry">
           <rect>
-           <x>345</x>
-           <y>10</y>
-           <width>171</width>
-           <height>61</height>
+           <x>353</x>
+           <y>0</y>
+           <width>315</width>
+           <height>100</height>
           </rect>
          </property>
          <property name="minimumSize">
@@ -1762,7 +1994,7 @@ QPushButton:pressed {
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>13</pointsize>
+           <pointsize>22</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -1788,22 +2020,22 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>icons/20x20/cil-media-play.png</normaloff>icons/20x20/cil-media-play.png</iconset>
+           <normaloff>icons/24x24/cil-media-play.png</normaloff>icons/24x24/cil-media-play.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
         <widget class="QPushButton" name="view_dep_list">
          <property name="geometry">
           <rect>
-           <x>55</x>
-           <y>10</y>
-           <width>171</width>
-           <height>61</height>
+           <x>15</x>
+           <y>0</y>
+           <width>315</width>
+           <height>100</height>
           </rect>
          </property>
          <property name="minimumSize">
@@ -1815,7 +2047,7 @@ QPushButton:pressed {
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>13</pointsize>
+           <pointsize>22</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -1841,12 +2073,12 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>icons/20x20/cil-list.png</normaloff>icons/20x20/cil-list.png</iconset>
+           <normaloff>icons/24x24/cil-list.png</normaloff>icons/24x24/cil-list.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
@@ -1856,10 +2088,10 @@ QPushButton:pressed {
        <widget class="QFrame" name="horizontalFrame">
         <property name="geometry">
          <rect>
-          <x>89</x>
+          <x>179</x>
           <y>10</y>
-          <width>691</width>
-          <height>398</height>
+          <width>785</width>
+          <height>520</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1887,9 +2119,9 @@ border-radius: 5px;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-1</y>
-          <width>81</width>
-          <height>421</height>
+          <y>9</y>
+          <width>171</width>
+          <height>521</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -1901,22 +2133,22 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="up_face">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>95</y>
-           <width>60</width>
-           <height>60</height>
+           <x>40</x>
+           <y>110</y>
+           <width>90</width>
+           <height>90</height>
           </rect>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
+           <horstretch>100</horstretch>
+           <verstretch>100</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -1933,7 +2165,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 30px;
+	border-radius: 45px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -1953,22 +2185,22 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="down_face">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>180</y>
-           <width>60</width>
-           <height>60</height>
+           <x>40</x>
+           <y>215</y>
+           <width>90</width>
+           <height>90</height>
           </rect>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
+           <horstretch>100</horstretch>
+           <verstretch>100</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -1985,7 +2217,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 30px;
+	border-radius: 45px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2005,10 +2237,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="left_face">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>265</y>
-           <width>60</width>
-           <height>60</height>
+           <x>40</x>
+           <y>320</y>
+           <width>90</width>
+           <height>90</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -2019,14 +2251,14 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="font">
@@ -2037,7 +2269,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 30px;
+	border-radius: 45px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2057,10 +2289,10 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="right_face">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>350</y>
-           <width>60</width>
-           <height>60</height>
+           <x>40</x>
+           <y>425</y>
+           <width>90</width>
+           <height>90</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -2071,14 +2303,14 @@ border-radius: 5px;</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="font">
@@ -2089,7 +2321,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 30px;
+	border-radius: 45px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2109,22 +2341,22 @@ border-radius: 5px;</string>
         <widget class="QLabel" name="front_face">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>60</width>
-           <height>60</height>
+           <x>40</x>
+           <y>5</y>
+           <width>90</width>
+           <height>90</height>
           </rect>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
+           <horstretch>100</horstretch>
+           <verstretch>100</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>90</width>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -2141,7 +2373,7 @@ border-radius: 5px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
-	border-radius: 30px;
+	border-radius: 45px;
 	background-color: rgb(44, 49, 60);
 	border: 5px solid rgb(39, 44, 54);
 	background-position: center;
@@ -2164,10 +2396,10 @@ border-radius: 5px;</string>
        <widget class="QPushButton" name="confirm_dep_but">
         <property name="geometry">
          <rect>
-          <x>640</x>
-          <y>360</y>
-          <width>140</width>
-          <height>51</height>
+          <x>800</x>
+          <y>445</y>
+          <width>200</width>
+          <height>80</height>
          </rect>
         </property>
         <property name="minimumSize">
@@ -2213,10 +2445,10 @@ QPushButton:pressed {
        <widget class="QFrame" name="seleted_dep_frame">
         <property name="geometry">
          <rect>
-          <x>110</x>
-          <y>360</y>
-          <width>370</width>
-          <height>51</height>
+          <x>149</x>
+          <y>445</y>
+          <width>411</width>
+          <height>80</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -2242,13 +2474,13 @@ border-radius: 10px;
            <x>12</x>
            <y>12</y>
            <width>341</width>
-           <height>31</height>
+           <height>51</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>18</pointsize>
+           <pointsize>25</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -2257,7 +2489,7 @@ border-radius: 10px;
           <string notr="true">color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
-          <string>Truong Khoa</string>
+          <string>Khoa Tai Mui Hong</string>
          </property>
         </widget>
        </widget>
@@ -2265,15 +2497,15 @@ border-radius: 10px;
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>360</y>
-          <width>91</width>
-          <height>51</height>
+          <y>450</y>
+          <width>131</width>
+          <height>81</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>Segoe UI</family>
-          <pointsize>14</pointsize>
+          <pointsize>22</pointsize>
           <weight>50</weight>
           <bold>false</bold>
          </font>
@@ -2292,10 +2524,10 @@ Department</string>
        <widget class="QPushButton" name="select_dep_but">
         <property name="geometry">
          <rect>
-          <x>490</x>
-          <y>360</y>
-          <width>140</width>
-          <height>51</height>
+          <x>580</x>
+          <y>445</y>
+          <width>201</width>
+          <height>81</height>
          </rect>
         </property>
         <property name="minimumSize">
@@ -2342,9 +2574,9 @@ QPushButton:pressed {
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>59</y>
-          <width>771</width>
-          <height>291</height>
+          <y>80</y>
+          <width>990</width>
+          <height>350</height>
          </rect>
         </property>
         <property name="minimumSize">
@@ -2440,7 +2672,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2448,7 +2680,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2505,7 +2737,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2513,7 +2745,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2570,7 +2802,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2578,15 +2810,20 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>25</pointsize>
+            </font>
            </property>
            <property name="styleSheet">
             <string notr="true">QTableWidget {	
 	background-color: transparent;
 	padding: 10px;
-	border-radius: 5px;
+	border-radius: 10px;
 	gridline-color: rgb(198, 201, 201);
 	border: 2px solid rgb(44, 49, 60);
 }
@@ -2808,7 +3045,7 @@ QHeaderView::section:vertical
            </item>
            <item row="0" column="1">
             <property name="text">
-             <string>Line</string>
+             <string>Khoa tai mui hong</string>
             </property>
            </item>
           </widget>
@@ -2820,14 +3057,20 @@ QHeaderView::section:vertical
          <rect>
           <x>10</x>
           <y>9</y>
-          <width>770</width>
-          <height>41</height>
+          <width>985</width>
+          <height>60</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>50</height>
+          <height>80</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -2844,20 +3087,25 @@ QHeaderView::section:vertical
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>771</width>
-           <height>41</height>
+           <width>985</width>
+           <height>61</height>
           </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>25</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(0, 114, 177);
-border-top-left-radius: 7px;
-border-top-right-radius: 7px;
+border-top-left-radius: 15px;
+border-top-right-radius: 15px;
 border-bottom-left-radius: 2px;
 border-bottom-right-radius: 2px;
 color: rgb(255, 255, 255)</string>
          </property>
          <property name="text">
-          <string>  Exam Room                                       Department Name</string>
+          <string>  Exam Room             Department Name</string>
          </property>
         </widget>
        </widget>
