@@ -132,69 +132,69 @@ class GlobalVariable:
         self.CONFIRM_PATIENT_DIALOG = 1
         self.CONFIRM_NEW_PATIENT_DIALOG = 2
 
-        # # PATH_PARA
-        # config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
-        # with open(config_para_path, 'r') as file:
-        #     documents = yaml.load(file, Loader=yaml.FullLoader)
-        #     # Connection server
-        #     self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
+        # PATH_PARA
+        config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
+        with open(config_para_path, 'r') as file:
+            documents = yaml.load(file, Loader=yaml.FullLoader)
+            # Connection server
+            self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
             
-        #     # Parameters for image processing, and KNN model
-        #     self.IMAGE_SIZE = int(documents['preprocessing']['image_size'])
-        #     self.BASE_BRIGHTNESS = int(documents['preprocessing']['base_brightness'])
+            # Parameters for image processing, and KNN model
+            self.IMAGE_SIZE = int(documents['preprocessing']['image_size'])
+            self.BASE_BRIGHTNESS = int(documents['preprocessing']['base_brightness'])
             
-        #     # identifying_face
-        #     self.CYCLE_COUNT_FACE_PERIOD = int(documents['identifying_face']['cycle_count_face_period'])
-        #     self.NUMBER_DETECTED_FACE_TRANSMITED = int(documents['identifying_face']['number_deteced_face_allowed'])
-        #     # MAX length for HOG face Detector
-        #     self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
-        #     self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
+            # identifying_face
+            self.CYCLE_COUNT_FACE_PERIOD = int(documents['identifying_face']['cycle_count_face_period'])
+            self.NUMBER_DETECTED_FACE_TRANSMITED = int(documents['identifying_face']['number_deteced_face_allowed'])
+            # MAX length for HOG face Detector
+            self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
+            self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
 
 
-        #     self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
-        #     self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
+            self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
+            self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
 
-        #     # FACE RECOGNITION MODEL
-        #     self.PREDICTOR_5_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_5_point_model']))
-        #     self.PREDICTOR_68_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_68_point_model']))
-        #     self.CNN_FACE_DETECTOR = os.path.join(PROJECT_PATH, str(documents['path']['cnn_face_detector_model']))
-        #     self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
+            # FACE RECOGNITION MODEL
+            self.PREDICTOR_5_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_5_point_model']))
+            self.PREDICTOR_68_POINT_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['predictor_68_point_model']))
+            self.CNN_FACE_DETECTOR = os.path.join(PROJECT_PATH, str(documents['path']['cnn_face_detector_model']))
+            self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
 
-        #     # Display image
-        #     self.CAMERA_DISPLAY_WIDTH = int(documents['camera']['camera_display_width'])
-        #     self.CAMERA_DISPLAY_HEIGHT = int(documents['camera']['camera_display_height'])
-        #     # 1920x1080, 30 fps
-        #     self.SENSOR_MODE_1080 = int(documents['camera']['camera_mode_1080'])
-        #     # 1280x720, 60 fps
-        #     self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
+            # Display image
+            self.CAMERA_DISPLAY_WIDTH = int(documents['camera']['camera_display_width'])
+            self.CAMERA_DISPLAY_HEIGHT = int(documents['camera']['camera_display_height'])
+            # 1920x1080, 30 fps
+            self.SENSOR_MODE_1080 = int(documents['camera']['camera_mode_1080'])
+            # 1280x720, 60 fps
+            self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
 
-        #     # size for display patient
-        #     self.LOCATION_RECOGNIZE_FACE_WIDTH = int(documents['gui']['location_recognize_face_width'])
-        #     self.LOCATION_RECOGNIZE_FACE_HEIGHT = int(documents['gui']['location_recognize_face_height'])
-        #     # size for displaying new patient
-        #     self.LOCATION_ADD_FACE_WIDTH = int(documents['gui']['location_add_face_width'])
-        #     self.LOCATION_ADD_FACE_HEIGHT = int(documents['gui']['location_add_face_height'])
+            # size for display patient
+            self.LOCATION_RECOGNIZE_FACE_WIDTH = int(documents['gui']['location_recognize_face_width'])
+            self.LOCATION_RECOGNIZE_FACE_HEIGHT = int(documents['gui']['location_recognize_face_height'])
+            # size for displaying new patient
+            self.LOCATION_ADD_FACE_WIDTH = int(documents['gui']['location_add_face_width'])
+            self.LOCATION_ADD_FACE_HEIGHT = int(documents['gui']['location_add_face_height'])
 
-        #     # Parameters for GUI
-        #     self.WIDTH_GUI = int(documents['gui']['width_gui'])
-        #     self.HEIGHT_GUI = int(documents['gui']['height_gui'])
-        #     self.CAM_EXAM_LAYOUT_WIDTH = int(documents['gui']['cam_exam_layout_width'])
-        #     self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
-        #     self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
-        #     self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
+            # Parameters for GUI
+            self.WIDTH_GUI = int(documents['gui']['width_gui'])
+            self.HEIGHT_GUI = int(documents['gui']['height_gui'])
+            self.CAM_EXAM_LAYOUT_WIDTH = int(documents['gui']['cam_exam_layout_width'])
+            self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
+            self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
+            self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
 
-        #     # Parameters for timer
-        #     self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
-        #     self.TIMEOUT_MISSING_FACE = int(documents['timer']['timeout_missing_face'])
+            # Parameters for timer
+            self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
+            self.TIMEOUT_MISSING_FACE = int(documents['timer']['timeout_missing_face'])
 
-        #     self.TIMEOUT_VALIDATE = int(documents['timer']['timeout_validate'])
-        #     self.OPT_TIMER_VALIDATE = int(documents['timer']['opt_timer_validate'])
+            self.TIMEOUT_VALIDATE = int(documents['timer']['timeout_validate'])
+            self.OPT_TIMER_VALIDATE = int(documents['timer']['opt_timer_validate'])
 
-        #     self.TIMEOUT_GET_EXAMINATION_ROOM = int(documents['timer']['timeout_get_examination_room'])
-        #     self.OPT_TIMER_GET_EXAMINATION_ROOM = int(documents['timer']['opt_timer_get_examination_room'])
+            self.TIMEOUT_GET_EXAMINATION_ROOM = int(documents['timer']['timeout_get_examination_room'])
+            self.OPT_TIMER_GET_EXAMINATION_ROOM = int(documents['timer']['opt_timer_get_examination_room'])
 
-        #     self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
-        #     self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
+            self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
+            self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
      
 
 class User_Infor:
