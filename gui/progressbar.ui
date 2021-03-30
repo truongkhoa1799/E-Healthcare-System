@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>160</height>
+    <width>420</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,9 +20,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>55</y>
-     <width>260</width>
-     <height>20</height>
+     <y>100</y>
+     <width>381</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="value">
@@ -36,9 +36,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
-     <width>120</width>
-     <height>41</height>
+     <y>180</y>
+     <width>180</width>
+     <height>80</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -50,7 +50,7 @@
    <property name="font">
     <font>
      <family>Segoe UI</family>
-     <pointsize>13</pointsize>
+     <pointsize>25</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -88,10 +88,10 @@ QPushButton:pressed {
   <widget class="QPushButton" name="capture_but">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>100</y>
-     <width>120</width>
-     <height>41</height>
+     <x>220</x>
+     <y>180</y>
+     <width>180</width>
+     <height>80</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -103,7 +103,7 @@ QPushButton:pressed {
    <property name="font">
     <font>
      <family>Segoe UI</family>
-     <pointsize>13</pointsize>
+     <pointsize>25</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -143,9 +143,14 @@ QPushButton:pressed {
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>251</width>
-     <height>31</height>
+     <width>381</width>
+     <height>71</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background: transparent;

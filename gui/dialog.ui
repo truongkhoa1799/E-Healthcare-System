@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>160</height>
+    <width>420</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,8 @@
     <rect>
      <x>-1</x>
      <y>-1</y>
-     <width>260</width>
-     <height>160</height>
+     <width>421</width>
+     <height>281</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -32,18 +32,18 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>80</y>
-      <width>260</width>
-      <height>71</height>
+      <y>170</y>
+      <width>421</width>
+      <height>111</height>
      </rect>
     </property>
     <widget class="QPushButton" name="accept_exist">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>220</x>
        <y>10</y>
-       <width>91</width>
-       <height>41</height>
+       <width>180</width>
+       <height>81</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -83,8 +83,8 @@ QPushButton:pressed {
       <rect>
        <x>20</x>
        <y>10</y>
-       <width>91</width>
-       <height>41</height>
+       <width>180</width>
+       <height>81</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -125,9 +125,14 @@ QPushButton:pressed {
      <rect>
       <x>0</x>
       <y>29</y>
-      <width>261</width>
-      <height>41</height>
+      <width>421</width>
+      <height>81</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 0, 0);</string>

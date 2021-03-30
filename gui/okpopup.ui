@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>160</height>
+    <width>420</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
     <rect>
      <x>-1</x>
      <y>-1</y>
-     <width>260</width>
+     <width>421</width>
      <height>160</height>
     </rect>
    </property>
@@ -32,22 +32,48 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>100</y>
-      <width>260</width>
-      <height>71</height>
+      <y>140</y>
+      <width>421</width>
+      <height>141</height>
      </rect>
     </property>
-    <widget class="QPushButton" name="accept_exist">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>0</y>
-       <width>140</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton {
+   </widget>
+   <widget class="QLabel" name="text_dialog">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>29</y>
+      <width>421</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="accept_exist">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>170</y>
+     <width>180</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
 	border: 2px solid rgb(0, 114, 177);
 	border-radius: 5px;	
 	background-color: rgb(0, 114, 177);
@@ -63,41 +89,20 @@ QPushButton:pressed {
 	border: 3px solid rgb(20, 126, 154);
 	color: rgb(255, 255, 255);
 }</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>icons/24x24/cil-check-circle.png</normaloff>icons/24x24/cil-check-circle.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QLabel" name="text_dialog">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>29</y>
-      <width>261</width>
-      <height>60</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/24x24/cil-check-circle.png</normaloff>icons/24x24/cil-check-circle.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
   </widget>
  </widget>
  <resources/>
