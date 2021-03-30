@@ -28,8 +28,8 @@ camera:
   # Display image
   # camera_display_width: 640
   # camera_display_height: 360
-  camera_display_width: 800
-  camera_display_height: 450
+  camera_display_width: 960
+  camera_display_height: 540
   # 1920x1080, 30 fps
   camera_mode_1080: 2
   # 1280x720, 60 fps
@@ -41,10 +41,10 @@ gui:
   # location_face_height: 350
 
   # Width and height for patient face when recognizing
-  location_recognize_face_width: 425
-  location_recognize_face_height: 400
-  location_add_face_width: 700
-  location_add_face_height: 400
+  location_recognize_face_width: 490
+  location_recognize_face_height: 530
+  location_add_face_width: 765
+  location_add_face_height: 500
   # # image for center face
   # SCALE_WIDTH=320
   # SCALE_HEIGHT=192

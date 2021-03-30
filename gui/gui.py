@@ -115,13 +115,14 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.view_departments)
+        self.stackedWidget.setCurrentWidget(self.recognize_frame)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
-        # self.showFullScreen()
+        # Show full screen
+        self.showFullScreen()
         # Hide currsor
         self.setCursor(QtCore.Qt.BlankCursor)
 
@@ -430,7 +431,7 @@ class GUI(QtWidgets.QMainWindow):
             ''')
 
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()
