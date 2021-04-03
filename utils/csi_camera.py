@@ -40,9 +40,12 @@ class CSI_Camera:
 
     def open(self, gstreamer_pipeline_string):
         try:
-            self.video_capture = cv2.VideoCapture(
-                gstreamer_pipeline_string, cv2.CAP_GSTREAMER
-            )
+            # Jetson
+            # self.video_capture = cv2.VideoCapture(
+            #     gstreamer_pipeline_string, cv2.CAP_GSTREAMER
+            # )
+            # Macos
+            self.video_capture = cv2.VideoCapture(0)
             
         except RuntimeError:
             self.video_capture = None
@@ -80,7 +83,11 @@ class CSI_Camera:
         
     def read(self):
         with self.read_lock:
-            frame = self.frame.copy()
+            # Jetson
+            # frame = self.frame.copy()
+            # Macos
+            frame = self.frame
+            
             grabbed=self.grabbed
         return grabbed, frame
 

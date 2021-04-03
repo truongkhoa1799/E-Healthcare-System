@@ -7,25 +7,26 @@ import numpy as np
 # import face_recognition
 import dlib
 from utils.parameters import *
-from utils.get_occuluded_angle.head_pose_from_image import Get_Face_Angle
+from utils.get_occuluded_angle.get_face_pose import Get_Face_Angle
 from utils.common_functions import Preprocessing_Img
+from utils.common_functions import LogMesssage
 
 class Face_Recognition:
     def __init__(self):
         if glo_va.SHAPE_PREDICTOR_MODEL == '68':
-            print("\tLoad predictor 68 points model")
+            LogMesssage("\tLoad predictor 68 points model")
             self.__pose_predictor = dlib.shape_predictor(glo_va.PREDICTOR_68_POINT_MODEL)
         else:
-            print("\tLoad predictor 5 points model")
+            LogMesssage("\tLoad predictor 5 points model")
             self.__pose_predictor = dlib.shape_predictor(glo_va.PREDICTOR_5_POINT_MODEL)
 
         self.__face_encoder = dlib.face_recognition_model_v1(glo_va.RESNET_MODEL)
 
         if glo_va.FACE_DETECTOR_MODEL == 'hog':
-            print("\tLoad face detector HOG model")
+            LogMesssage("\tLoad face detector HOG model")
             self.__face_detector = dlib.get_frontal_face_detector()
         else:
-            print("\tLoad face detector CNN model")
+            LogMesssage("\tLoad face detector CNN model")
             self.__face_detector_cnn = dlib.cnn_face_detection_model_v1(glo_va.CNN_FACE_DETECTOR)
 
         test_img = None
@@ -35,7 +36,7 @@ class Face_Recognition:
 
         test_encoded = self.__face_encodings(test_img, [(1, 149, 1, 149)])
         time.sleep(1)
-        print("\tDone load dlib model")
+        LogMesssage("\tDone load dlib model")
     
     def __face_encodings(self, face_image, known_face_locations):
         # Get landmarks
@@ -126,7 +127,6 @@ class Face_Recognition:
             return [self.__trim_css_to_bounds(self.__rect_to_css(face), img.shape) for face in self.__raw_face_locations(img, 1)]
 
     def Get_Face(self):
-        face_area = 0
         max_edge = 0
 
         if glo_va.img is not None:

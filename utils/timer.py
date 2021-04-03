@@ -1,4 +1,5 @@
 from utils.parameters import *
+from utils.common_functions import LogMesssage
 from threading import Timer
 import time, uuid
 CYCLE_TIMER_PERIOD = 1
@@ -41,7 +42,7 @@ class Timer:
             # Check if time out for valifation or not
             if self.__timeout_validate >= glo_va.TIMEOUT_VALIDATE:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("\t[{time}]: Timer for validation is expired".format(time=current_time))
+                LogMesssage("\t[{time}]: Timer for validation is expired".format(time=current_time))
 
                 self.__Check_Timer()
 
@@ -51,7 +52,7 @@ class Timer:
             # Get the examaniation room
             if self.__timeout_get_examination_room >= glo_va.TIMEOUT_GET_EXAMINATION_ROOM:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("\t[{time}]: Timer for getting examination room is expired".format(time=current_time))
+                LogMesssage("\t[{time}]: Timer for getting examination room is expired".format(time=current_time))
 
                 self.__Check_Timer()
 
@@ -61,7 +62,7 @@ class Timer:
             # Get the examaniation room
             if self.__timeout_submit_examination >= glo_va.TIMEOUT_SUBMIT_EXAMINATION:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("\t[{time}]: Timer for submit examination is expired".format(time=current_time))
+                LogMesssage("\t[{time}]: Timer for submit examination is expired".format(time=current_time))
                 
                 self.__Check_Timer()
 

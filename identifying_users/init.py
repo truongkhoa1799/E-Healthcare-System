@@ -10,6 +10,7 @@ from identifying_users.count_face import CountFace
 
 from communicate_server.server import Server
 from utils.timer import Timer
+from utils.common_functions import LogMesssage
 
 from threading import Lock
 #########################################################################
@@ -17,7 +18,7 @@ from threading import Lock
 #########################################################################
 def Init():
     if glo_va.STATE == 1:
-        print('Start init program')
+        LogMesssage('Start init program', opt=0)
         # Init face recognition
         Start_Face_Recognition()
         glo_va.flg_init_face_recognition = True
@@ -32,7 +33,7 @@ def Init():
 
         # Init server connection
         Start_Server_Connection()
-        # glo_va.flg_server_connected = True
+        glo_va.flg_server_connected = True
 
         # Init Timer
         Start_Timer()
@@ -41,44 +42,45 @@ def Init():
         # Init lock response from server and timer
         glo_va.lock_response_server = Lock()
     
+    # glo_va.STATE = 6
     time.sleep(2)
 
 #########################################################################
 # START FUNCTIONS                                                       #
 #########################################################################
 def Start_Face_Recognition():
-    print("Starting init Face Recognition")
+    LogMesssage("Starting init Face Recognition", opt=0)
     glo_va.face_recognition = Face_Recognition()
 
     time.sleep(0.5)
-    print("Done start init Face Encoder")
+    LogMesssage("Done start init Face Encoder", opt=0)
     print()
 
 def Start_Camera_Detecting():
-    print("Starting init Camera")
+    LogMesssage("Starting init Camera", opt=0)
     glo_va.camera = CameraDetecting()
 
     time.sleep(0.5)
-    print("Done start init Camera")
+    LogMesssage("Done start init Camera", opt=0)
     print()
 
 def Start_Count_Face():
-    print("Starting Init CountFace")
+    LogMesssage("Starting Init CountFace", opt=0)
     glo_va.count_face = CountFace()
     time.sleep(0.5)
-    print("Done start CountFace")
+    LogMesssage("Done start CountFace", opt=0)
     print()
 
 def Start_Timer():
-    print("Starting Init Timer")
+    LogMesssage("Starting Init Timer", opt=0)
     glo_va.timer = Timer()
     time.sleep(0.5)
-    print("Done start Timer")
+    LogMesssage("Done start Timer", opt=0)
     print()
 
 def Start_Server_Connection():
-    print("Starting Init Server Connection")
+    LogMesssage("Starting Init Server Connection", opt=0)
     glo_va.server = Server()
-    print("Done Init Server Connection")
+    LogMesssage("Done Init Server Connection", opt=0)
     print()
 

@@ -6,69 +6,89 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>280</height>
+    <width>500</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: rgb(255, 255, 255);</string>
+   <string notr="true">background: rgb(50, 50, 50);</string>
   </property>
   <widget class="QFrame" name="verticalFrame">
    <property name="geometry">
     <rect>
      <x>-1</x>
      <y>-1</y>
-     <width>421</width>
-     <height>160</height>
+     <width>501</width>
+     <height>201</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background: rgb(255, 255, 255);</string>
+    <string notr="true">background: rgb(50, 50, 50);</string>
    </property>
-   <widget class="QFrame" name="horizontalFrame">
+   <widget class="QFrame" name="icon">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>140</y>
-      <width>421</width>
-      <height>141</height>
+      <x>205</x>
+      <y>20</y>
+      <width>90</width>
+      <height>90</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>1000</width>
+      <height>1000</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+background-image: url(icons/icons8-checkmark-90.png);
+background-position: center;
+background-repeat: no-repeat;
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
    </widget>
    <widget class="QLabel" name="text_dialog">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>29</y>
-      <width>421</width>
-      <height>111</height>
+      <x>70</x>
+      <y>120</y>
+      <width>391</width>
+      <height>91</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>25</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 0);</string>
+     <string notr="true">color: rgb(245,245,245);</string>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>  Please capture sensor information
+and select examination department</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>
   <widget class="QPushButton" name="accept_exist">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>170</y>
-     <width>180</width>
+     <x>100</x>
+     <y>215</y>
+     <width>300</width>
      <height>80</height>
     </rect>
    </property>
@@ -95,12 +115,12 @@ QPushButton:pressed {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>icons/24x24/cil-check-circle.png</normaloff>icons/24x24/cil-check-circle.png</iconset>
+     <normaloff>icons/icons8-checkmark-100.png</normaloff>icons/icons8-checkmark-100.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>60</width>
+     <height>60</height>
     </size>
    </property>
   </widget>

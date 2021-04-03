@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -17,13 +17,39 @@ ProgressBarDialog = uic.loadUiType("gui/progressbar.ui")[0]
 # YesNoQDialog = uic.loadUiType("dialog.ui")[0]
 
 class OkDialogClass(QDialog, OkDialog):
-    def __init__(self, ret, text, parent=None):
+    def __init__(self, ret, data, parent=None):
         QDialog.__init__(self, parent)
         self.ret = -2
-        self.text = text
+        self.text = None
         self.setupUi(self)
 
-        self.text_dialog.setText(text)
+        # submit success
+        if data['opt'] == 0:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/icons8-checkmark-90.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '             Your STT     : {}        \n             At Room      : {}'.format(data['stt'], data['room'])
+        # fail to submit
+        elif data['opt'] == 1:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/warning.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '    False to submit examination.\n                Please try again.'
+        # ask capture sensor
+        elif data['opt'] == 2:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/warning.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '  Please capture sensor information\nand select examination department'
+
+
+        self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning())
     
     def __onButtonListenning(self):
@@ -37,13 +63,20 @@ class OkDialogClass(QDialog, OkDialog):
             self.accept()
 
 class QDialogClass(QDialog, YesNoQDialog):
-    def __init__(self, ret, text, parent=None):
+    def __init__(self, ret, opt, parent=None):
         QDialog.__init__(self, parent)
         self.ret = -2
-        self.text = text
+        self.text = None
         self.setupUi(self)
 
-        self.text_dialog.setText(text)
+        if opt == glo_va.EXIST_DIALOG:
+            self.text = 'Are you sure to quit?'
+        elif opt == glo_va.CONFIRM_PATIENT_DIALOG:
+            self.text = 'Is it your information?'
+        elif opt == glo_va.CONFIRM_NEW_PATIENT_DIALOG:
+            self.text = 'Are you new user?'
+
+        self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning(0))
         self.deny_exist.clicked.connect(lambda: self.__onButtonListenning(1))
     
@@ -115,21 +148,21 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
-        # Show full screen
-        self.showFullScreen()
-        # Hide currsor
-        self.setCursor(QtCore.Qt.BlankCursor)
+        # # Show full screen
+        # self.showFullScreen()
+        # # Hide currsor
+        # self.setCursor(QtCore.Qt.BlankCursor)
 
         self.queue_request_states_thread = queue.Queue(maxsize = 10)
         check_request_states_thread = QTimer(self)
         check_request_states_thread.timeout.connect(self.__CheckRequestStatesThread)
-        check_request_states_thread.start(50)
+        check_request_states_thread.start(10)
 
         self.image_display = None
         self.image_new_user = None
@@ -151,12 +184,26 @@ class GUI(QtWidgets.QMainWindow):
 
         # self.__SetBackgroudMainFrame(1)
         # self.__UpdateListDepartments()
-        # self.__MeasureSensor()
+
+        self.__MeasureSensor()
+        
         # self.__notificationDialog('Please capture sensor\ninformation and select\nexamination department', 0)
+
+        # data = {}
+        # data['opt'] = 1
+        # data['stt'] = 1
+        # data['room'] = 'C1-202'
+        # self.submit_dialog = OkDialogClass(-2, data)
+        # self.submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        # if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
+        #     glo_va.button = glo_va.BUTTON_OKAY
+
+        # dialog = QDialogClass(-1, glo_va.CONFIRM_NEW_PATIENT_DIALOG)
+        # dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        # if dialog.exec_() == QtWidgets.QDialog.Accepted:
+        #     print(int(dialog.ret))
     
-    # def __test(self):
-    #     # print('hoho')
-    #     self.dialog.setFinish('hooho')
+
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
 
@@ -164,7 +211,7 @@ class GUI(QtWidgets.QMainWindow):
     def __onButtonsListenning(self, opt):
         if opt == glo_va.BUTTON_EXIST:
             ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
-            print(ret)
+            # print(ret)
             if ret == 0:
                 glo_va.button = glo_va.BUTTON_EXIST
 
@@ -182,14 +229,14 @@ class GUI(QtWidgets.QMainWindow):
                 return
             
             glo_va.button = glo_va.BUTTON_VIEW_LIST_DEP
-            print('BUTTON_VIEW_LIST_DEP')
+            # print('BUTTON_VIEW_LIST_DEP')
 
         elif opt == glo_va.BUTTON_CAPTURE_SENSOR:
             if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
                 return
             
             glo_va.button = glo_va.BUTTON_CAPTURE_SENSOR
-            print('BUTTON_CAPTURE_SENSOR')
+            # print('BUTTON_CAPTURE_SENSOR')
             
         elif opt == glo_va.BUTTON_SUBMIT_EXAM:
             if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
@@ -206,33 +253,27 @@ class GUI(QtWidgets.QMainWindow):
 
     # def __submitExamination(self):
 
-    def __notificationDialog(self, message):
-        self.submit_dialog = OkDialogClass(-2, message)
+    def __notificationDialog(self, data):
+        self.submit_dialog = OkDialogClass(-2, data)
         self.submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
             glo_va.button = glo_va.BUTTON_OKAY
 
     def __OpenDialog(self, opt):
         ret = None
-        if opt == glo_va.EXIST_DIALOG:
-            text = 'Are you sure to quit?'
-        elif opt == glo_va.CONFIRM_PATIENT_DIALOG:
-            text = 'Is it your information?'
-        elif opt == glo_va.CONFIRM_NEW_PATIENT_DIALOG:
-            text = 'Are you new user?'
 
-        dialog = QDialogClass(ret, text)
+        dialog = QDialogClass(ret, opt)
         dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             return int(dialog.ret)
     
-    def __SetBackgroudMainFrame(self, opt):
-        if opt == 0:
-            # White background
-            self.main_frame.setStyleSheet('background-color: rgb(255,255,255);')
-        elif opt == 1:
-            # black background
-            self.main_frame.setStyleSheet('background-color: rgb(0,0,0);')
+    # def __SetBackgroudMainFrame(self, opt):
+    #     if opt == 0:
+    #         # White background
+    #         self.main_frame.setStyleSheet('background-color: rgb(255,255,255);')
+    #     elif opt == 1:
+    #         # black background
+    #         self.main_frame.setStyleSheet('background-color: rgb(0,0,0);')
 
     def __CheckRequestStatesThread(self):
         if self.queue_request_states_thread.empty():
@@ -242,7 +283,7 @@ class GUI(QtWidgets.QMainWindow):
 
         if request['type'] == glo_va.REQUEST_CONFIRM_NEW_PATIENT:
             ret = self.__OpenDialog(glo_va.CONFIRM_NEW_PATIENT_DIALOG)
-            print(ret)
+            # print(ret)
             if ret == 0:
                 glo_va.button = glo_va.BUTTON_ACCEPT_NEW_PATIENT
             else:
@@ -281,8 +322,8 @@ class GUI(QtWidgets.QMainWindow):
             self.__MeasureSensor()
 
         elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
-            message = request['data']
-            self.__notificationDialog(message)
+            data = request['data']
+            self.__notificationDialog(data)
 
         return
 
@@ -324,6 +365,7 @@ class GUI(QtWidgets.QMainWindow):
         self.patient_name.setText(infor['name'])
         self.patient_birthday.setText(infor['birthday'])
         self.patient_phone.setText(infor['phone'])
+        self.patient_address.setText(infor['address'])
     
     def __ClearPatientInfo(self):
         self.patient_name.setText('')
@@ -356,18 +398,10 @@ class GUI(QtWidgets.QMainWindow):
     
     def __UpdateExamRoom(self):
         dep_name, building, room = exam.Get_Exam_Room_Infor()
-        temp = dep_name.split(' ')
-        ret_dep = ""
-        for i in range(len(temp)):
-            if i % 2 == 0 and i != 0:
-                ret_dep += '\n'
-            else:
-                ret_dep += ' '
-            ret_dep += temp[i]
 
         self.building_code.setText(building)
         self.room_code.setText(room)
-        self.dep_name.setText(ret_dep)
+        self.dep_name.setText(dep_name)
     
     def __ClearExamRoom(self):
         self.building_code.setText('')
@@ -376,17 +410,17 @@ class GUI(QtWidgets.QMainWindow):
 
     def __ChangeUI(self):
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-            self.__SetBackgroudMainFrame(1)
+            # self.__SetBackgroudMainFrame(1)
             self.stackedWidget.setCurrentWidget(self.add_new_patient_frame)
         elif glo_va.STATE == glo_va.STATE_MEASURE_SENSOR:
-            self.__SetBackgroudMainFrame(0)
+            # self.__SetBackgroudMainFrame(0)
             self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
-            self.__SetBackgroudMainFrame(0)
+            # self.__SetBackgroudMainFrame(1)
             self.stackedWidget.setCurrentWidget(self.recognize_frame)
         elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS:
             self.__UpdateListDepartments()
-            self.__SetBackgroudMainFrame(0)
+            # self.__SetBackgroudMainFrame(0)
             self.stackedWidget.setCurrentWidget(self.view_departments)
         
         self.image_display = None
@@ -402,10 +436,10 @@ class GUI(QtWidgets.QMainWindow):
     
     def __ClearListDepartments(self):
         count = 0
-        for dep in glo_va.list_examination_room:
+        for count in range(len(glo_va.list_examination_room)):
             self.table_list_department.setItem(count, 0, QTableWidgetItem(''))
             self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
-            count += 1
+            # count += 1
 
     def __ActivateFaceRecored(self, direction):
         self.list_shape_face[direction].setStyleSheet('''
@@ -431,7 +465,7 @@ class GUI(QtWidgets.QMainWindow):
             ''')
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()

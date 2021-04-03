@@ -3,6 +3,7 @@ from threading import Thread
 
 from utils.parameters import *
 from utils.csi_camera import CSI_Camera
+from utils.common_functions import LogMesssage
 
 # import pycuda.driver as cuda
 # from face_detector_CenterFace import FaceDetector
@@ -21,7 +22,7 @@ class CameraDetecting(Thread):
             display_width=glo_va.CAMERA_DISPLAY_WIDTH,
         )
 
-        print("Init camera")
+        LogMesssage("Init camera", opt=0)
         self.__csi_camera.open(self.__csi_camera.gstreamer_pipeline)
         self.__csi_camera.start()
         
@@ -66,7 +67,7 @@ class CameraDetecting(Thread):
             self.__csi_camera.frames_displayed += 1
     
     def StopCamera(self):
-        print("Stop camera")
+        LogMesssage("Stop camera", opt=0)
         self.__csi_camera.stop()
         self.__csi_camera.release()
         # cv2.destroyAllWindows()

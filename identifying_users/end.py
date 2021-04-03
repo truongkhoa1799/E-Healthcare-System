@@ -4,38 +4,39 @@ sys.path.append(PROJECT_PATH)
 
 from utils.parameters import *
 from utils.kill_python_process import KillPythonProcess
+from utils.common_functions import LogMesssage
 
 #########################################################################
 # STOP FUNCTIONS                                                        #
 #########################################################################
 def Stop_Face_Recognition():
-    print("Stop Face Recognition")
+    LogMesssage("Stop Face Recognition", opt=0)
     del glo_va.face_recognition
     print()
 
 def Stop_Camera_Detecting():
     glo_va.camera.StopCamera()
-    print("Stop Camera Detecting")
+    LogMesssage("Stop Camera Detecting", opt=0)
     print()
 
 def Stop_Connecting_Server():
     glo_va.server.Close()
-    print("Stop Connecting Server")
+    LogMesssage("Stop Connecting Server", opt=0)
     print()
 
 def Stop_Count_Face():
     glo_va.count_face.Stop()
-    print("Stop Count Face")
+    LogMesssage("Stop Count Face", opt=0)
     print()
 
 def Stop_Timer():
     glo_va.timer.Stop()
-    print("Stop Timer")
+    LogMesssage("Stop Timer", opt=0)
     print()
 
 def Stop_GUI():
     glo_va.gui.close()
-    print("Stop GUI")
+    LogMesssage("Stop GUI", opt=0)
     print()
 
 #########################################################################
@@ -72,5 +73,5 @@ def End():
         Stop_Connecting_Server()
         glo_va.flg_server_connected = False
     
-    print("Turn off E-Healthcare system")
+    LogMesssage("Turn off E-Healthcare system", opt=0)
     KillPythonProcess()

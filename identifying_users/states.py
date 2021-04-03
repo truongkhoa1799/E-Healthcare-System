@@ -6,6 +6,7 @@ import numpy as np
 
 from utils.parameters import *
 from utils.common_functions import Compose_Embedded_Face
+from utils.common_functions import LogMesssage
 
 def State_1():
     # Read camera
@@ -14,7 +15,7 @@ def State_1():
     # Face detecting
     ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
-        print("Error Face locations")
+        LogMesssage("Error Face locations", opt=0)
         glo_va.STATE = -1
         return
     elif ret == 0:
@@ -122,8 +123,9 @@ def State_3():
             return
             
         else:
-            message = 'Please capture sensor\ninformation and select\nexamination department'
-            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': message}
+            data = {}
+            data['opt'] = 2
+            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
 
         # Clear button
@@ -201,7 +203,7 @@ def State_6():
     # Face detecting
     ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
-        print("Error Face locations")
+        LogMesssage("Error Face locations", opt=0)
         glo_va.STATE = -1
         return
     elif ret == 0:
@@ -214,8 +216,8 @@ def State_6():
                 if glo_va.dict_user_pose[i] > 10 and glo_va.dict_user_pose[i] > max_pose:
                     max_pose = i
 
-            print("max_pose: {}, current_pose: {}".format(max_pose, glo_va.current_shape))
-            print(glo_va.dict_user_pose)
+            # print("max_pose: {}, current_pose: {}".format(max_pose, glo_va.current_shape))
+            # print(glo_va.dict_user_pose)
             
             if max_pose == glo_va.current_shape:
                 if glo_va.check_current_shape == False:
@@ -237,7 +239,7 @@ def State_6():
                     glo_va.current_shape += 1
 
                     if glo_va.current_shape == glo_va.num_face_new_user:
-                        print('Done get face new user')
+                        LogMesssage('Done get face new user')
                         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
                         # send request change ui
                         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
@@ -256,13 +258,17 @@ def State_6():
 
 def State_7():
     if glo_va.button_ok_pressed == True:
+        data = {}
         if glo_va.has_response_server == True:
             if glo_va.return_stt is None:
-                message = 'False to submit examination.\nPlease try again.'
+                data['opt'] = 1
             else:
-                message = 'your STT: {}'.format(glo_va.return_stt)
+                dep_name, building, room = exam.Get_Exam_Room_Infor()
+                data['opt'] = 0
+                data['stt'] = glo_va.return_stt
+                data['room'] = '{}-{}'.format(building, room)
 
-            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': message}
+            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
 
             glo_va.button_ok_pressed = False
@@ -271,8 +277,8 @@ def State_7():
             glo_va.has_response_server = False
 
         elif glo_va.has_response_server == False and glo_va.is_sending_message == False:
-            message = 'False to submit examination.\nPlease try again.'
-            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': message}
+            data['opt'] = 1
+            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
 
             glo_va.button_ok_pressed = False
@@ -289,7 +295,7 @@ def State_7():
     glo_va.button = -1
 
 def Init_State():
-    print('Reset at STATE: {}'.format(glo_va.STATE))
+    LogMesssage('Reset at STATE: {}'.format(glo_va.STATE))
 
     # SERVER PARAMETERS-----------------------------------------------
     # Clear timer preveting timeout getting examination room

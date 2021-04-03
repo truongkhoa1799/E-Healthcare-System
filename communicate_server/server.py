@@ -9,6 +9,7 @@ import threading
 PROJECT_PATH = '/home/thesis/Documents/thesis/E-Healthcare-System/'
 sys.path.append(PROJECT_PATH)
 from utils.parameters import *
+from utils.common_functions import LogMesssage
 
 class Server:
     def __init__(self):
@@ -63,7 +64,7 @@ class Server:
                     glo_va.lock_response_server.release()
 
                     current_time = time.strftime("%H:%M:%S", time.localtime())
-                    print("[{time}]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(time=current_time, request_name=method_request.name,timer_id=timer_id, name=method_request.name))
+                    LogMesssage("[{time}]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(time=current_time, request_name=method_request.name,timer_id=timer_id, name=method_request.name))
                     
                     # Validation response
                     if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
@@ -116,7 +117,7 @@ class Server:
                 method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                 connection.send_method_response(method_response)
             except Exception as e:
-                print("Has error at module __Listen_Reponse_Server in server.py: {}".format(e))
+                LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
                 glo_va.STATE = -1
         
 
@@ -125,16 +126,16 @@ class Server:
             event_data_batch = self.__producer.create_batch()
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Send validating message to server with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
+                LogMesssage("[{time}]: Send validating message to server with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 data = EventData(glo_va.list_embedded_face)
                 data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"0", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)
             except Exception as e:
-                print(e)
+                LogMesssage(e, opt=2)
                 glo_va.STATE = -1
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
-            print("Has error at module Validate_User in server.py: {}".format(e))
+            LogMesssage("Has error at module Validate_User in server.py: {}".format(e), opt=2)
             glo_va.STATE = -1
     
     def Get_Examination_Room(self):
@@ -142,16 +143,16 @@ class Server:
             event_data_batch = self.__producer.create_batch()
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Get Examination Room with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
+                LogMesssage("[{time}]: Get Examination Room with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 data = EventData("")
                 data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"4", 'device_ID': str(self.__device_ID)}
                 event_data_batch.add(data)
             except Exception as e:
-                print(e)
+                LogMesssage(e, opt=2)
                 glo_va.STATE = -1
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
-            print("Has error at module Get_Examination_Room in server.py: {}".format(e))
+            LogMesssage("Has error at module Get_Examination_Room in server.py: {}".format(e), opt=2)
             glo_va.STATE = -1
     
     def Submit_Examination(self):
@@ -159,7 +160,7 @@ class Server:
             event_data_batch = self.__producer.create_batch()
             try:
                 current_time = time.strftime("%H:%M:%S", time.localtime())
-                print("[{time}]: Submit Examination with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
+                LogMesssage("[{time}]: Submit Examination with timer_id: {timer_id}.".format(time=current_time, timer_id=glo_va.timer.timer_id))
                 
                 dep_name, building_code, room_code = exam.Get_Exam_Room_Infor()
                 sensor_infor = sensor.sensor_infor
@@ -189,11 +190,11 @@ class Server:
                 data.properties = msg
                 event_data_batch.add(data)
             except Exception as e:
-                print(e)
+                LogMesssage(e, opt=2)
                 glo_va.STATE = -1
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
-            print("Has error at module Submit_Examination in server.py: {}".format(e))
+            LogMesssage("Has error at module Submit_Examination in server.py: {}".format(e), opt=2)
             glo_va.STATE = -1
 
     def Close(self):
