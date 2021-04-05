@@ -22,6 +22,7 @@ def Init():
         # Init momo assistant
         StartMomoAssistant()
         glo_va.flg_init_momo_assistant = True
+        # exit(0)
         
         # Init face recognition
         Start_Face_Recognition()

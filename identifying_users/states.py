@@ -217,10 +217,10 @@ def State_6():
         # Face Identifying
         glo_va.face_recognition.Encoding_Face()
 
-        if glo_va.num_user_pose >= 14:
+        if glo_va.num_user_pose >= 10:
             max_pose = -1
             for i in glo_va.dict_user_pose:
-                if glo_va.dict_user_pose[i] > 10 and glo_va.dict_user_pose[i] > max_pose:
+                if glo_va.dict_user_pose[i] > 7 and glo_va.dict_user_pose[i] > max_pose:
                     max_pose = i
 
             # print("max_pose: {}, current_pose: {}".format(max_pose, glo_va.current_shape))

@@ -2,7 +2,7 @@ import os
 import yaml
 import pathlib
 
-show_fps = False
+show_fps = True
 PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:

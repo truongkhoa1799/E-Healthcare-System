@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 import numpy as np
 import pickle
 
@@ -62,7 +64,7 @@ class ClassifyDepartment:
         
 
 
-# cd = ClassifyDepartment()
+cd = ClassifyDepartment()
 # temp_list_problems = ['co giật', 'dị ứng', "khó chịu", 'ngứa', 'khó chịu']
 # temp_list_part_bodies = ['da đầu', 'ngón tay', 'cổ', 'đầu', 'none']
 # list_part_bodies = []
