@@ -69,5 +69,10 @@ def End():
         Stop_Connecting_Server()
         glo_va.flg_server_connected = False
     
+    if glo_va.flg_init_momo_assistant:
+        LogMesssage("Stop Momo Assistant", opt=0)
+        del glo_va.momo_assis
+        glo_va.flg_init_momo_assistant = False
+    
     LogMesssage("Turn off E-Healthcare system", opt=0)
     KillPythonProcess()

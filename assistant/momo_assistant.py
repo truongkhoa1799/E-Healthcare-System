@@ -4,8 +4,8 @@ from threading import Lock
 sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 import os
-from gtts import gTTS
-import speech_recognition
+# from gtts import gTTS
+# import speech_recognition
 
 from utils.parameters import *
 from utils.assis_parameters import *
@@ -16,7 +16,7 @@ from assistant.classify_department import ClassifyDepartment
 
 class MomoAssistant:
     def __init__(self):
-        self.__momo_ear = speech_recognition.Recognizer()
+        # self.__momo_ear = speech_recognition.Recognizer()
         # self.__momo_ear.energy_threshold = 400
         self.__dt_clf = ClassifyDepartment()
         

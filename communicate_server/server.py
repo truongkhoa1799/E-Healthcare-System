@@ -103,6 +103,8 @@ class Server:
                         ret_msg = int(method_request.payload['return'])
                         if ret_msg == 0:
                             glo_va.return_stt = method_request.payload['stt']
+                        else:
+                            glo_va.return_stt = None
 
                         glo_va.has_response_server = True
                     else:

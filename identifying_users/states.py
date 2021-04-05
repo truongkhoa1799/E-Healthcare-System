@@ -269,11 +269,13 @@ def State_7():
         if glo_va.has_response_server == True:
             if glo_va.return_stt is None:
                 data['opt'] = 1
-            else:
+                glo_va.valid_stt = -1
+            elif glo_va.return_stt is not None:
                 dep_name, building, room = exam.Get_Exam_Room_Infor()
                 data['opt'] = 0
                 data['stt'] = glo_va.return_stt
                 data['room'] = '{}-{}'.format(building, room)
+                glo_va.valid_stt = 0
 
             request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
@@ -292,12 +294,16 @@ def State_7():
     
     elif glo_va.button_ok_pressed == False:
         if glo_va.button == glo_va.BUTTON_OKAY:
-            if glo_va.return_stt is None:
+            if glo_va.valid_stt == -1:
                 glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
                 glo_va.button_ok_pressed = True
-            elif glo_va.return_stt is not None:
+            elif glo_va.valid_stt == 0:
                 Init_State()
                 return
+                        
+            glo_va.valid_stt = None
+        else:
+            pass
 
     glo_va.button = -1
 
@@ -346,6 +352,7 @@ def Init_State():
     glo_va.gui.queue_request_states_thread.put(request)
     
     # Clear STT
+    glo_va.valid_stt = None
     glo_va.return_stt = None
     glo_va.button_ok_pressed = True
     # Clear patient_Id and list of examination room

@@ -75,6 +75,7 @@ class GlobalVariable:
         # self.list_examination_room = []
         self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.return_stt = None
+        self.valid_stt = None
 
         # Sensor
         self.measuring_sensor = False
