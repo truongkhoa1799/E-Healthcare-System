@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -2433,7 +2433,7 @@ QPushButton:pressed {
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QLabel" name="seleted_dep">
+         <widget class="QLabel" name="selected_dep">
           <property name="geometry">
            <rect>
             <x>190</x>
@@ -2454,10 +2454,10 @@ QPushButton:pressed {
            <string notr="true">color: rgb(50, 50, 50);</string>
           </property>
           <property name="text">
-           <string>Khoa Rang Ham Mat</string>
+           <string/>
           </property>
          </widget>
-         <widget class="QLabel" name="seleted_dep_2">
+         <widget class="QLabel" name="selected_room">
           <property name="geometry">
            <rect>
             <x>190</x>
@@ -2478,7 +2478,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(50, 50, 50);</string>
           </property>
           <property name="text">
-           <string>C1-202</string>
+           <string/>
           </property>
          </widget>
          <widget class="QLabel" name="seleted_dep_3">

@@ -7,8 +7,7 @@ from PyQt5 import QtWidgets
 
 from utils.parameters import *
 
-import cv2
-import time, threading
+import sys, threading
 from signal import signal, SIGINT
 
 def EndProcHandler(signal_received, frame):
@@ -17,14 +16,13 @@ def EndProcHandler(signal_received, frame):
     End()
 
 def main():
-    while glo_va.ENABLE_RUN:
+    while glo_va.ENABLE_PROGRAM_RUN:
         if glo_va.START_RUN == False:
             continue
-
+        
         try:
             if glo_va.STATE == -1:
                 End()
-                break
 
             # STATE DETECTING AND RECOGNIZING PATIENT
             elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:

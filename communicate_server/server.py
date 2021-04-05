@@ -118,7 +118,7 @@ class Server:
                 connection.send_method_response(method_response)
             except Exception as e:
                 LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
-                glo_va.STATE = -1
+                # glo_va.STATE = -1
         
 
     def Validate_User(self):

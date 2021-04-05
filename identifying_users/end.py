@@ -1,7 +1,3 @@
-import sys, time, pathlib
-PROJECT_PATH = pathlib.Path().absolute()
-sys.path.append(PROJECT_PATH)
-
 from utils.parameters import *
 from utils.kill_python_process import KillPythonProcess
 from utils.common_functions import LogMesssage
@@ -43,10 +39,10 @@ def Stop_GUI():
 # End FUNCTION                                                          #
 #########################################################################
 def End():
+    LogMesssage('End program', opt=0)
+
     glo_va.START_RUN = False
-    glo_va.ENABLE_RUN = False
-    if glo_va.main_thread is not None:
-        glo_va.main_thread.join()
+    glo_va.ENABLE_PROGRAM_RUN = False
 
     if glo_va.flg_init_count_face:
         Stop_Count_Face()

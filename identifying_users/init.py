@@ -1,12 +1,11 @@
-import sys, time, pathlib
-PROJECT_PATH = pathlib.Path().absolute()
-sys.path.append(PROJECT_PATH)
-
+import time
 from utils.parameters import *
 
 from identifying_users.face_recognition import Face_Recognition
 from identifying_users.camera_detecting import CameraDetecting
 from identifying_users.count_face import CountFace
+
+from assistant.momo_assistant import MomoAssistant
 
 from communicate_server.server import Server
 from utils.timer import Timer
@@ -19,6 +18,11 @@ from threading import Lock
 def Init():
     if glo_va.STATE == 1:
         LogMesssage('Start init program', opt=0)
+
+        # Init momo assistant
+        StartMomoAssistant()
+        glo_va.flg_init_momo_assistant = True
+        
         # Init face recognition
         Start_Face_Recognition()
         glo_va.flg_init_face_recognition = True
@@ -84,3 +88,9 @@ def Start_Server_Connection():
     LogMesssage("Done Init Server Connection", opt=0)
     print()
 
+def StartMomoAssistant():
+    LogMesssage("Starting Momo Assistant", opt=0)
+    glo_va.momo_assis = MomoAssistant()
+    glo_va.lock_update_exam_room = Lock()
+    LogMesssage("Done Init Server Connection", opt=0)
+    print()

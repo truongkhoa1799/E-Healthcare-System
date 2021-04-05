@@ -1,5 +1,4 @@
 import os
-import sys
 import yaml
 import pathlib
 
@@ -24,6 +23,7 @@ class GlobalVariable:
         self.flg_init_camera = False
         self.flg_init_count_face = False
         self.flg_server_connected = False
+        self.flg_init_momo_assistant = False
         self.flg_init_face_recognition = False
         
         # Server para and timer parameters
@@ -60,29 +60,49 @@ class GlobalVariable:
         self.num_user_pose = 0
         self.list_embedded_face_origin_new_patient = []
 
-        # self.list_examination_room = [
-        # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
-        # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
-        # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
-        # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
-        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
-        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
-        # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
-        # ]
+        self.list_examination_room = [
+        {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
+        {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
+        {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
+        {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
+        {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
+        {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
+        ]
         self.patient_ID = -1
         self.hospital_ID = None
         self.dep_ID_chosen = None
-        self.list_examination_room = []
+        # self.list_examination_room = []
         self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.return_stt = None
 
         # Sensor
         self.measuring_sensor = False
         self.done_measuring_sensor = False
-        
-        # STATE of the program
+
+        ##############
+        # assistant  #
+        ##############
+        # MOMO STATE
+        self.ASSIS_FIRST_STATE = 1
+        self.ASSIS_CHOOSE_DEP_STATE = 2
+        self.ASSIS_DISPLAY_SYMPTON_STATE = 3
+        self.ASSIS_CONFIRM_STATE = -1
+
+        # used to map predicted department with current running dep in database
+        self.momo_assis = None
+        self.thread_assis = None
+        self.lock_update_exam_room = None
+        self.map_department_table = None
+
+        self.assis_state = self.ASSIS_FIRST_STATE
+        self.assis_pre_state = self.ASSIS_CONFIRM_STATE
+
+        ############################
+        # STATE of the program     #
+        ############################
         self.STATE = 1
-        self.ENABLE_RUN = True
+        self.ENABLE_PROGRAM_RUN = True
         self.START_RUN = False
         
         # STATES
@@ -110,6 +130,7 @@ class GlobalVariable:
         self.BUTTON_SUBMIT_EXAM = 8
         self.BUTTON_CONFIRM_DEP = 9
         self.BUTTON_OKAY = 10
+        self.BUTTON_SELECT_DEP = 11
 
         # request
         self.REQUEST_CONFIRM_NEW_PATIENT = 0
@@ -126,6 +147,8 @@ class GlobalVariable:
         self.REQUEST_MEASURE_SENSOR = 11
         self.REQUEST_NOTIFY_MESSAGE = 12
         self.REQUEST_DEACTIVATE_NEW_FACE = 13
+        self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
+        self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
 
         # Dialog
         self.EXIST_DIALOG = 0
@@ -136,6 +159,13 @@ class GlobalVariable:
         config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
         with open(config_para_path, 'r') as file:
             documents = yaml.load(file, Loader=yaml.FullLoader)
+
+            # Momo assistant
+            self.VOICE_PATH_FILE = os.path.join(PROJECT_PATH, str(documents['path']['voice_assis_path']))
+            self.MAP_DEP_TABLE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['map_dep_table_path']))
+            self.DT_MODEL_PREDICT_DEP_PATH = os.path.join(PROJECT_PATH, str(documents['path']['decision_tree_model_predict_dep_path']))
+            self.DICT_PART_BOD_PROBLEMS_PREDICT_DEP_PATH = os.path.join(PROJECT_PATH, str(documents['path']['dict_part_body_problems_predict_dep_path']))
+
             # Connection server
             self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
             
@@ -195,7 +225,17 @@ class GlobalVariable:
 
             self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
-     
+
+
+        # load parameters for assistant
+        with open(self.MAP_DEP_TABLE_PATH, 'r') as file:
+            self.map_department_table = yaml.load(file, Loader=yaml.FullLoader)
+        
+
+
+    def ClearAssisPara(self):
+        self.assis_state = self.ASSIS_FIRST_STATE
+        self.assis_pre_state = self.ASSIS_CONFIRM_STATE
 
 class User_Infor:
     def __init__(self):
@@ -242,11 +282,13 @@ class Examination:
         self.__room = ""
         self.__building = ''
     
-    def Update_Examination(self, dep):
+    def Update_Examination(self, dep, room):
         self.status = 0
-        self.__department = dep['dep_name']
-        self.__building = dep['building_code']
-        self.__room = dep['room_code']
+        temp = room.split('-')
+        
+        self.__department = dep
+        self.__building = temp[0]
+        self.__room = temp[1]
     
     def Get_Exam_Room_Infor(self):
         return self.__department, self.__building, self.__room

@@ -132,7 +132,6 @@ class GUI(QtWidgets.QMainWindow):
     def __init__(self):
         super(GUI, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi('gui/form.ui', self) # Load the .ui file
-        # uic.loadUi('form.ui', self) # Load the .ui file
         
         # register listenning button
         self.exist_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_EXIST))
@@ -141,6 +140,7 @@ class GUI(QtWidgets.QMainWindow):
         self.confirm_dep_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONFIRM_DEP))
         self.capture_sensor_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CAPTURE_SENSOR))
         self.submit_exam_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SUBMIT_EXAM))
+        self.select_dep_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SELECT_DEP))
 
         # All frame of gui
         self.stackedWidget.addWidget(self.recognize_frame)
@@ -148,7 +148,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
+        self.stackedWidget.setCurrentWidget(self.recognize_frame)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
@@ -185,7 +185,7 @@ class GUI(QtWidgets.QMainWindow):
         # self.__SetBackgroudMainFrame(1)
         # self.__UpdateListDepartments()
 
-        self.__MeasureSensor()
+        # self.__MeasureSensor()
         
         # self.__notificationDialog('Please capture sensor\ninformation and select\nexamination department', 0)
 
@@ -202,12 +202,33 @@ class GUI(QtWidgets.QMainWindow):
         # dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         # if dialog.exec_() == QtWidgets.QDialog.Accepted:
         #     print(int(dialog.ret))
+
+        # print(type(self.selected_room.text()))
     
 
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
+    
+    ############################################################################
+    # DIALOG MODULE                                                            #
+    ############################################################################
+    def __notificationDialog(self, data):
+        self.submit_dialog = OkDialogClass(-2, data)
+        self.submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
+            glo_va.button = glo_va.BUTTON_OKAY
 
+    def __OpenDialog(self, opt):
+        ret = None
 
+        dialog = QDialogClass(ret, opt)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            return int(dialog.ret)
+
+    ############################################################################
+    # CONTROL MODULE                                                            #
+    ############################################################################
     def __onButtonsListenning(self, opt):
         if opt == glo_va.BUTTON_EXIST:
             ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
@@ -247,33 +268,27 @@ class GUI(QtWidgets.QMainWindow):
         elif opt == glo_va.BUTTON_CONFIRM_DEP:
             if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
                 return
+
+            self.__ConfirmExamRoom()
+            glo_va.button = glo_va.BUTTON_CONFIRM_DEP
+        
+        elif opt == glo_va.BUTTON_SELECT_DEP:
+            if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
+                return
+
             index = self.table_list_department.currentRow()
             if index != -1:
-                self.__ConfirmExamRoom(index)
+                dep = glo_va.list_examination_room[index]
+                dep_name = dep['dep_name']
+                building_code = dep['building_code']
+                room_code = dep['room_code']
 
-    # def __submitExamination(self):
+                # Acquire lock first predicted by MOMO
+                if glo_va.lock_update_exam_room.locked() == False:
+                    glo_va.lock_update_exam_room.acquire()
+                    self.__UpdateSelectedRoom(dep_name, building_code, room_code)
+                    glo_va.lock_update_exam_room.release()
 
-    def __notificationDialog(self, data):
-        self.submit_dialog = OkDialogClass(-2, data)
-        self.submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
-            glo_va.button = glo_va.BUTTON_OKAY
-
-    def __OpenDialog(self, opt):
-        ret = None
-
-        dialog = QDialogClass(ret, opt)
-        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        if dialog.exec_() == QtWidgets.QDialog.Accepted:
-            return int(dialog.ret)
-    
-    # def __SetBackgroudMainFrame(self, opt):
-    #     if opt == 0:
-    #         # White background
-    #         self.main_frame.setStyleSheet('background-color: rgb(255,255,255);')
-    #     elif opt == 1:
-    #         # black background
-    #         self.main_frame.setStyleSheet('background-color: rgb(0,0,0);')
 
     def __CheckRequestStatesThread(self):
         if self.queue_request_states_thread.empty():
@@ -324,9 +339,22 @@ class GUI(QtWidgets.QMainWindow):
         elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
             data = request['data']
             self.__notificationDialog(data)
+        
+        elif request['type'] == glo_va.REQUEST_CLEAR_SELECTED_EXAM_ROOM:
+            self.__ClearSelectedRoom()
+        
+        elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
+            data = request['data']
+            dep_name = data['dep_name']
+            building_code = data['building_code']
+            room_code = data['room_code']
+            self.__UpdateSelectedRoom(dep_name=dep_name, building_code=building_code, room_code=room_code)
 
         return
 
+    ############################################################################
+    # GUI MODULE                                                            #
+    ############################################################################
     def __Convert_To_Display(self, img):
         # Get ndarray and return QImage
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -335,79 +363,6 @@ class GUI(QtWidgets.QMainWindow):
 
         return qp_image
     
-    def __MeasureSensor(self):
-        ret = -2
-        progress_bar = ProgressBarDialogClass(ret)
-        progress_bar.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        if progress_bar.exec_() == QtWidgets.QDialog.Accepted:
-            ret = int(progress_bar.ret)
-            # print(ret)
-        
-        if ret == 0:
-            sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
-            sensor.Update_Sensor(sensor_info)
-            self.__UpdateSensorInfo()
-
-        glo_va.done_measuring_sensor = True
-    
-    def __UpdateImage(self):
-        if self.image_display is None:
-            return
-
-        qp_image = self.__Convert_To_Display(self.image_display)
-
-        if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-            self.img_new_user.setPixmap(qp_image)
-        elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
-            self.image_patient.setPixmap(qp_image)
-    
-    def __UpdatePatientInfo(self, infor):
-        self.patient_name.setText(infor['name'])
-        self.patient_birthday.setText(infor['birthday'])
-        self.patient_phone.setText(infor['phone'])
-        self.patient_address.setText(infor['address'])
-    
-    def __ClearPatientInfo(self):
-        self.patient_name.setText('')
-        self.patient_birthday.setText('')
-        self.patient_phone.setText('')
-    
-    def __UpdateSensorInfo(self):
-        sensor_infor = sensor.sensor_infor
-        # print(sensor_infor)
-
-        self.height.setText(str(sensor_infor['height']) + ' m')
-        self.weight.setText(str(sensor_infor['weight'])+ ' kg')
-        self.spo2.setText(str(sensor_infor['spo2']))
-        self.temperature.setText(str(sensor_infor['temperature'])+ ' C')
-        self.heart_pulse.setText(str(sensor_infor['heart_pulse']))
-        self.blood_pressure.setText(str(sensor_infor['blood_pressure']))
-    
-    def __ClearSensorInfo(self):
-        self.blood_pressure.setText('')
-        self.heart_pulse.setText('')
-        self.temperature.setText('')
-        self.spo2.setText('')
-        self.weight.setText('')
-        self.height.setText('')
-    
-    def __ConfirmExamRoom(self, index):
-        dep = glo_va.list_examination_room[index]
-        exam.Update_Examination(dep)
-        self.__UpdateExamRoom()
-    
-    def __UpdateExamRoom(self):
-        dep_name, building, room = exam.Get_Exam_Room_Infor()
-
-        self.building_code.setText(building)
-        self.room_code.setText(room)
-        self.dep_name.setText(dep_name)
-    
-    def __ClearExamRoom(self):
-        self.building_code.setText('')
-        self.room_code.setText('')
-        self.dep_name.setText('')
-
     def __ChangeUI(self):
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
             # self.__SetBackgroudMainFrame(1)
@@ -425,22 +380,6 @@ class GUI(QtWidgets.QMainWindow):
         
         self.image_display = None
     
-    def __UpdateListDepartments(self):
-        count = 0
-        for dep in glo_va.list_examination_room:
-            room = dep['building_code'] + '-' + dep['room_code']
-            dep_name = dep['dep_name']
-            self.table_list_department.setItem(count, 0, QTableWidgetItem(room))
-            self.table_list_department.setItem(count, 1, QTableWidgetItem(dep_name))
-            count += 1
-    
-    def __ClearListDepartments(self):
-        count = 0
-        for count in range(len(glo_va.list_examination_room)):
-            self.table_list_department.setItem(count, 0, QTableWidgetItem(''))
-            self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
-            # count += 1
-
     def __ActivateFaceRecored(self, direction):
         self.list_shape_face[direction].setStyleSheet('''
             QLabel {
@@ -464,8 +403,117 @@ class GUI(QtWidgets.QMainWindow):
                 }
             ''')
 
+    ############################################################################
+    # SENSOR MODULE                                                            #
+    ############################################################################
+    def __MeasureSensor(self):
+        ret = -2
+        progress_bar = ProgressBarDialogClass(ret)
+        progress_bar.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if progress_bar.exec_() == QtWidgets.QDialog.Accepted:
+            ret = int(progress_bar.ret)
+            # print(ret)
+        
+        if ret == 0:
+            sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
+            sensor.Update_Sensor(sensor_info)
+            self.__UpdateSensorInfo()
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+        glo_va.done_measuring_sensor = True
+    
+    def __UpdateSensorInfo(self):
+        sensor_infor = sensor.sensor_infor
+        # print(sensor_infor)
+
+        self.height.setText(str(sensor_infor['height']) + ' m')
+        self.weight.setText(str(sensor_infor['weight'])+ ' kg')
+        self.spo2.setText(str(sensor_infor['spo2']))
+        self.temperature.setText(str(sensor_infor['temperature'])+ ' C')
+        self.heart_pulse.setText(str(sensor_infor['heart_pulse']))
+        self.blood_pressure.setText(str(sensor_infor['blood_pressure']))
+    
+    def __ClearSensorInfo(self):
+        self.blood_pressure.setText('')
+        self.heart_pulse.setText('')
+        self.temperature.setText('')
+        self.spo2.setText('')
+        self.weight.setText('')
+        self.height.setText('')
+    
+    ############################################################################
+    # PATIENT MODULE                                                           #
+    ############################################################################
+    def __UpdateImage(self):
+        if self.image_display is None:
+            return
+
+        qp_image = self.__Convert_To_Display(self.image_display)
+
+        if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
+            self.img_new_user.setPixmap(qp_image)
+        elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
+            self.image_patient.setPixmap(qp_image)
+    
+    def __UpdatePatientInfo(self, infor):
+        self.patient_name.setText(infor['name'])
+        self.patient_birthday.setText(infor['birthday'])
+        self.patient_phone.setText(infor['phone'])
+        self.patient_address.setText(infor['address'])
+    
+    def __ClearPatientInfo(self):
+        self.patient_name.setText('')
+        self.patient_birthday.setText('')
+        self.patient_phone.setText('')
+        self.patient_address.setText('')
+
+    ############################################################################
+    # EXAM ROOM MODULE                                                         #
+    ############################################################################    
+    def __ConfirmExamRoom(self):
+        dep_name = str(self.selected_dep.text())
+        room_code = str(self.selected_room.text())
+        if dep_name == '' or room_code == '':
+            return
+
+        exam.Update_Examination(dep_name, room_code)
+        self.__UpdateExamRoom()
+    
+    def __UpdateExamRoom(self):
+        dep_name, building, room = exam.Get_Exam_Room_Infor()
+
+        self.building_code.setText(building)
+        self.room_code.setText(room)
+        self.dep_name.setText(dep_name)
+    
+    def __ClearExamRoom(self):
+        self.building_code.setText('')
+        self.room_code.setText('')
+        self.dep_name.setText('')
+    
+    def __UpdateSelectedRoom(self, dep_name, building_code, room_code):
+        self.selected_dep.setText(dep_name)
+        self.selected_room.setText('{}-{}'.format(building_code, room_code))
+    
+    def __ClearSelectedRoom(self):
+        self.selected_dep.setText('')
+        self.selected_room.setText('')
+    
+    def __UpdateListDepartments(self):
+        count = 0
+        for dep in glo_va.list_examination_room:
+            room = dep['building_code'] + '-' + dep['room_code']
+            dep_name = dep['dep_name']
+            self.table_list_department.setItem(count, 0, QTableWidgetItem(room))
+            self.table_list_department.setItem(count, 1, QTableWidgetItem(dep_name))
+            count += 1
+    
+    def __ClearListDepartments(self):
+        for count in range(len(glo_va.list_examination_room)):
+            self.table_list_department.setItem(count, 0, QTableWidgetItem(''))
+            self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
+
+
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()

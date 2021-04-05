@@ -1,12 +1,10 @@
-import sys, time, pathlib
-PROJECT_PATH = pathlib.Path().absolute()
-sys.path.append(PROJECT_PATH)
-
 import numpy as np
-
+import threading
 from utils.parameters import *
 from utils.common_functions import Compose_Embedded_Face
 from utils.common_functions import LogMesssage
+from assistant.momo_assistant import MomoCore
+from utils.assis_parameters import msg_for_states
 
 def State_1():
     # Read camera
@@ -99,13 +97,20 @@ def State_3():
 
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
         if glo_va.has_examination_room == True:
-            # Clear before get new exam room, easy to check when want to back from state 4
-            exam.Clear()
             glo_va.STATE = glo_va.STATE_VIEW_DEPARTMENTS
 
             request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
             glo_va.button = -1
+
+            # Clear state momo and Say first word. DO NOT NEED TO CLEAR WHEN RESET
+            glo_va.ClearAssisPara()
+            # Init MOMO Assistant
+            # This thread will end when change to new state which != STATE_VIEW_DEPARTMENTS
+            glo_va.thread_assis = threading.Thread(target=MomoCore, args=())
+            glo_va.thread_assis.daemon = True
+            glo_va.thread_assis.start()
+
             return
         
         glo_va.button = -1
@@ -161,12 +166,14 @@ def State_3():
     
 
 def State_4():
-    if exam.status == 0:
+    if glo_va.button == glo_va.BUTTON_CONFIRM_DEP:
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
-    if glo_va.button == glo_va.BUTTON_EXIST:
+        glo_va.button = -1
+
+    elif glo_va.button == glo_va.BUTTON_EXIST:
         Init_State()
         return
 
@@ -328,9 +335,13 @@ def Init_State():
 
     # EXAMINATION PARAMETERS-----------------------------------------------
     exam.Clear()
-    # send request clear exam room and dep lsit
+    # send request clear exam room, selected room, and dep lsit
     request = {'type': glo_va.REQUEST_CLEAR_EXAM_ROOM, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
+
+    request = {'type': glo_va.REQUEST_CLEAR_SELECTED_EXAM_ROOM, 'data': ''}
+    glo_va.gui.queue_request_states_thread.put(request)
+
     request = {'type': glo_va.REQUEST_CLEAR_DEPARTMENT_LIST, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
     
