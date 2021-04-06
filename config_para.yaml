@@ -25,6 +25,7 @@ identifying_face:
   max_edge: 150
   # MAX length for face Detector
   max_length_img: 100
+  max_length_img_new_user: 150
   face_detector_model: hog
   shape_predictor_model: 68
 
@@ -54,7 +55,7 @@ gui:
   sensor_exam_layout_height: 360
 
 timer:
-  times_missing_face: 1
+  times_missing_face: 5
   timeout_missing_face: 20
 
   timeout_validate: 5

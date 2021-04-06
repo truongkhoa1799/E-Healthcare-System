@@ -45,6 +45,7 @@ def Init():
         glo_va.flg_init_timer = True
     
         # Init lock response from server and timer
+        glo_va.lock_init_state = Lock()
         glo_va.lock_response_server = Lock()
     
     # glo_va.STATE = 6

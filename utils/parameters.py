@@ -27,6 +27,10 @@ class GlobalVariable:
         self.flg_init_face_recognition = False
         
         # Server para and timer parameters
+        # this parameters prevents when you just send request and you restart to state 1
+        # all the message will be discard at state 1 when it do not send new request yet
+        # from state 2 to 7. they do not need to check
+        self.lock_init_state = None
         self.is_sending_message = False
         self.has_response_server = False
         self.lock_response_server = None
@@ -60,19 +64,30 @@ class GlobalVariable:
         self.num_user_pose = 0
         self.list_embedded_face_origin_new_patient = []
 
-        self.list_examination_room = [
-        {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
-        {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
-        {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
-        {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
-        {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
-        {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
-        {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
-        ]
+        # self.list_examination_room = [
+        # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
+        # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
+        # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
+        # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
+        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
+        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
+        # ]
+        # PARAMETERS for user_info
+        self.USER_INFOR_HAS_FACE = 0
+        self.USER_INFOR_NO_FACE = -1
+        self.USER_INFOR_DEFAULT = -2
+
+        self.SENSOR_HAS_VALUE = 0
+        self.SENSOR_DEFAULT = -1
+
+        self.EXAM_HAS_VALUE = 0
+        self.EXAM_DEFAULT = -1
+
         self.patient_ID = -1
         self.hospital_ID = None
         self.dep_ID_chosen = None
-        # self.list_examination_room = []
+        self.list_examination_room = []
         self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
         self.return_stt = None
         self.valid_stt = None
@@ -179,6 +194,7 @@ class GlobalVariable:
             self.NUMBER_DETECTED_FACE_TRANSMITED = int(documents['identifying_face']['number_deteced_face_allowed'])
             # MAX length for HOG face Detector
             self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
+            self.MAX_LENGTH_IMG_NEW_USER = int(documents['identifying_face']['max_length_img_new_user'])
             self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
 
 
@@ -240,51 +256,57 @@ class GlobalVariable:
 
 class User_Infor:
     def __init__(self):
-        self.status = -1
+        # 0: has infro
+        # -1: no face
+        # -2: default
+        self.status = glo_va.USER_INFOR_DEFAULT
         self.patient_ID = None
         self.user_info = None
         self.Clear()
 
     def Clear(self):
-        self.status = -1
+        self.status = glo_va.USER_INFOR_DEFAULT
         self.user_info = None
         self.patient_ID = None
     
     def Update_Info(self, user_info):
-        self.status = 0
+        self.status = glo_va.USER_INFOR_HAS_FACE
         self.user_info = user_info
         self.patient_ID = user_info['user_ID']
     
+    def NoFace(self):
+        self.status = glo_va.USER_INFOR_NO_FACE
+    
 class Sensor:
     def __init__(self):
-        self.status = -1
+        self.status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
         self.Clear()
     
     def Clear(self):
-        self.status = -1
+        self.status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
     
     def Update_Sensor(self, sensor):
-        self.status = 0
+        self.status = glo_va.SENSOR_HAS_VALUE
         self.sensor_infor = sensor
 
 class Examination:
     def __init__(self):
-        self.status = -1
+        self.status = glo_va.EXAM_DEFAULT
         self.__department = None
         self.__room = None
         self.__building = None
         self.Clear()
     
     def Clear(self):
-        self.status = -1
+        self.status = glo_va.EXAM_DEFAULT
         self.__department = ""
         self.__room = ""
         self.__building = ''
     
     def Update_Examination(self, dep, room):
-        self.status = 0
+        self.status = glo_va.EXAM_HAS_VALUE
         temp = room.split('-')
         
         self.__department = dep

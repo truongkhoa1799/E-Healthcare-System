@@ -132,7 +132,7 @@ class Face_Recognition:
         if glo_va.img is not None:
             # locate faces in the images
             if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-                fra = 150 / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
+                fra = glo_va.MAX_LENGTH_IMG_NEW_USER / max(glo_va.img.shape[0], glo_va.img.shape[1]) 
             else:
                 fra = glo_va.MAX_LENGTH_IMG / max(glo_va.img.shape[0], glo_va.img.shape[1])
 

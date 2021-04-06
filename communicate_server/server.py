@@ -53,7 +53,8 @@ class Server:
 
                 glo_va.lock_response_server.acquire()
                 # if timer did not time out, receive timer and clear timer
-                if glo_va.is_sending_message == True:
+                # Check whether the state is init or not, if yes continue
+                if glo_va.is_sending_message == True and glo_va.lock_init_state.locked() == False:
                     # Notify the timer that server is in lock
                     glo_va.turn = 1
 
@@ -76,7 +77,9 @@ class Server:
                             # print(method_request.payload)
                             user_infor.Update_Info(method_request.payload)
                         elif glo_va.STATE == 1 and ret_msg == -1:
+                            user_infor.NoFace()
                             glo_va.times_missing_face += 1
+                            LogMesssage('\tMissing face times: {time}'.format(time=glo_va.times_missing_face))
 
                         glo_va.has_response_server = True
 
