@@ -3,7 +3,7 @@ import threading, time
 from utils.parameters import *
 from utils.common_functions import Compose_Embedded_Face
 from utils.common_functions import LogMesssage
-from assistant.momo_assistant import MomoCore
+from assistant.momo_core import MomoCore
 from utils.assis_parameters import msg_for_states
 
 def State_1():
@@ -13,7 +13,7 @@ def State_1():
     # Face detecting
     ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
-        LogMesssage("Error Face locations", opt=0)
+        LogMesssage("\t[State_1]: Error Face locations", opt=0)
         glo_va.STATE = -1
         return
     elif ret == 0:
@@ -34,7 +34,7 @@ def State_1():
     #   3. Set flag is_sending_message and has_response_server = False
     if glo_va.has_response_server == True:
         if user_infor.status == glo_va.USER_INFOR_HAS_FACE:
-            LogMesssage('\tPatient: {id} has been detected'.format(id=user_info.patient_ID))
+            LogMesssage('\t[State_1]: Patient: {id} has been detected'.format(id=user_infor.patient_ID))
             glo_va.STATE = glo_va.STATE_CONFIRM_PATIENT
 
             # Clear all previous detected faces
@@ -44,7 +44,7 @@ def State_1():
             request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
             glo_va.gui.queue_request_states_thread.put(request)
         elif user_infor.status == glo_va.USER_INFOR_NO_FACE and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
-            LogMesssage('\tPatient exceed number of trying identify')
+            LogMesssage('\t[State_1]: Patient exceed number of trying identify')
             # Go to state for new User
             # Ask patient to looking up
             glo_va.STATE = glo_va.STATE_CONFIRM_NEW_PATIENT
@@ -53,13 +53,16 @@ def State_1():
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
             glo_va.times_missing_face = 0
+        else:
+            LogMesssage('\t[State_1]: Dummy response from server')
+
         
         # set parameters for receive response to server. Make sure that there will not has dump response
         glo_va.is_sending_message = False
         glo_va.has_response_server = False
     
     if glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('\tPatient exist program')
+        LogMesssage('[State_1]: Patient exist program')
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
         return
@@ -71,9 +74,10 @@ def State_2():
         return
     # If user confirm, press button 3
     if glo_va.button == glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT:
-        LogMesssage('\tPatient accept information of patient with ID: {id}'.format(id=user_info.patient_ID))
+        LogMesssage('[State_2]: Patient accept information of patient with ID: {id}'.format(id=user_infor.patient_ID))
         # Get and save patient id for examination
         glo_va.patient_ID = user_infor.patient_ID
+
         # send request clear patient inof
         user_infor.Clear()
         request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
@@ -85,11 +89,13 @@ def State_2():
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
         
+        LogMesssage('[State_2]: Clear patient information and screen. Save patient_id detected')
+        
         glo_va.button = -1
         return
     
     elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT or glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('\tPatient reject information of patient with ID: {id}'.format(id=user_info.patient_ID))
+        LogMesssage('[State_2]: Patient reject information of patient with ID: {id}'.format(id=user_infor.patient_ID))
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
         return
@@ -120,6 +126,8 @@ def State_3():
             glo_va.thread_assis = threading.Thread(target=MomoCore, args=())
             glo_va.thread_assis.daemon = True
             glo_va.thread_assis.start()
+            
+            LogMesssage('[State_3]: Patient choose view department')
 
             return
         
@@ -135,6 +143,8 @@ def State_3():
             glo_va.timer.Start_Timer(glo_va.OPT_TIMER_SUBMIT_EXAMINATION)
             glo_va.is_sending_message = True
             glo_va.server.Submit_Examination()
+
+            LogMesssage('[State_3]: Patient submit examination and go state waiting for response')
             return
             
         else:
@@ -142,18 +152,23 @@ def State_3():
             data['opt'] = 2
             request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
+            LogMesssage('[State_3]: Patient do not have selected exam room and sensor. Notify for patient')
 
         # Clear button
         glo_va.button = -1
     elif glo_va.button == glo_va.BUTTON_EXIST:
+        LogMesssage('[State_3]: Patient with id: {id} exist program'.format(id=glo_va.patient_ID))
         Init_State()
         return
     elif glo_va.button == glo_va.BUTTON_OKAY:
         glo_va.button = -1
+    
+    # do not press any thing
     else:
         if glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == True:
             glo_va.measuring_sensor = False
             glo_va.done_measuring_sensor = False
+            LogMesssage('[State_3]: Done measure sensor. Init measuring_sensor and done_measuring_sensor flag')
 
         elif glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == False:
             # print('Measuring sensor')
@@ -168,8 +183,10 @@ def State_3():
         if glo_va.has_response_server == True:        
             glo_va.is_sending_message = False
             glo_va.has_response_server = False
+            LogMesssage('[State_3]: Has messsage get list examination room')
         
         if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
+            LogMesssage('[State_3]: No list examination room. Resend message')
             glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
             glo_va.is_sending_message = True
             glo_va.server.Get_Examination_Room()
@@ -181,9 +198,11 @@ def State_4():
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
+        LogMesssage('[State_4]: Patient confirm exam room')
         glo_va.button = -1
 
     elif glo_va.button == glo_va.BUTTON_EXIST:
+        LogMesssage('[State_3]: Patient with id: {id} exist program'.format(id=glo_va.patient_ID))
         Init_State()
         return
 
@@ -200,7 +219,7 @@ def State_5():
 
         # Set state for next state
         glo_va.STATE = glo_va.STATE_NEW_PATIENT
-        print(glo_va.list_shape_face[glo_va.current_shape])
+        # print(glo_va.list_shape_face[glo_va.current_shape])
 
         # send request change ui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
@@ -211,6 +230,7 @@ def State_5():
 
     if glo_va.button == glo_va.BUTTON_EXIST:
         # If user reject, Clear user_infor, Ui and go to first state
+        LogMesssage('[State_3]: Patient with id: {id} exist program'.format(id=glo_va.patient_ID))
         Init_State()
         return
 
@@ -329,7 +349,8 @@ def State_7():
 
 def Init_State():
     # Lock the response message from server when restart program
-    glo_va.lock_init_state.acquire()
+    LogMesssage('[Init_State]: Acquire lock init state')
+    glo_va.lock_init_state.acquire(True)
 
     LogMesssage('Reset at STATE: {}'.format(glo_va.STATE))
     # test when state is restarted server accept message or not
@@ -399,5 +420,6 @@ def Init_State():
     # send request change ui
     request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
-
+        
     glo_va.lock_init_state.release()
+    LogMesssage('[Init_State]: Release lock init state')
