@@ -5,8 +5,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 
 import queue
@@ -97,25 +97,46 @@ class ProgressBarDialogClass(QDialog, ProgressBarDialog):
     def __init__(self, ret, parent=None):
         QDialog.__init__(self, parent)
         self.ret = -2
+        self.index_image = 0
+        self.num_image = 2
+
         self.setupUi(self)
 
-        self.capture_but.clicked.connect(lambda: self.__onButtonListenning(0))
-        self.cancel_but.clicked.connect(lambda: self.__onButtonListenning(1))
+        self.pre_but.clicked.connect(lambda: self.__onButtonListenning(0))
+        self.next_but.clicked.connect(lambda: self.__onButtonListenning(1))
+        self.guilde_but.clicked.connect(lambda: self.__onButtonListenning(2))
+        self.back_guilde_but.clicked.connect(lambda: self.__onButtonListenning(3))
 
-        self.progress_bar.setValue(0)
+        self.image_stack.addWidget(self.first_image)
+        self.image_stack.addWidget(self.second_image)
+
+        self.stackedWidget.addWidget(self.guide)
+        self.stackedWidget.addWidget(self.main_step)
+
+        self.stackedWidget.setCurrentWidget(self.main_step)
+
+        self.__list_image = [self.first_image, self.second_image]
+
+        self.progress_bar_2.setValue(0)
         # self.measureSenSor()
     
     def __onButtonListenning(self, opt):
         if opt == 0:
-            self.progress_bar.setValue(0)
-            self.measureSenSor()
-            self.ret = 0
-            self.accept()
-            self.close()
+            if self.index_image > 0:
+                self.index_image -= 1
+                # print(self.state)
+                self.image_stack.setCurrentWidget(self.__list_image[self.index_image])
         elif opt == 1:
-            self.ret = -1
-            self.accept()
-            self.close()
+            if self.index_image < 2 - 1:
+                self.index_image += 1
+                # print(self.state)
+                self.image_stack.setCurrentWidget(self.__list_image[self.index_image])
+        elif opt == 2:
+            self.image_stack.setCurrentWidget(self.first_image)
+            self.stackedWidget.setCurrentWidget(self.guide)
+        elif opt ==3:
+            self.index_image = 0
+            self.stackedWidget.setCurrentWidget(self.main_step)
     
     def measureSenSor(self):
         for i in range(100):
@@ -185,7 +206,7 @@ class GUI(QtWidgets.QMainWindow):
         # self.__SetBackgroudMainFrame(1)
         # self.__UpdateListDepartments()
 
-        # self.__MeasureSensor()
+        self.__MeasureSensor()
         
         # self.__notificationDialog('Please capture sensor\ninformation and select\nexamination department', 0)
 
@@ -513,7 +534,7 @@ class GUI(QtWidgets.QMainWindow):
             self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()

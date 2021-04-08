@@ -55,8 +55,8 @@ gui:
   sensor_exam_layout_height: 360
 
 timer:
-  times_missing_face: 5
-  timeout_missing_face: 20
+  times_missing_face: 3
+  timeout_missing_face: 10
 
   timeout_validate: 5
   opt_timer_validate: 0
