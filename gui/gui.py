@@ -1,5 +1,5 @@
-from PyQt5 import QtWidgets, uic, QtGui, QtCore
-from PyQt5.QtWidgets import QDialog, QLabel, QTableWidgetItem
+from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 import cv2
@@ -7,21 +7,21 @@ import sys, time
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+
 from utils.parameters import *
+from measure_sensor_gui import MeasureSensorDialog
 
 import queue
 
-YesNoQDialog = uic.loadUiType("gui/dialog.ui")[0]
-OkDialog = uic.loadUiType("gui/okpopup.ui")[0]
-ProgressBarDialog = uic.loadUiType("gui/progressbar.ui")[0]
 # YesNoQDialog = uic.loadUiType("dialog.ui")[0]
 
-class OkDialogClass(QDialog, OkDialog):
+class OkDialogClass(QDialog):
     def __init__(self, ret, data, parent=None):
         QDialog.__init__(self, parent)
+        uic.loadUi(glo_va.OKAY_DIALOG_PATH, self) # Load the .ui file
         self.ret = -2
         self.text = None
-        self.setupUi(self)
+        # self.setupUi(self)
 
         # submit success
         if data['opt'] == 0:
@@ -62,12 +62,13 @@ class OkDialogClass(QDialog, OkDialog):
             self.ret = -1
             self.accept()
 
-class QDialogClass(QDialog, YesNoQDialog):
+class QDialogClass(QDialog):
     def __init__(self, ret, opt, parent=None):
         QDialog.__init__(self, parent)
+        uic.loadUi(glo_va.YES_NO_DIALOG_PATH, self) # Load the .ui file
         self.ret = -2
         self.text = None
-        self.setupUi(self)
+        # self.setupUi(self)
 
         if opt == glo_va.EXIST_DIALOG:
             self.text = 'Are you sure to quit?'
@@ -93,66 +94,10 @@ class QDialogClass(QDialog, YesNoQDialog):
             self.ret = -1
             self.accept()
 
-class ProgressBarDialogClass(QDialog, ProgressBarDialog):
-    def __init__(self, ret, parent=None):
-        QDialog.__init__(self, parent)
-        self.ret = -2
-        self.index_image = 0
-        self.num_image = 2
-
-        self.setupUi(self)
-
-        self.pre_but.clicked.connect(lambda: self.__onButtonListenning(0))
-        self.next_but.clicked.connect(lambda: self.__onButtonListenning(1))
-        self.guilde_but.clicked.connect(lambda: self.__onButtonListenning(2))
-        self.back_guilde_but.clicked.connect(lambda: self.__onButtonListenning(3))
-
-        self.image_stack.addWidget(self.first_image)
-        self.image_stack.addWidget(self.second_image)
-
-        self.stackedWidget.addWidget(self.guide)
-        self.stackedWidget.addWidget(self.main_step)
-
-        self.stackedWidget.setCurrentWidget(self.main_step)
-
-        self.__list_image = [self.first_image, self.second_image]
-
-        self.progress_bar_2.setValue(0)
-        # self.measureSenSor()
-    
-    def __onButtonListenning(self, opt):
-        if opt == 0:
-            if self.index_image > 0:
-                self.index_image -= 1
-                # print(self.state)
-                self.image_stack.setCurrentWidget(self.__list_image[self.index_image])
-        elif opt == 1:
-            if self.index_image < 2 - 1:
-                self.index_image += 1
-                # print(self.state)
-                self.image_stack.setCurrentWidget(self.__list_image[self.index_image])
-        elif opt == 2:
-            self.image_stack.setCurrentWidget(self.first_image)
-            self.stackedWidget.setCurrentWidget(self.guide)
-        elif opt ==3:
-            self.index_image = 0
-            self.stackedWidget.setCurrentWidget(self.main_step)
-    
-    def measureSenSor(self):
-        for i in range(100):
-            self.progress_bar.setValue(i + 1)
-            time.sleep(0.05)
-
-
-    def closeEvent(self, event):
-        if self.ret == -2:
-            self.ret = -1
-            self.accept()
-
 class GUI(QtWidgets.QMainWindow):
     def __init__(self):
         super(GUI, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi('gui/form.ui', self) # Load the .ui file
+        uic.loadUi(glo_va.MAIN_GUI_PATH, self) # Load the .ui file
         
         # register listenning button
         self.exist_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_EXIST))
@@ -429,7 +374,7 @@ class GUI(QtWidgets.QMainWindow):
     ############################################################################
     def __MeasureSensor(self):
         ret = -2
-        progress_bar = ProgressBarDialogClass(ret)
+        progress_bar = MeasureSensorDialog(ret)
         progress_bar.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if progress_bar.exec_() == QtWidgets.QDialog.Accepted:
             ret = int(progress_bar.ret)

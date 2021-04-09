@@ -1,6 +1,7 @@
 import os
 import yaml
 import pathlib
+from PyQt5 import uic
 
 show_fps = True
 PROJECT_PATH = pathlib.Path().absolute()
@@ -92,13 +93,16 @@ class GlobalVariable:
         self.return_stt = None
         self.valid_stt = None
 
-        # Sensor
+        ########################################################
+        # SENSOR                                               #
+        ########################################################
         self.measuring_sensor = False
         self.done_measuring_sensor = False
+        self.temp_sensor = {'height': -1, 'weight': -1, 'spo2': -1, 'hr': -1, 'temperature': -1}
 
-        ##############
-        # assistant  #
-        ##############
+        ########################################################
+        # ASSISTANT                                            #
+        ########################################################
         # MOMO STATE
         self.ASSIS_FIRST_STATE = 1
         self.ASSIS_CHOOSE_DEP_STATE = 2
@@ -114,9 +118,9 @@ class GlobalVariable:
         self.assis_state = self.ASSIS_FIRST_STATE
         self.assis_pre_state = self.ASSIS_CONFIRM_STATE
 
-        ############################
-        # STATE of the program     #
-        ############################
+        ########################################################
+        # STATE of the program                                 #
+        ########################################################
         self.STATE = 1
         self.ENABLE_PROGRAM_RUN = True
         self.START_RUN = False
@@ -130,7 +134,9 @@ class GlobalVariable:
         self.STATE_NEW_PATIENT = 6
         self.STATE_WAITING_SUB_EXAM = 7
         
-        # Button
+        ########################################################
+        # BUTTON                                               #
+        ########################################################
         self.button = -1
         # Button used to check when return message of submitting examination
         self.button_ok_pressed = True
@@ -147,8 +153,15 @@ class GlobalVariable:
         self.BUTTON_CONFIRM_DEP = 9
         self.BUTTON_OKAY = 10
         self.BUTTON_SELECT_DEP = 11
+        self.BUTTON_CONFIRM_SENSOR = 12
+        self.BUTTON_GUILDE_SENSOR = 13
+        self.BUTTON_QUIT_GUILDE_SENSOR = 14
+        self.BUTTON_NEXT_GUILDE_SENSOR = 15
+        self.BUTTON_BACK_GUILDE_SENSOR = 16
 
-        # request
+        ########################################################
+        # REQUEST                                              #
+        ########################################################
         self.REQUEST_CONFIRM_NEW_PATIENT = 0
         self.REQUEST_CHANGE_GUI = 1
         self.REQUEST_UPDATE_PATIENT_INFO = 2
@@ -229,6 +242,11 @@ class GlobalVariable:
             self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
             self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
             self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
+            
+            self.MAIN_GUI_PATH = str(documents['path']['main_gui_path'])
+            self.MEASURE_SENSOR_GUI_PATH = str(documents['path']['measure_sensor_gui_path'])
+            self.OKAY_DIALOG_PATH = str(documents['path']['okdialog_path'])
+            self.YES_NO_DIALOG_PATH = str(documents['path']['yes_no_dialog'])
 
             # Parameters for timer
             self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
@@ -243,6 +261,13 @@ class GlobalVariable:
             self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
 
+
+        ########################################################
+        # GUI PARAMETERS                                       #
+        ########################################################
+        # self.yes_no_dialog = uic.loadUiType("gui/dialog.ui")[0]
+        # self.ok_dialog = uic.loadUiType("gui/okpopup.ui")[0]
+        # self.measure_sensor_dialog = uic.loadUiType(self.MEASURE_SENSOR_GUI_PATH)[0]
 
         # load parameters for assistant
         with open(self.MAP_DEP_TABLE_PATH, 'r') as file:

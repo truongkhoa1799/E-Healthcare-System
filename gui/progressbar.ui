@@ -229,7 +229,7 @@ QPushButton:pressed {
     <zorder>back_guilde_but</zorder>
    </widget>
    <widget class="QWidget" name="main_step">
-    <widget class="QProgressBar" name="progress_bar_2">
+    <widget class="QProgressBar" name="progress_bar">
      <property name="geometry">
       <rect>
        <x>500</x>
@@ -254,7 +254,7 @@ QPushButton:pressed {
        <height>141</height>
       </rect>
      </property>
-     <widget class="QPushButton" name="select_dep_but">
+     <widget class="QPushButton" name="capture_sensor">
       <property name="geometry">
        <rect>
         <x>15</x>
@@ -310,7 +310,7 @@ QPushButton:pressed {
        </size>
       </property>
      </widget>
-     <widget class="QPushButton" name="select_dep_but_2">
+     <widget class="QPushButton" name="confirm_sensor">
       <property name="geometry">
        <rect>
         <x>275</x>
@@ -370,9 +370,9 @@ QPushButton:pressed {
     <widget class="QPushButton" name="guilde_but">
      <property name="geometry">
       <rect>
-       <x>945</x>
+       <x>895</x>
        <y>0</y>
-       <width>80</width>
+       <width>130</width>
        <height>80</height>
       </rect>
      </property>
@@ -393,8 +393,8 @@ QPushButton:pressed {
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
-	border: 0px solid rgb(255, 255, 255);
-	border-radius: 0px;	
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
 	background-color: rgb(0, 114, 177);
 	color: rgb(255, 255, 255);
 }
@@ -837,9 +837,10 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="styleSheet">
         <string notr="true">border: 0px solid rgb(255, 62, 10);
-border-radius: 10px;	
+border-radius: 20px;	
 background-color: rgb(255, 106, 101);
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+</string>
        </property>
        <widget class="QFrame" name="horizontalFrame_2">
         <property name="geometry">
@@ -851,8 +852,9 @@ color: rgb(255, 255, 255);</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-radius: 5px;	
-background-color: rgb(245, 245, 245);;
+         <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
 color: rgb(255, 255, 255);</string>
         </property>
         <widget class="QLabel" name="heart_rate">
@@ -934,7 +936,7 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="styleSheet">
         <string notr="true">border: 0px solid rgb(255, 62, 10);
-border-radius: 10px;	
+border-radius: 20px;	
 background-color: rgb(255, 166, 114);
 color: rgb(255, 255, 255);</string>
        </property>
@@ -948,7 +950,7 @@ color: rgb(255, 255, 255);</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-radius: 5px;	
+         <string notr="true">border-radius: 20px;	
 background-color: rgb(245, 245, 245);;
 color: rgb(255, 255, 255);</string>
         </property>
@@ -1030,7 +1032,7 @@ background: rgb(255, 255, 255);</string>
      </property>
     </widget>
     <zorder>label_title_bar_top</zorder>
-    <zorder>progress_bar_2</zorder>
+    <zorder>progress_bar</zorder>
     <zorder>horizontalFrame</zorder>
     <zorder>guilde_but</zorder>
     <zorder>verticalFrame</zorder>

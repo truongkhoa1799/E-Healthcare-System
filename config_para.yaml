@@ -8,6 +8,10 @@ path:
   map_dep_table_path: model_engine/assistant_model/map_department_id.yaml
   decision_tree_model_predict_dep_path: model_engine/assistant_model/decision_tree
   dict_part_body_problems_predict_dep_path: model_engine/assistant_model/dict_data
+  main_gui_path: gui/form.ui
+  measure_sensor_gui_path: gui/progressbar.ui
+  okdialog_path: gui/okpopup.ui
+  yes_no_dialog: gui/dialog.ui
 
 azure:
   eventhub_name: receivemsg
