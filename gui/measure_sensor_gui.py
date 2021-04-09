@@ -70,7 +70,7 @@ class MeasureSensorDialog(QDialog):
         measure_sensor_thread.start()
 
         for i in range(20):
-            # self.progress_bar.setValue(i*5)
+            self.progress_bar.setValue((i+1)*5)
             # print('Hello')
             if glo_va.temp_sensor['spo2'] != -1:
                 self.spo2.setText(str(glo_va.temp_sensor['spo2']))
