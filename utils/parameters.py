@@ -160,7 +160,7 @@ class GlobalVariable:
         self.BUTTON_BACK_GUILDE_SENSOR = 16
 
         ########################################################
-        # REQUEST                                              #
+        # REQUEST MAIN GUI                                     #
         ########################################################
         self.REQUEST_CONFIRM_NEW_PATIENT = 0
         self.REQUEST_CHANGE_GUI = 1
@@ -178,6 +178,13 @@ class GlobalVariable:
         self.REQUEST_DEACTIVATE_NEW_FACE = 13
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
         self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
+
+        ########################################################
+        # REQUEST MEASURE SENSOR GUI                           #
+        ########################################################
+        self.REQUEST_UPDATE_OSO2 = 0
+        self.REQUEST_UPDATE_ESP = 1
+        self.REQUEST_NOTIFY_DISCONNECT_OSO2_DEVICE = 2
 
         # Dialog
         self.EXIST_DIALOG = 0

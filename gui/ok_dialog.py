@@ -47,8 +47,16 @@ class OkDialogClass(QDialog):
                 background-position: center;
                 background-repeat: no-repeat;
             ''')
-            self.text = '  Please capture all sensors information'
-
+            self.text = '       Please turn on OSO2 device\n                or see instruction'
+        
+        if data['opt'] == 4:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/icons8-checkmark-90.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '    You connect sensor successfully'
+        
 
         self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning())

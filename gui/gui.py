@@ -294,17 +294,15 @@ class GUI(QtWidgets.QMainWindow):
     # SENSOR MODULE                                                            #
     ############################################################################
     def __MeasureSensor(self):
-        ret = -2
+        ret = {}
         glo_va.measure_sensor_dialog = MeasureSensorDialog(ret)
         glo_va.measure_sensor_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if glo_va.measure_sensor_dialog.exec_() == QtWidgets.QDialog.Accepted:
-            ret = int(glo_va.measure_sensor_dialog.ret)
-            # print(ret)
+            ret = glo_va.measure_sensor_dialog.ret
+            print(ret)
         
-        if ret == 0:
-            sensor_info = {'blood_pressure': 120, 'heart_pulse':98, 'temperature':38, 'spo2':90, 'height': 1.78, 'weight': 78}
-            sensor.Update_Sensor(sensor_info)
-            self.__UpdateSensorInfo()
+        sensor.Update_Sensor(ret)
+        self.__UpdateSensorInfo()
 
         glo_va.done_measuring_sensor = True
     
