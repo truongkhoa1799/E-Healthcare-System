@@ -1,121 +1,155 @@
 import hid
-import time, sys
+import time, sys, threading
 import statistics
-import random
+from threading import Timer
 
 sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 from utils.common_functions import LogMesssage
 
-# enumerate USB devices
+class MeasureSensor:
+    def __init__(self):
+        self.__flag_connection_oso2 = False
+        self.__flag_connection_esp32 = False
 
-for d in hid.enumerate():
-    keys = list(d.keys())
-    keys.sort()
-    for key in keys:
-        print("%s : %s" % (key, d[key]))
-    print()
-
-# try opening a device, then perform write and read
-
-# [79, TH_OFFSET, HR, 0, x, x, TD0, TD1, TS_OFFSET, 0, SPO2, 0, PI0, PI1]
-def getSensorData():
-    # try:
-    print("Opening the device")
-
-    h = hid.device()
-    h.open(1155, 22320)  # TREZOR VendorID/ProductID
-    print("Manufacturer: %s" % h.get_manufacturer_string())
-    print("Product: %s" % h.get_product_string())
-    print("Serial No: %s" % h.get_serial_number_string())
-
-    # enable non-blocking mode
-    h.set_nonblocking(1)
-
-    # read data from device
-    print("Reading the data")
-    start = time.time()
-    HexString = []
-    dataString = []
-
-    while (time.time() - start) < 20:
-        d = h.read(64)
-        if d:
-            dataString.append(d)
-            hexString = ""
-            subStrSet = []
-            for n in d:
-                hexString += hex(n)
-            hexString = hexString.replace('x', '')
-            subStrSet = hexString.split('0a0d')
-            subStrSet = subStrSet[:-1]
-            HexString.append(subStrSet)
-
-    print("Closing the device")
-    h.close()
-    print('LEN:')
-    # print(dataStr)
-    print(len(HexString))
-    # print(HexString[len(HexString) - 1])
-    print(len(dataString))
-
-    spo2List = []
-    heartRateList = []
-
-    for subStrSet in HexString:
-        for subStr in subStrSet:
-            if (subStr[:3] == '04f'):
-                OFFSET = subStrSet.index(subStr) * 16
-                hrIdx = OFFSET + 2
-                spo2Idx = OFFSET + 10
-                dataIdx = HexString.index(subStrSet)
-                hrData = dataString[dataIdx][hrIdx]
-                heartRateList.append(hrData)
-                print('HR:')
-                print(hrData)
-                spo2Data = dataString[dataIdx][spo2Idx]
-                spo2List.append(spo2Data)
-                print('SPO2:')
-                print(spo2Data)
-
-    spo2 = statistics.mean(spo2List)
-    heartRate = statistics.mean(heartRateList)
-    print(spo2)
-    print(heartRate)
-
-    # except IOError as ex:
-    #     print(ex)
-    #     print("You probably don't have the hard-coded device.")
-    #     print("Update the h.open() line in this script with the one")
-    #     print("from the enumeration list output above and try again.")
-
-    print("Done")
-
-def testReadSensor():
-    LogMesssage('[testReadSensor]: Start capture spo2 and heart rate')
-    list_spo2 = []
-    list_hr = []
-
-    for i in range(20):
-        hr = random.randint(60,110)
-        spo2 = random.randint(90,100)
+        self.__oso2 = hid.device()
+        self.__oso2.open(1155, 22320)  # TREZOR VendorID/ProductID
         
-        glo_va.temp_sensor['hr'] = hr
-        glo_va.temp_sensor['spo2'] = spo2
-        
-        print(glo_va.temp_sensor['hr'])
-        print(glo_va.temp_sensor['spo2'])
+        self.__state_oso2 = 0
 
-        list_hr.append(hr)
-        list_spo2.append(spo2)
+        self.__time_missing_data = 0
+        self.__list_spo2 = []
+        self.__list_heart_rate = []
 
-        time.sleep(1)
+        self.__enable_run_oso2 = threading.Event()
+        self.__read_oso2 = None
+
+        self.status = 0
+                
+        LogMesssage("Opening connection Heart Rate and SPO2 measurement device", opt=0)
+        LogMesssage("Manufacturer: %s" % self.__oso2.get_manufacturer_string(), opt=0)
+        LogMesssage("Product: %s" % self.__oso2.get_product_string(), opt=0)
+        LogMesssage("Serial No: %s" % self.__oso2.get_serial_number_string(), opt=0)
+
+        # enable non-blocking mode
+        self.__oso2.set_nonblocking(1)
+
+    def startMeasure(self):
+        if self.__read_oso2 is None or not self.__read_oso2.is_alive():
+            self.__read_oso2= threading.Thread(target=self.__getOSO2Data, args=())
+            self.__read_oso2.daemon = True
+            self.__read_oso2.start()
+            LogMesssage('Start thread measuring herat rate and spo2')
+        else:
+            LogMesssage('Thread measuring herat rate and spo2 is already running')
+
+
+
+    def __getOSO2Data(self):
+        while not self.__enable_run_oso2.is_set():
+            if self.__state_oso2 == 0:
+                self.__stateOSO2_0()
+            elif self.__state_oso2 == 1:
+                self.__stateOSO2_1()
+            elif self.__state_oso2 == 2:
+                self.__stateOSO2_2()
     
-    glo_va.temp_sensor['hr'] = statistics.mean(list_spo2)
-    glo_va.temp_sensor['spo2'] = statistics.mean(list_hr)
+    def __stateOSO2_0(self):
+        data = self.__oso2.read(64)
+        if data:
+            self.__readOSO2Date(data)
+            self.__state_oso2 = 1
+            LogMesssage('Has first data from OSO2 device')
 
-    LogMesssage('[testReadSensor]: Done capture spo2 and heart rate')
-    return
+    def __stateOSO2_1(self):
+        data = self.__oso2.read(64)
+        if data:
+            self.__time_missing_data = 0
+            self.__readOSO2Date(data)
+        else:
+            # LogMesssage('Missing data: {num}'.format(num=self.__time_missing_data))
+            # print(self.__read_oso2.is_alive())
+            self.__time_missing_data += 1
+
+            time.sleep(1)
+        
+        if self.__time_missing_data == 3:
+            self.__state_oso2 = 2
+    
+    def __stateOSO2_2(self):
+        LogMesssage('Done read data from OSO2 device')
+        print(self.__list_heart_rate)
+        print(self.__list_spo2)
+        mean_spo2 = statistics.mean(self.__list_spo2)
+        mean_heart_rate = statistics.mean(self.__list_heart_rate)
+        print(mean_spo2)
+        print(mean_heart_rate)
+        LogMesssage('Back to wait read first data from OSO2 device')
+        self.__time_missing_data == 0
+        self.__state_oso2 = 0
+        # self.status += 1
 
 
-getSensorData()
+    def __readOSO2Date(self, data):
+        # print(data)
+        hex_string = ""
+        sub_str_set = []
+
+        for element in data:
+            hex_string += hex(element)
+
+        hex_string = hex_string.replace('x', '')
+        sub_str_set = hex_string.split('0a0d')
+
+        sub_str_set = sub_str_set[:-1]
+
+        for i in range(len(sub_str_set)):
+            if sub_str_set[i][:3] == '04f':
+                OFFSET = i*16
+                hr_index = OFFSET + 2
+                spo2_index = OFFSET + 10
+
+                print(data[hr_index])
+                print(data[spo2_index])
+
+                self.__list_heart_rate.append(data[hr_index])
+                self.__list_spo2.append(data[spo2_index])
+        
+    def stopMeasure(self):
+        if not self.__enable_run_oso2.is_set():
+            self.__enable_run_oso2.set()
+            self.__read_oso2.join()
+            # print(self.__read_oso2.is_alive())
+
+    def closeDevice(self):
+        self.stopMeasure()
+
+        if self.__flag_connection_oso2 == True:
+            LogMesssage("Closing connection Heart Rate and SPO2 measurement device", opt=0)
+            self.__oso2.close()
+
+
+# sensor = MeasureSensor()
+# sensor.startMeasure()
+# # time.sleep(2)
+# # sensor.startMeasure()
+# listening_sensor = threading.Event()
+
+# while not listening_sensor.is_set():
+#     # self.progress_bar.setValue((i+1)*5)
+#     # print('Hello')
+#     # if glo_va.temp_sensor['spo2'] != -1:
+#     #     self.spo2.setText(str(glo_va.temp_sensor['spo2']))
+
+#     # if glo_va.temp_sensor['hr'] != -1:
+#     #     self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
+
+#     if sensor.status == 1:
+#         listening_sensor.set()
+
+#     listening_sensor.wait(1)
+
+# # self.spo2.setText(str(glo_va.temp_sensor['spo2']))
+# # self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
+# sensor.stopMeasure()
