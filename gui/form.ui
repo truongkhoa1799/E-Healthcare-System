@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -990,7 +990,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>157</width>
+             <width>90</width>
              <height>50</height>
             </rect>
            </property>
@@ -1039,6 +1039,33 @@ border-radius: 5px;</string>
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
+          <widget class="QLabel" name="weight_2">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>kg</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
          </widget>
          <widget class="QFrame" name="horizontalFrame_3">
           <property name="geometry">
@@ -1069,7 +1096,7 @@ border-radius: 5px;</string>
            <property name="geometry">
             <rect>
              <x>40</x>
-             <y>75</y>
+             <y>85</y>
              <width>97</width>
              <height>26</height>
             </rect>
@@ -1096,8 +1123,8 @@ border-radius: 5px;</string>
            <property name="geometry">
             <rect>
              <x>40</x>
-             <y>20</y>
-             <width>157</width>
+             <y>30</y>
+             <width>90</width>
              <height>56</height>
             </rect>
            </property>
@@ -1114,6 +1141,33 @@ border-radius: 5px;</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QLabel" name="weight_3">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>m</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1190,7 +1244,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>157</width>
+             <width>90</width>
              <height>56</height>
             </rect>
            </property>
@@ -1207,6 +1261,33 @@ border-radius: 5px;</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QLabel" name="weight_4">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>C</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1270,7 +1351,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>157</width>
+             <width>90</width>
              <height>56</height>
             </rect>
            </property>
@@ -1287,6 +1368,33 @@ border-radius: 5px;</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QLabel" name="weight_7">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>BMI</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1363,7 +1471,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>157</width>
+             <width>90</width>
              <height>56</height>
             </rect>
            </property>
@@ -1380,6 +1488,33 @@ border-radius: 5px;</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QLabel" name="weight_5">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>%</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1443,7 +1578,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>157</width>
+             <width>90</width>
              <height>56</height>
             </rect>
            </property>
@@ -1460,6 +1595,33 @@ border-radius: 5px;</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QLabel" name="weight_6">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>35</y>
+             <width>90</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>40</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(50, 50, 50);</string>
+           </property>
+           <property name="text">
+            <string>bpm</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2682,7 +2844,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2690,7 +2852,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2747,7 +2909,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2755,7 +2917,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2812,7 +2974,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2820,7 +2982,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
