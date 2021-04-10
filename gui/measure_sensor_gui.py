@@ -53,8 +53,8 @@ class MeasureSensorDialog(QDialog):
 
         if request['type'] == 0:
             print(request['data'])
-            self.heart_rate.setText(str(int(request['data']['heart_rate'])) + ' bpm')
-            self.spo2.setText(str(int(request['data']['spo2'])) + ' %')
+            self.heart_rate.setText(str(int(request['data']['heart_rate'])))
+            self.spo2.setText(str(int(request['data']['spo2'])))
 
 
     def __onButtonListenning(self, opt):
@@ -97,31 +97,34 @@ class MeasureSensorDialog(QDialog):
             LogMesssage('Please open OSO2 before capture', opt=2)
     
     def confirmSensor(self):
-        hear_rate = str(self.heart_rate.text())
-        spo2 = str(self.spo2.text())
-        temperature = str(self.temperature.text())
-        height = str(self.height.text())
-        weight = str(self.weight.text())
-        BMI = str(self.BMI.text())
+        try:
+            hear_rate = str(self.heart_rate.text())
+            spo2 = str(self.spo2.text())
+            temperature = str(self.temperature.text())
+            height = str(self.height.text())
+            weight = str(self.weight.text())
+            BMI = str(self.BMI.text())
 
-        # if hear_rate == '' or spo2 == '' \
-        #     or temperature == '' or height == '' \
-        #     or weight == '' or BMI == '':
-        if hear_rate == '' or spo2 == '':
-            data = {}
-            data['opt'] = 3
-            submit_dialog = OkDialogClass(-2, data)
-            submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            submit_dialog.exec_()
-        else:
-            ret = None
-            dialog = QDialogClass(ret, glo_va.CONFIRM_SENSOR_INFORMATION)
-            dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            if dialog.exec_() == QtWidgets.QDialog.Accepted:
-                if int(dialog.ret) == 0:
+            # if hear_rate == '' or spo2 == '' \
+            #     or temperature == '' or height == '' \
+            #     or weight == '' or BMI == '':
+            if hear_rate == '' or spo2 == '':
+                data = {}
+                data['opt'] = 3
+                submit_dialog = OkDialogClass(-2, data)
+                submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+                submit_dialog.exec_()
+            else:
+                ret = None
+                dialog = QDialogClass(ret, glo_va.CONFIRM_SENSOR_INFORMATION)
+                dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+                if dialog.exec_() == QtWidgets.QDialog.Accepted and int(dialog.ret) == 0:
                     self.closeMeasureSensor()
                     LogMesssage('Patient successfully have all sensor information')
                     self.close()
+
+        except Exception as e:
+            LogMesssage('Fail to confirm MeasureSensor: {e}'.format(e=e), opt=2)
     
     def closeMeasureSensor(self):
         if self.__init_device == True:
