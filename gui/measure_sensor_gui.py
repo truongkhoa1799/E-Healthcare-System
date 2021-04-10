@@ -1,12 +1,16 @@
 from utils.common_functions import LogMesssage
 from PyQt5.QtWidgets import QDialog
-import sys, time, threading
+from PyQt5 import QtCore, QtWidgets
+
+import sys, time, threading, queue
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from sensor.oso2_sensor import MeasureSensor
+from ok_dialog import OkDialogClass
+from yes_no_dialog import QDialogClass
 
 class MeasureSensorDialog(QDialog):
     def __init__(self, ret, parent=None):
@@ -33,7 +37,25 @@ class MeasureSensorDialog(QDialog):
 
         self.__list_image = [self.first_image, self.second_image]
 
+        self.queue_request_states_thread = queue.Queue(maxsize = 10)
+        check_request_states_thread = QtCore.QTimer(self)
+        check_request_states_thread.timeout.connect(self.__CheckRequestStatesThread)
+        check_request_states_thread.start(1000)
+
         self.progress_bar.setValue(0)
+        self.__init_device = False
+    
+    def __CheckRequestStatesThread(self):
+        if self.queue_request_states_thread.empty():
+            return
+        
+        request = self.queue_request_states_thread.get()
+
+        if request['type'] == 0:
+            print(request['data'])
+            self.heart_rate.setText(str(int(request['data']['heart_rate'])) + ' bpm')
+            self.spo2.setText(str(int(request['data']['spo2'])) + ' %')
+
 
     def __onButtonListenning(self, opt):
         if opt == glo_va.BUTTON_BACK_GUILDE_SENSOR:
@@ -60,50 +82,56 @@ class MeasureSensorDialog(QDialog):
             self.measureSenSor()
 
         elif opt == glo_va.BUTTON_CONFIRM_SENSOR:
-            print('Confirm')
-            self.__ClearPage()
+            self.confirmSensor()
     
     def measureSenSor(self):
         try:
-            self.sensor_measurement = MeasureSensor()
+            if self.__init_device == False:
+                self.sensor_measurement = MeasureSensor()
+                self.__init_device = True
+
             self.sensor_measurement.startMeasure()
-
-            listening_sensor = threading.Event()
-
-            while not listening_sensor.is_set():
-                # self.progress_bar.setValue((i+1)*5)
-                # print('Hello')
-                # if glo_va.temp_sensor['spo2'] != -1:
-                #     self.spo2.setText(str(glo_va.temp_sensor['spo2']))
-
-                # if glo_va.temp_sensor['hr'] != -1:
-                #     self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
-
-                if self.sensor_measurement.status == 1:
-                    listening_sensor.set()
-            
-                listening_sensor.wait(1)
-
-            # self.spo2.setText(str(glo_va.temp_sensor['spo2']))
-            # self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
-            self.sensor_measurement.stopMeasure()
 
         except Exception as e:
             LogMesssage('Fail to init MeasureSensor: {e}'.format(e=e), opt=2)
             LogMesssage('Please open OSO2 before capture', opt=2)
     
+    def confirmSensor(self):
+        hear_rate = str(self.heart_rate.text())
+        spo2 = str(self.spo2.text())
+        temperature = str(self.temperature.text())
+        height = str(self.height.text())
+        weight = str(self.weight.text())
+        BMI = str(self.BMI.text())
+
+        # if hear_rate == '' or spo2 == '' \
+        #     or temperature == '' or height == '' \
+        #     or weight == '' or BMI == '':
+        if hear_rate == '' or spo2 == '':
+            data = {}
+            data['opt'] = 3
+            submit_dialog = OkDialogClass(-2, data)
+            submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            submit_dialog.exec_()
+        else:
+            ret = None
+            dialog = QDialogClass(ret, glo_va.CONFIRM_SENSOR_INFORMATION)
+            dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                if int(dialog.ret) == 0:
+                    self.closeMeasureSensor()
+                    LogMesssage('Patient successfully have all sensor information')
+                    self.close()
+    
+    def closeMeasureSensor(self):
+        if self.__init_device == True:
+            self.sensor_measurement.closeDevice()
+            self.__init_device = False
+    
         
-
-
     def closeEvent(self, event):
         if self.ret == -2:
             self.ret = -1
             
-            glo_va.temp_sensor['height'] = -1
-            glo_va.temp_sensor['weight'] = -1
-            glo_va.temp_sensor['spo2'] = -1
-            glo_va.temp_sensor['hr'] = -1
-            glo_va.temp_sensor['temperature'] = -1
-            self.sensor_measurement.closeDevice()
-
+            self.closeMeasureSensor()
             self.accept()

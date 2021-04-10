@@ -5,94 +5,15 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from measure_sensor_gui import MeasureSensorDialog
+from ok_dialog import OkDialogClass
+from yes_no_dialog import QDialogClass
 
 import queue
-
-# YesNoQDialog = uic.loadUiType("dialog.ui")[0]
-
-class OkDialogClass(QDialog):
-    def __init__(self, ret, data, parent=None):
-        QDialog.__init__(self, parent)
-        uic.loadUi(glo_va.OKAY_DIALOG_PATH, self) # Load the .ui file
-        self.ret = -2
-        self.text = None
-        # self.setupUi(self)
-
-        # submit success
-        if data['opt'] == 0:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/icons8-checkmark-90.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = '             Your STT     : {}        \n             At Room      : {}'.format(data['stt'], data['room'])
-        # fail to submit
-        elif data['opt'] == 1:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/warning.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = '    False to submit examination.\n                Please try again.'
-        # ask capture sensor
-        elif data['opt'] == 2:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/warning.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = '  Please capture sensor information\nand select examination department'
-
-
-        self.text_dialog.setText(self.text)
-        self.accept_exist.clicked.connect(lambda: self.__onButtonListenning())
-    
-    def __onButtonListenning(self):
-        self.ret = 0
-        self.accept()
-        self.close()
-    
-    def closeEvent(self, event):
-        if self.ret == -2:
-            self.ret = -1
-            self.accept()
-
-class QDialogClass(QDialog):
-    def __init__(self, ret, opt, parent=None):
-        QDialog.__init__(self, parent)
-        uic.loadUi(glo_va.YES_NO_DIALOG_PATH, self) # Load the .ui file
-        self.ret = -2
-        self.text = None
-        # self.setupUi(self)
-
-        if opt == glo_va.EXIST_DIALOG:
-            self.text = 'Are you sure to quit?'
-        elif opt == glo_va.CONFIRM_PATIENT_DIALOG:
-            self.text = 'Is it your information?'
-        elif opt == glo_va.CONFIRM_NEW_PATIENT_DIALOG:
-            self.text = 'Are you new user?'
-
-        self.text_dialog.setText(self.text)
-        self.accept_exist.clicked.connect(lambda: self.__onButtonListenning(0))
-        self.deny_exist.clicked.connect(lambda: self.__onButtonListenning(1))
-    
-    def __onButtonListenning(self, opt):
-        if opt == 0:
-            self.ret = 0
-        elif opt == 1:
-            self.ret = -1
-        self.accept()
-        self.close()
-    
-    def closeEvent(self, event):
-        if self.ret == -2:
-            self.ret = -1
-            self.accept()
 
 class GUI(QtWidgets.QMainWindow):
     def __init__(self):
@@ -114,7 +35,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
@@ -374,10 +295,10 @@ class GUI(QtWidgets.QMainWindow):
     ############################################################################
     def __MeasureSensor(self):
         ret = -2
-        progress_bar = MeasureSensorDialog(ret)
-        progress_bar.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        if progress_bar.exec_() == QtWidgets.QDialog.Accepted:
-            ret = int(progress_bar.ret)
+        glo_va.measure_sensor_dialog = MeasureSensorDialog(ret)
+        glo_va.measure_sensor_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if glo_va.measure_sensor_dialog.exec_() == QtWidgets.QDialog.Accepted:
+            ret = int(glo_va.measure_sensor_dialog.ret)
             # print(ret)
         
         if ret == 0:

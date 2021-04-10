@@ -12,6 +12,7 @@ class GlobalVariable:
 
         # parameters for services
         self.gui = None
+        self.measure_sensor_dialog = None
         self.timer = None
         self.camera = None
         self.server = None
@@ -98,7 +99,6 @@ class GlobalVariable:
         ########################################################
         self.measuring_sensor = False
         self.done_measuring_sensor = False
-        self.temp_sensor = {'height': -1, 'weight': -1, 'spo2': -1, 'hr': -1, 'temperature': -1}
 
         ########################################################
         # ASSISTANT                                            #
@@ -183,6 +183,7 @@ class GlobalVariable:
         self.EXIST_DIALOG = 0
         self.CONFIRM_PATIENT_DIALOG = 1
         self.CONFIRM_NEW_PATIENT_DIALOG = 2
+        self.CONFIRM_SENSOR_INFORMATION = 3
 
         # PATH_PARA
         config_para_path = os.path.join(PROJECT_PATH, 'config_para.yaml')
