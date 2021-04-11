@@ -62,11 +62,11 @@ timer:
   times_missing_face: 3
   timeout_missing_face: 10
 
-  timeout_validate: 5
+  timeout_validate: 10
   opt_timer_validate: 0
 
-  timeout_get_examination_room: 5
+  timeout_get_examination_room: 10
   opt_timer_get_examination_room: 1
 
-  timeout_submit_examination: 5
+  timeout_submit_examination: 10
   opt_timer_submit_examination: 2

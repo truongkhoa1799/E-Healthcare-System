@@ -21,14 +21,11 @@ class Server:
 
         self.__LoadConnection()
 
-        self.__connection = IoTHubDeviceClient.create_from_connection_string(self.__device_iothub_connection)
-        self.__producer = EventHubProducerClient.from_connection_string(
-            conn_str=self.__eventhub_connection,
-            eventhub_name=self.__eventhub_name
-        )
+        self.__establishConnectionServer()
+        
 
         # Start a thread to listen 
-        self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=(self.__connection,))
+        self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=())
         self.__listening_server_thread.daemon = True
         self.__listening_server_thread.start()
 
@@ -42,13 +39,20 @@ class Server:
             # print(self.__device_iothub_connection)
             # print(self.__eventhub_connection)
             # print(self.__eventhub_name)
+    
+    def __establishConnectionServer(self):
+        self.__connection = IoTHubDeviceClient.create_from_connection_string(self.__device_iothub_connection)
+        self.__producer = EventHubProducerClient.from_connection_string(
+            conn_str=self.__eventhub_connection,
+            eventhub_name=self.__eventhub_name
+        )
             
     # When server receive response:
     #   1: Clear Timer, so that timer is not trigged
-    def __Listen_Reponse_Server(self, connection):
+    def __Listen_Reponse_Server(self):
         while True:
             try:
-                method_request = connection.receive_method_request()
+                method_request = self.__connection.receive_method_request()
                 timer_id = method_request.payload['request_id']
 
                 # Default response
@@ -61,13 +65,13 @@ class Server:
                 if not glo_va.lock_init_state.acquire(False):
                     LogMesssage('[__Listen_Reponse_Server]: Lock init state was already acquired, do not accept new message')
                     method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                    connection.send_method_response(method_response)
+                    self.__connection.send_method_response(method_response)
                     continue
                 
                 if not glo_va.lock_response_server.acquire(False):
                     LogMesssage('[__Listen_Reponse_Server]: Lock response server was already acquired, do not accept new message')
                     method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                    connection.send_method_response(method_response)
+                    self.__connection.send_method_response(method_response)
                     continue
 
                 LogMesssage('[__Listen_Reponse_Server]: Acquire lock init state')
@@ -83,8 +87,8 @@ class Server:
                     glo_va.timer.Clear_Timer()
 
                     # Release lock
-                    LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
                     glo_va.lock_response_server.release()
+                    LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
 
                     current_time = time.strftime("%H:%M:%S", time.localtime())
                     LogMesssage("[__Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(request_name=method_request.name,timer_id=timer_id, name=method_request.name))
@@ -134,12 +138,13 @@ class Server:
                 else:
                     # if timer did timeout first, discard this response and wait for next response
                     glo_va.lock_response_server.release()
+                    LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
 
                 glo_va.lock_init_state.release()
                 LogMesssage('[__Listen_Reponse_Server]: Release lock init state')
 
                 method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                connection.send_method_response(method_response)
+                self.__connection.send_method_response(method_response)
                 
 
             except Exception as e:
@@ -151,7 +156,9 @@ class Server:
                 if glo_va.lock_response_server.locked() == True:
                     glo_va.lock_response_server.release()
                     LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
-                # glo_va.STATE = -1
+
+                self.__establishConnectionServer()
+                LogMesssage('Re-establish connection with Server')
 
     def Validate_User(self):
         try:
@@ -168,7 +175,9 @@ class Server:
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
             LogMesssage("Has error at module Validate_User in server.py: {}".format(e), opt=2)
-            glo_va.STATE = -1
+            
+            self.__establishConnectionServer()
+            LogMesssage('Re-establish connection with Server')
     
     def Get_Examination_Room(self):
         try:
@@ -185,7 +194,9 @@ class Server:
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
             LogMesssage("Has error at module Get_Examination_Room in server.py: {}".format(e), opt=2)
-            glo_va.STATE = -1
+            
+            self.__establishConnectionServer()
+            LogMesssage('Re-establish connection with Server')
     
     def Submit_Examination(self):
         try:
@@ -203,12 +214,12 @@ class Server:
                     'hospital_ID': str(glo_va.hospital_ID),
                     'building_code': building_code,
                     'room_code': room_code,
-                    'blood_pressure': str(sensor_infor['blood_pressure']),
+                    'bmi': str(sensor_infor['bmi']),
                     'pulse': str(sensor_infor['heart_pulse']),
                     'thermal': str(sensor_infor['temperature']),
                     'spo2': str(sensor_infor['spo2']),
                     'height': str(sensor_infor['height']),
-                    'weight': str(sensor_infor['height'])
+                    'weight': str(sensor_infor['weight'])
                 }
                 
                 # Check is new user
@@ -227,7 +238,9 @@ class Server:
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
             LogMesssage("Has error at module Submit_Examination in server.py: {}".format(e), opt=2)
-            glo_va.STATE = -1
+            
+            self.__establishConnectionServer()
+            LogMesssage('Re-establish connection with Server')
 
     def Close(self):
         # self.__listening_server_thread.join()

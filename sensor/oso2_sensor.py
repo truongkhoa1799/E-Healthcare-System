@@ -48,6 +48,9 @@ class MeasureSensor:
             self.__list_heart_rate = []
             self.__time_missing_data = 0
 
+            self.has_oso2 = False
+            self.has_esp = False
+
             return 0
 
         except Exception as e:
@@ -191,29 +194,4 @@ class MeasureSensor:
 
 
 # sensor = MeasureSensor()
-# sensor.startMeasure()
-# # time.sleep(2)
-# # sensor.startMeasure()
-# listening_sensor = threading.Event()
-
-# while not listening_sensor.is_set():
-#     # self.progress_bar.setValue((i+1)*5)
-#     # print('Hello')
-#     # if glo_va.temp_sensor['spo2'] != -1:
-#     #     self.spo2.setText(str(glo_va.temp_sensor['spo2']))
-
-#     # if glo_va.temp_sensor['hr'] != -1:
-#     #     self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
-#     print(sensor.getStatus())
-#     listening_sensor.wait(1)
-
-# # self.spo2.setText(str(glo_va.temp_sensor['spo2']))
-# # self.heart_rate.setText(str(glo_va.temp_sensor['hr']))
-# sensor.__stopMeasure()
-
-# # for d in hid.enumerate():
-# #     keys = list(d.keys())
-# #     keys.sort()
-# #     for key in keys:
-# #         print("%s : %s" % (key, d[key]))
-# #     print()
+# sensor.openConnectionSensors()

@@ -7,13 +7,13 @@ sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 
-class OkDialogClass(QDialog):
+class OkDialogClass(QDialog, glo_va.ok_dialog):
     def __init__(self, ret, data, parent=None):
         QDialog.__init__(self, parent)
-        uic.loadUi(glo_va.OKAY_DIALOG_PATH, self) # Load the .ui file
+        # uic.loadUi(glo_va.OKAY_DIALOG_PATH, self) # Load the .ui file
         self.ret = -2
         self.text = None
-        # self.setupUi(self)
+        self.setupUi(self)
 
         # submit success
         if data['opt'] == 0:

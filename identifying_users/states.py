@@ -166,24 +166,24 @@ def State_3():
     elif glo_va.button == glo_va.BUTTON_OKAY:
         glo_va.button = -1
     
-    # # do not press any thing
-    # else:        
-    #     # If has_response_server:
-    #     #   1. Has examination room:
-    #     #       
-    #     #   2. Do not has examination room
-    #     #        = False. Therefore, next execution will send again message
-    #     #   3. Set has_response_server and is_sending_message = False
-    #     if glo_va.has_response_server == True:        
-    #         glo_va.is_sending_message = False
-    #         glo_va.has_response_server = False
-    #         LogMesssage('[State_3]: Has messsage get list examination room')
+    # do not press any thing
+    else:        
+        # If has_response_server:
+        #   1. Has examination room:
+        #       
+        #   2. Do not has examination room
+        #        = False. Therefore, next execution will send again message
+        #   3. Set has_response_server and is_sending_message = False
+        if glo_va.has_response_server == True:        
+            glo_va.is_sending_message = False
+            glo_va.has_response_server = False
+            LogMesssage('[State_3]: Has messsage get list examination room')
         
-    #     if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
-    #         LogMesssage('[State_3]: No list examination room. Resend message')
-    #         glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
-    #         glo_va.is_sending_message = True
-    #         glo_va.server.Get_Examination_Room()
+        if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
+            LogMesssage('[State_3]: No list examination room. Resend message')
+            glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
+            glo_va.is_sending_message = True
+            glo_va.server.Get_Examination_Room()
     
 
 def State_4():
@@ -246,10 +246,10 @@ def State_6():
         # Face Identifying
         glo_va.face_recognition.Encoding_Face()
 
-        if glo_va.num_user_pose >= 10:
+        if glo_va.num_user_pose >= 7:
             max_pose = -1
             for i in glo_va.dict_user_pose:
-                if glo_va.dict_user_pose[i] > 7 and glo_va.dict_user_pose[i] > max_pose:
+                if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
                     max_pose = i
 
             # print("max_pose: {}, current_pose: {}".format(max_pose, glo_va.current_shape))
@@ -401,9 +401,13 @@ def State_8():
             ret = glo_va.measuring_sensor.getSensorsData()
             # disconnect
             if ret == -2:
+                glo_va.measuring_sensor.closeDevice()
+                glo_va.measure_sensor = None
                 glo_va.connected_sensor_device = False
                 LogMesssage("[State_8]: Connection with sensors device is disconnected")
             elif ret == 1:
+                glo_va.measuring_sensor.closeDevice()
+                glo_va.measure_sensor = None
                 glo_va.connected_sensor_device = False
                 LogMesssage("[State_8]: Have data from oso2 and esp device. Disconnect device")
     # glo_va.button = -1
@@ -462,8 +466,12 @@ def Init_State():
     glo_va.has_examination_room = False
 
     # SENSOR PARAMETERS-----------------------------------------------
-    glo_va.measuring_sensor.closeDevice()
-    glo_va.measuring_sensor = None
+    try:
+        glo_va.measuring_sensor.closeDevice()
+        glo_va.measuring_sensor = None
+    except:
+        pass
+
     glo_va.connected_sensor_device = False
 
     sensor.Clear()

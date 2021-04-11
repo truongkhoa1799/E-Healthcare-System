@@ -7,13 +7,13 @@ sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 
-class QDialogClass(QDialog):
+class QDialogClass(QDialog, glo_va.yes_no_dialog):
     def __init__(self, ret, opt, parent=None):
         QDialog.__init__(self, parent)
-        uic.loadUi(glo_va.YES_NO_DIALOG_PATH, self) # Load the .ui file
+        # uic.loadUi(glo_va.YES_NO_DIALOG_PATH, self) # Load the .ui file
         self.ret = -2
         self.text = None
-        # self.setupUi(self)
+        self.setupUi(self)
 
         if opt == glo_va.EXIST_DIALOG:
             self.text = 'Are you sure to quit?'

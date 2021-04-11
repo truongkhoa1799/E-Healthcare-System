@@ -63,7 +63,7 @@ def Get_Face_Angle(im, shape):
             return 4
 
     if sign_vertical == -1:
-        if diff_vertical > 1 and diff_horizontal < 5:
+        if diff_vertical >=0 and diff_horizontal < 5:
             # Looking down
             # print('down')
             return 2

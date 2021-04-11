@@ -121,7 +121,7 @@ class GlobalVariable:
         ########################################################
         # STATE of the program                                 #
         ########################################################
-        self.STATE = 3
+        self.STATE = 1
         self.ENABLE_PROGRAM_RUN = True
         self.START_RUN = False
         
@@ -275,9 +275,9 @@ class GlobalVariable:
         ########################################################
         # GUI PARAMETERS                                       #
         ########################################################
-        # self.yes_no_dialog = uic.loadUiType("gui/dialog.ui")[0]
-        # self.ok_dialog = uic.loadUiType("gui/okpopup.ui")[0]
-        # self.measure_sensor_dialog = uic.loadUiType(self.MEASURE_SENSOR_GUI_PATH)[0]
+        self.yes_no_dialog = uic.loadUiType(self.YES_NO_DIALOG_PATH)[0]
+        self.ok_dialog = uic.loadUiType(self.OKAY_DIALOG_PATH)[0]
+        
 
         # load parameters for assistant
         with open(self.MAP_DEP_TABLE_PATH, 'r') as file:
