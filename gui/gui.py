@@ -5,13 +5,13 @@ from PyQt5.QtCore import QTimer
 import cv2
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 # sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
-from measure_sensor_gui import MeasureSensorDialog
-from ok_dialog import OkDialogClass
-from yes_no_dialog import QDialogClass
+from gui.measure_sensor_gui import MeasureSensorDialog
+from gui.ok_dialog import OkDialogClass
+from gui.yes_no_dialog import QDialogClass
 
 import queue
 
@@ -35,7 +35,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         
-        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
+        self.stackedWidget.setCurrentWidget(self.recognize_frame)
         # self.__SetBackgroudMainFrame(0)
 
         # Fix header table widget
@@ -72,7 +72,7 @@ class GUI(QtWidgets.QMainWindow):
         # self.__SetBackgroudMainFrame(1)
         # self.__UpdateListDepartments()
 
-        self.__MeasureSensor()
+        # self.__MeasureSensor()
         
         # self.__notificationDialog('Please capture sensor\ninformation and select\nexamination department', 0)
 
@@ -310,10 +310,10 @@ class GUI(QtWidgets.QMainWindow):
         sensor_infor = sensor.sensor_infor
         # print(sensor_infor)
 
-        self.height.setText(str(sensor_infor['height']) + ' m')
-        self.weight.setText(str(sensor_infor['weight'])+ ' kg')
+        self.height.setText(str(sensor_infor['height']))
+        self.weight.setText(str(sensor_infor['weight']))
         self.spo2.setText(str(sensor_infor['spo2']))
-        self.temperature.setText(str(sensor_infor['temperature'])+ ' C')
+        self.temperature.setText(str(sensor_infor['temperature']))
         self.heart_pulse.setText(str(sensor_infor['heart_pulse']))
         self.blood_pressure.setText(str(sensor_infor['blood_pressure']))
     
@@ -398,7 +398,7 @@ class GUI(QtWidgets.QMainWindow):
             self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
 
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()

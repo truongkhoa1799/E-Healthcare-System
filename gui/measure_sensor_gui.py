@@ -5,12 +5,12 @@ from PyQt5 import QtCore, QtWidgets
 import sys, time, threading, queue
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from sensor.oso2_sensor import MeasureSensor
-from ok_dialog import OkDialogClass
-from yes_no_dialog import QDialogClass
+from gui.ok_dialog import OkDialogClass
+from gui.yes_no_dialog import QDialogClass
 
 class MeasureSensorDialog(QDialog):
     def __init__(self, ret, parent=None):
@@ -69,6 +69,7 @@ class MeasureSensorDialog(QDialog):
             # print(request['data'])
             if request['data']['status'] == 0:
                 self.__has_oso2 = True
+                LogMesssage('Received last OSO2 messgae')
                 if self.__has_esp or self.__has_oso2:
                     self.progress_bar.setValue(50)
                 elif self.__has_esp and self.__has_oso2:
@@ -163,7 +164,7 @@ class MeasureSensorDialog(QDialog):
                 LogMesssage('Patient successfully have all sensor information')
                 self.close()
             else:
-                self.ret['heart_rate'] = hear_rate
+                self.ret['heart_pulse'] = hear_rate
                 self.ret['spo2'] = spo2
                 self.__closeMeasureSensor()
                 LogMesssage('Patient successfully have all sensor information')

@@ -51,13 +51,13 @@ def Get_Face_Angle(im, shape):
         return 0
     
     if sign_horizontal == -1:
-        if diff_horizontal > 10 and diff_vertical < 5:
+        if diff_horizontal > 8 and diff_vertical < 5:
             # Looking left
             # print('left')
             return 3
 
     elif sign_horizontal == 1:
-        if diff_horizontal > 10 and diff_vertical < 5:
+        if diff_horizontal > 8 and diff_vertical < 5:
             # Looking right
             # print('right')
             return 4
