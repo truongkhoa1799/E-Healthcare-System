@@ -6,12 +6,15 @@ import cv2
 import sys, time
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
-from gui.measure_sensor_gui import MeasureSensorDialog
+from utils.common_functions import LogMesssage
+
 from gui.ok_dialog import OkDialogClass
 from gui.yes_no_dialog import QDialogClass
+# from ok_dialog import OkDialogClass
+# from yes_no_dialog import QDialogClass
 
 import queue
 
@@ -34,10 +37,9 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.measure_sensor_frame)
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
+        self.stackedWidget.addWidget(self.measuring_sensor_frame)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
-        # self.__SetBackgroudMainFrame(0)
-
+        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
@@ -62,6 +64,35 @@ class GUI(QtWidgets.QMainWindow):
         # test.start(3000)
 
         self.list_shape_face = [self.front_face, self.up_face, self.down_face, self.left_face, self.right_face]
+
+        ########################################################
+        # MEASURING SENSOR FRAME                               #
+        ########################################################
+        self.index_instruction = 0
+        self.num_instruction = 2
+
+        self.MAIN_FRAME = 0
+        self.INSTRUCTION_FRAME = 1
+
+        self.pre_instruction.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_BACK_GUILDE_SENSOR))
+        self.next_instruction.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_NEXT_GUILDE_SENSOR))
+        self.instruction_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_GUILDE_SENSOR))
+        self.back_measuring_frame_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_QUIT_GUILDE_SENSOR))
+        self.connect_device_sensor_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONNECT_DEVICE_SENSOR))
+        self.confirm_measuring_sensor.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONFIRM_SENSOR))
+
+        self.measure_sensor_stack.addWidget(self.guilde_frame)
+        self.measure_sensor_stack.addWidget(self.measuring_frame)
+
+        self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
+
+        self.instruction_stack.addWidget(self.first_instruction)
+        self.instruction_stack.addWidget(self.second_instruction)
+        # 0: main frame
+        # 1: instruction frame
+        self.current_frame = self.MAIN_FRAME
+
+        self.__list_image = [self.first_instruction, self.second_instruction]
 
         # img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
         # img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
@@ -176,6 +207,58 @@ class GUI(QtWidgets.QMainWindow):
                     self.__UpdateSelectedRoom(dep_name, building_code, room_code)
                     glo_va.lock_update_exam_room.release()
 
+        ########################
+        # Measuing frame       #
+        ########################
+        elif opt == glo_va.BUTTON_BACK_GUILDE_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            if self.index_instruction > 0:
+                self.index_instruction -= 1
+                # print(self.state)
+                self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+
+        elif opt == glo_va.BUTTON_NEXT_GUILDE_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            if self.index_instruction < 2 - 1:
+                self.index_instruction += 1
+                # print(self.state)
+                self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+
+        elif opt == glo_va.BUTTON_GUILDE_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            self.current_frame = self.INSTRUCTION_FRAME
+            self.instruction_stack.setCurrentWidget(self.first_instruction)
+            self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
+            LogMesssage('Patient change to instruction measure sensor frame')
+            
+        elif opt == glo_va.BUTTON_QUIT_GUILDE_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            self.index_instruction = 0
+            self.current_frame = self.MAIN_FRAME
+            self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
+            LogMesssage('Patient change to measure sensor frame')
+
+        elif opt == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            # self.__measureSenSor()
+            glo_va.button = glo_va.BUTTON_CONNECT_DEVICE_SENSOR
+
+        elif opt == glo_va.BUTTON_CONFIRM_SENSOR:
+            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                return
+
+            # self.confirmSensor()
+            glo_va.button = glo_va.BUTTON_CONFIRM_SENSOR
 
     def __CheckRequestStatesThread(self):
         if self.queue_request_states_thread.empty():
@@ -198,8 +281,8 @@ class GUI(QtWidgets.QMainWindow):
             info = request['data']
             self.__UpdatePatientInfo(info)
 
-        elif request['type'] == glo_va.REQUEST_CLEAR_PATIENT_INFO:
-            self.__ClearPatientInfo()
+        # elif request['type'] == glo_va.REQUEST_CLEAR_PATIENT_INFO:
+        #     self.__ClearPatientInfo()
         
         elif request['type'] == glo_va.REQUEST_ACTIVATE_NEW_FACE:
             current_shape = request['data']
@@ -220,8 +303,8 @@ class GUI(QtWidgets.QMainWindow):
         elif request['type'] == glo_va.REQUEST_CLEAR_DEPARTMENT_LIST:
             self.__ClearListDepartments()
         
-        elif request['type'] == glo_va.REQUEST_MEASURE_SENSOR:
-            self.__MeasureSensor()
+        # elif request['type'] == glo_va.REQUEST_MEASURE_SENSOR:
+        #     self.__MeasureSensor()
 
         elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
             data = request['data']
@@ -236,6 +319,47 @@ class GUI(QtWidgets.QMainWindow):
             building_code = data['building_code']
             room_code = data['room_code']
             self.__UpdateSelectedRoom(dep_name=dep_name, building_code=building_code, room_code=room_code)
+        
+        ########################
+        # Measuing frame       #
+        ########################
+        elif request['type'] == glo_va.REQUEST_UPDATE_OSO2:
+            if self.current_frame != self.MAIN_FRAME:
+                LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
+                return
+
+            # print(request['data'])
+            if request['data']['final'] == 0:
+                if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
+                    self.progress_bar.setValue(100)
+                elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
+                    self.progress_bar.setValue(50)
+                else:
+                    self.progress_bar.setValue(0)
+                
+                self.spo2.setText(str(int(request['data']['spo2'])))
+                self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+                    
+            self.measuring_heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+            self.measuring_spo2.setText(str(int(request['data']['spo2'])))
+        
+        elif request['type'] == glo_va.REQUEST_UPDATE_ESP:
+            self.measuring_height.setText(request['data']['height'])
+            self.measuring_weight.setText(request['data']['weight'])
+            self.measuring_temperature.setText(request['data']['temperature'])
+            self.measuring_BMI.setText(request['data']['bmi'])
+            
+            self.height.setText(request['data']['height'])
+            self.weight.setText(request['data']['weight'])
+            self.temperature.setText(request['data']['temperature'])
+            self.bmi.setText(request['data']['bmi'])
+
+            if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
+                self.progress_bar.setValue(100)
+            elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
+                self.progress_bar.setValue(50)
+            else:
+                self.progress_bar.setValue(0)
 
         return
 
@@ -259,11 +383,16 @@ class GUI(QtWidgets.QMainWindow):
             self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
         elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
             # self.__SetBackgroudMainFrame(1)
+            self.__ClearPatientInfo()
             self.stackedWidget.setCurrentWidget(self.recognize_frame)
         elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS:
             self.__UpdateListDepartments()
             # self.__SetBackgroudMainFrame(0)
             self.stackedWidget.setCurrentWidget(self.view_departments)
+        elif glo_va.STATE == glo_va.STATE_MEASURING_SENSOR:
+            # self.__SetBackgroudMainFrame(1)
+            self.__clearMeasuringSensorsFrame()
+            self.stackedWidget.setCurrentWidget(self.measuring_sensor_frame)
         
         self.image_display = None
     
@@ -293,32 +422,18 @@ class GUI(QtWidgets.QMainWindow):
     ############################################################################
     # SENSOR MODULE                                                            #
     ############################################################################
-    def __MeasureSensor(self):
-        ret = {}
-        glo_va.measure_sensor_dialog = MeasureSensorDialog(ret)
-        glo_va.measure_sensor_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        if glo_va.measure_sensor_dialog.exec_() == QtWidgets.QDialog.Accepted:
-            ret = glo_va.measure_sensor_dialog.ret
-            print(ret)
+    # def __MeasureSensor(self):
+    #     ret = {}
+    #     glo_va.measure_sensor_dialog = MeasureSensorDialog(ret)
+    #     glo_va.measure_sensor_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+    #     if glo_va.measure_sensor_dialog.exec_() == QtWidgets.QDialog.Accepted:
+    #         ret = glo_va.measure_sensor_dialog.ret
+    #         print(ret)
         
-        sensor.Update_Sensor(ret)
-        self.__UpdateSensorInfo()
-
-        glo_va.done_measuring_sensor = True
-    
-    def __UpdateSensorInfo(self):
-        sensor_infor = sensor.sensor_infor
-        # print(sensor_infor)
-
-        self.height.setText(str(sensor_infor['height']))
-        self.weight.setText(str(sensor_infor['weight']))
-        self.spo2.setText(str(sensor_infor['spo2']))
-        self.temperature.setText(str(sensor_infor['temperature']))
-        self.heart_pulse.setText(str(sensor_infor['heart_pulse']))
-        self.blood_pressure.setText(str(sensor_infor['blood_pressure']))
+    #     self.__UpdateSensorInfo()
     
     def __ClearSensorInfo(self):
-        self.blood_pressure.setText('')
+        self.bmi.setText('')
         self.heart_pulse.setText('')
         self.temperature.setText('')
         self.spo2.setText('')
@@ -396,6 +511,15 @@ class GUI(QtWidgets.QMainWindow):
         for count in range(len(glo_va.list_examination_room)):
             self.table_list_department.setItem(count, 0, QTableWidgetItem(''))
             self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
+    
+    def __clearMeasuringSensorsFrame(self):
+        self.measuring_temperature.setText('')
+        self.measuring_height.setText('')
+        self.measuring_weight.setText('')
+        self.measuring_BMI.setText('')
+        self.measuring_heart_pulse.setText('')
+        self.measuring_spo2.setText('')
+        self.progress_bar.setValue(0)
 
 
 # app = QtWidgets.QApplication(sys.argv)

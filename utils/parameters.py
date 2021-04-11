@@ -97,8 +97,8 @@ class GlobalVariable:
         ########################################################
         # SENSOR                                               #
         ########################################################
-        self.measuring_sensor = False
-        self.done_measuring_sensor = False
+        self.measuring_sensor = None
+        self.connected_sensor_device = False
 
         ########################################################
         # ASSISTANT                                            #
@@ -121,7 +121,7 @@ class GlobalVariable:
         ########################################################
         # STATE of the program                                 #
         ########################################################
-        self.STATE = 1
+        self.STATE = 3
         self.ENABLE_PROGRAM_RUN = True
         self.START_RUN = False
         
@@ -133,6 +133,7 @@ class GlobalVariable:
         self.STATE_CONFIRM_NEW_PATIENT = 5
         self.STATE_NEW_PATIENT = 6
         self.STATE_WAITING_SUB_EXAM = 7
+        self.STATE_MEASURING_SENSOR = 8
         
         ########################################################
         # BUTTON                                               #
@@ -158,6 +159,7 @@ class GlobalVariable:
         self.BUTTON_QUIT_GUILDE_SENSOR = 14
         self.BUTTON_NEXT_GUILDE_SENSOR = 15
         self.BUTTON_BACK_GUILDE_SENSOR = 16
+        self.BUTTON_CONNECT_DEVICE_SENSOR = 17
 
         ########################################################
         # REQUEST MAIN GUI                                     #
@@ -173,18 +175,18 @@ class GlobalVariable:
         self.REQUEST_CLEAR_DEPARTMENT_LIST = 10
         self.REQUEST_UPDATE_SENSOR = 7
         self.REQUEST_CLEAR_SENSOR = 8
-        self.REQUEST_MEASURE_SENSOR = 11
+        # self.REQUEST_MEASURE_SENSOR = 11
         self.REQUEST_NOTIFY_MESSAGE = 12
         self.REQUEST_DEACTIVATE_NEW_FACE = 13
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
         self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
-
         ########################################################
         # REQUEST MEASURE SENSOR GUI                           #
         ########################################################
-        self.REQUEST_UPDATE_OSO2 = 0
-        self.REQUEST_UPDATE_ESP = 1
-        self.REQUEST_NOTIFY_DISCONNECT_OSO2_DEVICE = 2
+        self.REQUEST_UPDATE_OSO2 = 16
+        self.REQUEST_UPDATE_ESP = 17
+
+        
 
         # Dialog
         self.EXIST_DIALOG = 0
@@ -312,17 +314,26 @@ class User_Infor:
     
 class Sensor:
     def __init__(self):
-        self.status = glo_va.SENSOR_DEFAULT
+        self.__status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
         self.Clear()
     
     def Clear(self):
-        self.status = glo_va.SENSOR_DEFAULT
+        self.__status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
     
     def Update_Sensor(self, sensor):
-        self.status = glo_va.SENSOR_HAS_VALUE
+        self.__status = glo_va.SENSOR_HAS_VALUE
         self.sensor_infor = sensor
+    
+    def getStatus(self):
+        if self.sensor_infor is None \
+            or self.sensor_infor['height'] == '' or self.sensor_infor['weight'] == '' \
+            or self.sensor_infor['spo2'] == '' or self.sensor_infor['temperature'] == '' \
+            or self.sensor_infor['heart_pulse'] == '' or self.sensor_infor['bmi'] == '':
+            glo_va.SENSOR_DEFAULT
+            
+        return glo_va.SENSOR_HAS_VALUE
 
 class Examination:
     def __init__(self):

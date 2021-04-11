@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -990,7 +990,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>90</width>
+             <width>111</width>
              <height>50</height>
             </rect>
            </property>
@@ -1042,7 +1042,7 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_2">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
              <width>90</width>
              <height>50</height>
@@ -1124,7 +1124,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>90</width>
+             <width>110</width>
              <height>56</height>
             </rect>
            </property>
@@ -1149,7 +1149,7 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_3">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
              <width>90</width>
              <height>50</height>
@@ -1269,7 +1269,7 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_4">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
              <width>90</width>
              <height>50</height>
@@ -1340,18 +1340,18 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>Blood Pressure</string>
+            <string>BMI</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
-          <widget class="QLabel" name="blood_pressure">
+          <widget class="QLabel" name="bmi">
            <property name="geometry">
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>90</width>
+             <width>110</width>
              <height>56</height>
             </rect>
            </property>
@@ -1376,9 +1376,9 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_7">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
-             <width>90</width>
+             <width>111</width>
              <height>50</height>
             </rect>
            </property>
@@ -1394,7 +1394,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>BMI</string>
+            <string>kg/m2</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1471,7 +1471,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>90</width>
+             <width>110</width>
              <height>56</height>
             </rect>
            </property>
@@ -1496,7 +1496,7 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_5">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
              <width>90</width>
              <height>50</height>
@@ -1578,7 +1578,7 @@ border-radius: 5px;</string>
             <rect>
              <x>40</x>
              <y>30</y>
-             <width>90</width>
+             <width>110</width>
              <height>56</height>
             </rect>
            </property>
@@ -1603,7 +1603,7 @@ border-radius: 5px;</string>
           <widget class="QLabel" name="weight_6">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>170</x>
              <y>35</y>
              <width>90</width>
              <height>50</height>
@@ -2844,7 +2844,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2852,7 +2852,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2909,7 +2909,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2917,7 +2917,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2974,7 +2974,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2982,7 +2982,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
@@ -3292,6 +3292,1141 @@ color: rgb(255, 255, 255)</string>
        <zorder>select_dep_but</zorder>
        <zorder>frame_3</zorder>
        <zorder>frame_top_btns_2</zorder>
+      </widget>
+      <widget class="QWidget" name="measuring_sensor_frame">
+       <widget class="QStackedWidget" name="measure_sensor_stack">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1024</width>
+          <height>550</height>
+         </rect>
+        </property>
+        <property name="toolTipDuration">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="guilde_frame">
+         <widget class="QPushButton" name="next_instruction">
+          <property name="geometry">
+           <rect>
+            <x>524</x>
+            <y>0</y>
+            <width>500</width>
+            <height>550</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>25</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	border-radius: 5px;	
+	background-color: transparent;
+}
+QPushButton:pressed {	
+	background-color: transparent;
+	border: 3px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>icons/next_step.png</normaloff>icons/next_step.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+         </widget>
+         <widget class="QStackedWidget" name="instruction_stack">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>1024</width>
+            <height>550</height>
+           </rect>
+          </property>
+          <widget class="QWidget" name="first_instruction">
+           <widget class="QLabel" name="label_5">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>1024</width>
+              <height>550</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: rgb(50,50,50);</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="second_instruction">
+           <widget class="QLabel" name="label_6">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>1024</width>
+              <height>550</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: rgb(100,100,100);</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pre_instruction">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>500</width>
+            <height>550</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>25</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	border-radius: 5px;	
+	background-color: transparent;
+}
+QPushButton:pressed {	
+	background-color: transparent;
+	border: 3px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>icons/previous_step.png</normaloff>icons/previous_step.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="back_measuring_frame_but">
+          <property name="geometry">
+           <rect>
+            <x>920</x>
+            <y>0</y>
+            <width>95</width>
+            <height>81</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>20</pointsize>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>icons/back_but.png</normaloff>icons/back_but.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>30</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+         <zorder>instruction_stack</zorder>
+         <zorder>pre_instruction</zorder>
+         <zorder>next_instruction</zorder>
+         <zorder>back_measuring_frame_but</zorder>
+        </widget>
+        <widget class="QWidget" name="measuring_frame">
+         <widget class="QProgressBar" name="progress_bar">
+          <property name="geometry">
+           <rect>
+            <x>500</x>
+            <y>370</y>
+            <width>501</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>67</number>
+          </property>
+          <property name="textVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QFrame" name="horizontalFrame_16">
+          <property name="geometry">
+           <rect>
+            <x>480</x>
+            <y>415</y>
+            <width>551</width>
+            <height>141</height>
+           </rect>
+          </property>
+          <widget class="QPushButton" name="connect_device_sensor_but">
+           <property name="geometry">
+            <rect>
+             <x>15</x>
+             <y>10</y>
+             <width>251</width>
+             <height>110</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>25</pointsize>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+           </property>
+           <property name="text">
+            <string> Connect Device</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/sensor.png</normaloff>icons/sensor.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>35</width>
+             <height>40</height>
+            </size>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="confirm_measuring_sensor">
+           <property name="geometry">
+            <rect>
+             <x>275</x>
+             <y>10</y>
+             <width>251</width>
+             <height>110</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>25</pointsize>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+           </property>
+           <property name="text">
+            <string> Confirm</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/confirm.png</normaloff>icons/confirm.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="instruction_but">
+          <property name="geometry">
+           <rect>
+            <x>920</x>
+            <y>0</y>
+            <width>95</width>
+            <height>80</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>20</pointsize>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>icons/guilde_but.png</normaloff>icons/guilde_but.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>30</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+         <widget class="QFrame" name="verticalFrame_13">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>480</width>
+            <height>601</height>
+           </rect>
+          </property>
+          <widget class="QFrame" name="sensor_infor_frame_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>480</width>
+             <height>540</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(50,50,50);
+border-radius: 5px;
+border-top-left-radius: 0px;
+border-top-right-radius: 15px;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 15px;</string>
+           </property>
+           <widget class="QFrame" name="verticalFrame_14">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>20</y>
+              <width>421</width>
+              <height>110</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 8px solid rgb(135, 135, 135);
+border-radius: 20px;	
+background-color: rgb(250, 250, 250);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <widget class="QFrame" name="verticalFrame_15">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>415</width>
+               <height>105</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QPushButton" name="pushButton_6">
+              <property name="geometry">
+               <rect>
+                <x>20</x>
+                <y>25</y>
+                <width>81</width>
+                <height>71</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>icons/temperature.png</normaloff>icons/temperature.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+             <widget class="QLabel" name="measuring_temperature">
+              <property name="geometry">
+               <rect>
+                <x>160</x>
+                <y>30</y>
+                <width>110</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_8">
+              <property name="geometry">
+               <rect>
+                <x>280</x>
+                <y>35</y>
+                <width>81</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>C</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QFrame" name="verticalFrame_16">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>147</y>
+              <width>421</width>
+              <height>110</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 8px solid rgb(135, 135, 135);
+border-radius: 20px;	
+background-color: rgb(250, 250, 250);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <widget class="QFrame" name="verticalFrame_17">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>415</width>
+               <height>105</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QPushButton" name="pushButton_9">
+              <property name="geometry">
+               <rect>
+                <x>20</x>
+                <y>25</y>
+                <width>81</width>
+                <height>71</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>icons/ruler.png</normaloff>icons/ruler.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+             <widget class="QLabel" name="measuring_height">
+              <property name="geometry">
+               <rect>
+                <x>160</x>
+                <y>30</y>
+                <width>110</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_9">
+              <property name="geometry">
+               <rect>
+                <x>280</x>
+                <y>35</y>
+                <width>81</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>m</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QFrame" name="verticalFrame_18">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>273</y>
+              <width>421</width>
+              <height>110</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 8px solid rgb(135, 135, 135);
+border-radius: 20px;	
+background-color: rgb(250, 250, 250);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <widget class="QFrame" name="verticalFrame_19">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>415</width>
+               <height>105</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QPushButton" name="pushButton_10">
+              <property name="geometry">
+               <rect>
+                <x>20</x>
+                <y>25</y>
+                <width>81</width>
+                <height>61</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>icons/scale_icon.png</normaloff>icons/scale_icon.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+             <widget class="QLabel" name="measuring_weight">
+              <property name="geometry">
+               <rect>
+                <x>160</x>
+                <y>30</y>
+                <width>110</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_10">
+              <property name="geometry">
+               <rect>
+                <x>280</x>
+                <y>35</y>
+                <width>81</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>kg</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QFrame" name="verticalFrame_20">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>400</y>
+              <width>421</width>
+              <height>121</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 8px solid rgb(135, 135, 135);
+border-radius: 20px;	
+background-color: rgb(250, 250, 250);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <widget class="QFrame" name="verticalFrame_21">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>415</width>
+               <height>115</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QPushButton" name="pushButton_11">
+              <property name="geometry">
+               <rect>
+                <x>20</x>
+                <y>25</y>
+                <width>81</width>
+                <height>61</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>icons/BMI.png</normaloff>icons/BMI.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+             <widget class="QLabel" name="measuring_BMI">
+              <property name="geometry">
+               <rect>
+                <x>160</x>
+                <y>30</y>
+                <width>110</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_11">
+              <property name="geometry">
+               <rect>
+                <x>280</x>
+                <y>35</y>
+                <width>111</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>kg/m2</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QFrame" name="horizontalFrame_17">
+          <property name="geometry">
+           <rect>
+            <x>500</x>
+            <y>100</y>
+            <width>501</width>
+            <height>241</height>
+           </rect>
+          </property>
+          <widget class="QFrame" name="verticalFrame_22">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>0</y>
+             <width>415</width>
+             <height>101</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(255, 255, 255);
+color: rgb(255, 255, 255);</string>
+           </property>
+           <widget class="QPushButton" name="pushButton_12">
+            <property name="geometry">
+             <rect>
+              <x>20</x>
+              <y>15</y>
+              <width>81</width>
+              <height>71</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/heart_rate.png</normaloff>icons/heart_rate.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>100</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+           <widget class="QFrame" name="horizontalFrame_18">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>0</y>
+              <width>220</width>
+              <height>100</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 0px solid rgb(255, 62, 10);
+border-radius: 20px;	
+background-color: rgb(255, 106, 101);
+color: rgb(255, 255, 255);
+</string>
+            </property>
+            <widget class="QFrame" name="horizontalFrame_19">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>215</width>
+               <height>95</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(245, 245, 245);
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QLabel" name="measuring_heart_pulse">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>91</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_13">
+              <property name="geometry">
+               <rect>
+                <x>120</x>
+                <y>25</y>
+                <width>81</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>bpm</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+          </widget>
+          <widget class="QFrame" name="verticalFrame_23">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>140</y>
+             <width>415</width>
+             <height>101</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px solid rgb(240, 240, 240);
+border-radius: 20px;	
+background-color: rgb(255, 255, 255);
+color: rgb(255, 255, 255);</string>
+           </property>
+           <widget class="QPushButton" name="pushButton_13">
+            <property name="geometry">
+             <rect>
+              <x>20</x>
+              <y>5</y>
+              <width>81</width>
+              <height>91</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/SPO2_website-icon.png</normaloff>icons/SPO2_website-icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>100</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+           <widget class="QFrame" name="horizontalFrame_20">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>0</y>
+              <width>220</width>
+              <height>100</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 0px solid rgb(255, 62, 10);
+border-radius: 20px;	
+background-color: rgb(255, 166, 114);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <widget class="QFrame" name="horizontalFrame_21">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>215</width>
+               <height>95</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-radius: 20px;	
+background-color: rgb(245, 245, 245);;
+color: rgb(255, 255, 255);</string>
+             </property>
+             <widget class="QLabel" name="measuring_spo2">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>90</width>
+                <height>56</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>45</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+             <widget class="QLabel" name="heart_rate_14">
+              <property name="geometry">
+               <rect>
+                <x>120</x>
+                <y>25</y>
+                <width>81</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>40</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: rgb(50, 50, 50);</string>
+              </property>
+              <property name="text">
+               <string>%</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>

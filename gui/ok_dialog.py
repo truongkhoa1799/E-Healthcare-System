@@ -49,7 +49,7 @@ class OkDialogClass(QDialog):
             ''')
             self.text = '       Please turn on OSO2 device\n                or see instruction'
         
-        if data['opt'] == 4:
+        elif data['opt'] == 4:
             self.icon.setStyleSheet('''background: transparent;
                 background-image: url(icons/icons8-checkmark-90.png);
                 background-position: center;

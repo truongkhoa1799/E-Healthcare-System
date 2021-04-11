@@ -5,6 +5,7 @@ from utils.common_functions import Compose_Embedded_Face
 from utils.common_functions import LogMesssage
 from assistant.momo_core import MomoCore
 from utils.assis_parameters import msg_for_states
+from sensor.oso2_sensor import MeasureSensor
 
 def State_1():
     # Read camera
@@ -80,8 +81,8 @@ def State_2():
 
         # send request clear patient inof
         user_infor.Clear()
-        request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
-        glo_va.gui.queue_request_states_thread.put(request)
+        # request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
+        # glo_va.gui.queue_request_states_thread.put(request)
 
         # After user confrim their information, Clear user_infor, Ui and go to STATE measuring sensor
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
@@ -103,13 +104,15 @@ def State_2():
 def State_3():
     # print(glo_va.button)
     if glo_va.button == glo_va.BUTTON_CAPTURE_SENSOR:
-        glo_va.measuring_sensor = True
-        glo_va.done_measuring_sensor = False
-        # Clear button
-        glo_va.button = -1
+        glo_va.STATE = glo_va.STATE_MEASURING_SENSOR
 
-        request = {'type': glo_va.REQUEST_MEASURE_SENSOR, 'data': ''}
+        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
+
+        glo_va.measuring_sensor = MeasureSensor()
+        LogMesssage('[State_3]: Patient choose measuring sensor')
+
+        glo_va.button = -1
 
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
         if glo_va.has_examination_room == True:
@@ -134,7 +137,7 @@ def State_3():
         glo_va.button = -1
 
     elif glo_va.button == glo_va.BUTTON_SUBMIT_EXAM:
-        if exam.status == glo_va.EXAM_HAS_VALUE and sensor.status == glo_va.SENSOR_HAS_VALUE and glo_va.patient_ID is not None:
+        if exam.status == glo_va.EXAM_HAS_VALUE and sensor.getStatus() == glo_va.SENSOR_HAS_VALUE and glo_va.patient_ID is not None:
             glo_va.is_sending_message = False
             glo_va.has_response_server = False
             glo_va.button = -1
@@ -163,33 +166,24 @@ def State_3():
     elif glo_va.button == glo_va.BUTTON_OKAY:
         glo_va.button = -1
     
-    # do not press any thing
-    else:
-        if glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == True:
-            glo_va.measuring_sensor = False
-            glo_va.done_measuring_sensor = False
-            LogMesssage('[State_3]: Done measure sensor. Init measuring_sensor and done_measuring_sensor flag')
-
-        elif glo_va.measuring_sensor == True and glo_va.done_measuring_sensor == False:
-            # print('Measuring sensor')
-            return
+    # # do not press any thing
+    # else:        
+    #     # If has_response_server:
+    #     #   1. Has examination room:
+    #     #       
+    #     #   2. Do not has examination room
+    #     #        = False. Therefore, next execution will send again message
+    #     #   3. Set has_response_server and is_sending_message = False
+    #     if glo_va.has_response_server == True:        
+    #         glo_va.is_sending_message = False
+    #         glo_va.has_response_server = False
+    #         LogMesssage('[State_3]: Has messsage get list examination room')
         
-        # If has_response_server:
-        #   1. Has examination room:
-        #       
-        #   2. Do not has examination room
-        #        = False. Therefore, next execution will send again message
-        #   3. Set has_response_server and is_sending_message = False
-        if glo_va.has_response_server == True:        
-            glo_va.is_sending_message = False
-            glo_va.has_response_server = False
-            LogMesssage('[State_3]: Has messsage get list examination room')
-        
-        if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
-            LogMesssage('[State_3]: No list examination room. Resend message')
-            glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
-            glo_va.is_sending_message = True
-            glo_va.server.Get_Examination_Room()
+    #     if glo_va.has_examination_room == False and glo_va.is_sending_message == False:
+    #         LogMesssage('[State_3]: No list examination room. Resend message')
+    #         glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_EXAMINATION_ROOM)
+    #         glo_va.is_sending_message = True
+    #         glo_va.server.Get_Examination_Room()
     
 
 def State_4():
@@ -347,6 +341,74 @@ def State_7():
 
     glo_va.button = -1
 
+def State_8():
+    if glo_va.button == glo_va.BUTTON_CONFIRM_SENSOR:
+        sensor_infor = {
+            'height': glo_va.measuring_sensor.final_height, 'weight': glo_va.measuring_sensor.final_weight,
+            'spo2': glo_va.measuring_sensor.final_spo2, 'heart_pulse': glo_va.measuring_sensor.final_heart_pulse,
+            'temperature': glo_va.measuring_sensor.final_temperature, 'bmi': glo_va.measuring_sensor.final_bmi
+        }
+
+        sensor.Update_Sensor(sensor_infor)
+
+        glo_va.measuring_sensor.closeDevice()
+        glo_va.measure_sensor = None
+        glo_va.connected_sensor_device = False
+
+        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
+
+        LogMesssage('[State_8]: Patient confirm measuring sensor')
+            
+        glo_va.button = -1
+
+    elif glo_va.button == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
+        LogMesssage('[State_8]: Patient press connect sensor device')
+
+        if glo_va.connected_sensor_device == False:
+            is_opened = glo_va.measuring_sensor.openConnectionSensors()
+            if is_opened == 0:
+                glo_va.connected_sensor_device = True
+                
+                data = {}
+                data['opt'] = 4
+                request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
+                glo_va.gui.queue_request_states_thread.put(request)
+                
+                LogMesssage('[State_8]: Patient successfully connect sensor device')
+
+            elif is_opened == -1:
+                data = {}
+                data['opt'] = 3
+                request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
+                glo_va.gui.queue_request_states_thread.put(request)
+                LogMesssage("[State_8]: Patient unsuccessfully connect sensor device")
+        else:
+            LogMesssage("[State_8]: Connection with sensors device is already connected")
+
+        glo_va.button = -1
+
+
+    elif glo_va.button == glo_va.BUTTON_EXIST:
+        LogMesssage('[State_8]: Patient with id: {id} exist program'.format(id=glo_va.patient_ID))
+        Init_State()
+        return
+    
+    else:
+        if glo_va.connected_sensor_device:
+            # Check read data success for fail or disconnect
+            ret = glo_va.measuring_sensor.getSensorsData()
+            # disconnect
+            if ret == -2:
+                glo_va.connected_sensor_device = False
+                LogMesssage("[State_8]: Connection with sensors device is disconnected")
+            elif ret == 1:
+                glo_va.connected_sensor_device = False
+                LogMesssage("[State_8]: Have data from oso2 and esp device. Disconnect device")
+    # glo_va.button = -1
+    # state measuring sensor
+
 def Init_State():
     # Lock the response message from server when restart program
     LogMesssage('[Init_State]: Acquire lock init state')
@@ -364,8 +426,8 @@ def Init_State():
     # USER PARAMETERS-----------------------------------------------
     user_infor.Clear()
     # send request clear patient inof
-    request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
-    glo_va.gui.queue_request_states_thread.put(request)
+    # request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
+    # glo_va.gui.queue_request_states_thread.put(request)
 
     # Clear list embedded face, embedded face and num images
     glo_va.patient_ID = -1
@@ -400,12 +462,15 @@ def Init_State():
     glo_va.has_examination_room = False
 
     # SENSOR PARAMETERS-----------------------------------------------
+    glo_va.measuring_sensor.closeDevice()
+    glo_va.measuring_sensor = None
+    glo_va.connected_sensor_device = False
+
     sensor.Clear()
     request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
 
-    glo_va.measuring_sensor = False
-    glo_va.done_measuring_sensor = False
+    glo_va.measuring_sensor = None
 
     # SERVER PARAMETERS-----------------------------------------------
     # Clear timer preveting timeout getting examination room

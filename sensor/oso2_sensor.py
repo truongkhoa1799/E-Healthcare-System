@@ -13,100 +13,76 @@ class MeasureSensor:
         self.__oso2_connection = None
         self.__esp_connection = None
 
-        self.__sensors_connected = False
-
         self.__state_oso2 = 0
         self.__list_spo2 = []
         self.__list_heart_rate = []
         self.__time_missing_data = 0
 
-        self.__enable_run_thread_sensors = None
-        self.__thread_read_sensors = None
+        self.has_oso2 = False
+        self.has_esp = False
 
-        self.__has_oso2 = False
-        self.__has_esp = False
+        self.final_spo2 = None
+        self.final_heart_pulse = None
+        self.final_temperature = None
+        self.final_height = None
+        self.final_weight = None
+        self.final_bmi = None
 
-    def __openConnectionSensors(self):
+    def openConnectionSensors(self):
         try:
-            if self.__sensors_connected == False:
+            self.__oso2_connection = hid.device()
+            self.__oso2_connection.open(1155, 22320)  # TREZOR VendorID/ProductID
+            # enable non-blocking mode
+            self.__oso2_connection.set_nonblocking(1)
 
-                self.__oso2_connection = hid.device()
-                self.__oso2_connection.open(1155, 22320)  # TREZOR VendorID/ProductID
-                # enable non-blocking mode
-                self.__oso2_connection.set_nonblocking(1)
+            LogMesssage("Opening connection Heart Rate and SPO2 measurement device", opt=0)
+            LogMesssage("Manufacturer: %s" % self.__oso2_connection.get_manufacturer_string(), opt=0)
+            LogMesssage("Product: %s" % self.__oso2_connection.get_product_string(), opt=0)
+            LogMesssage("Serial No: %s" % self.__oso2_connection.get_serial_number_string(), opt=0)
+            
+            # Open connection esp
+            LogMesssage("Opening connection with esp device", opt=0)
 
-                LogMesssage("Opening connection Heart Rate and SPO2 measurement device", opt=0)
-                LogMesssage("Manufacturer: %s" % self.__oso2_connection.get_manufacturer_string(), opt=0)
-                LogMesssage("Product: %s" % self.__oso2_connection.get_product_string(), opt=0)
-                LogMesssage("Serial No: %s" % self.__oso2_connection.get_serial_number_string(), opt=0)
-                
-                # Open connection esp
-                LogMesssage("Opening connection with esp device", opt=0)
+            self.__state_oso2 = 0
+            self.__list_spo2 = []
+            self.__list_heart_rate = []
+            self.__time_missing_data = 0
 
-                self.__sensors_connected = True
-
-                return 0
-            else:
-                LogMesssage("Connection with sensors device is already connected", opt=0)
-                return 1
+            return 0
 
         except Exception as e:
-            self.__sensors_connected = False
-            LogMesssage('Fail to open connection with sensors device')
+            LogMesssage('Fail to open connection with sensors device: {e}'.format(e=e))
             return -1
 
-    def startMeasure(self):
-        # -1: fail to open
-        # 0 : open connection success
-        # 1 : do nothing
-        ret_connection_sensors = 1
-        if self.__thread_read_sensors is None or not self.__thread_read_sensors.is_alive():
-            ret_connection_sensors = self.__openConnectionSensors()
-
-            if ret_connection_sensors == -1:
-                return ret_connection_sensors
-
-            self.__has_oso2 = False
-            self.__has_esp = False
-            self.__enable_run_thread_sensors = True
+    # ret -1: error
+    # ret -2: disconnect device
+    # ret 0 : normal
+    # ret 1 : enought data
+    def getSensorsData(self):
+        try:
+            if self.__state_oso2 == 0:
+                self.__stateOSO2_0()
+            elif self.__state_oso2 == 1:
+                self.__stateOSO2_1()
+            elif self.__state_oso2 == 2:
+                self.__stateOSO2_2()
             
-            self.__thread_read_sensors = threading.Thread(target=self.__getSensorsData, args=())
-            self.__thread_read_sensors.daemon = True
-            self.__thread_read_sensors.start()
-            LogMesssage('Start thread getting sensors data')
+            # Check whether has enought esp and oso2 data
+            if self.has_esp and self.has_oso2:
+                return 1
+            else:
+                return 0
+                
+        except Exception as e:
+            self.__time_missing_data == 0
+            self.__state_oso2 = 0
 
-        else:
-            LogMesssage('Thread getting sensors data is already running')
+            if str(e) == 'read error':
+                return -2
 
-        return ret_connection_sensors
-
-    def __getSensorsData(self):
-        while self.__enable_run_thread_sensors:
-            try:
-                # method getting eso
-
-                if self.__state_oso2 == 0:
-                    self.__stateOSO2_0()
-                elif self.__state_oso2 == 1:
-                    self.__stateOSO2_1()
-                elif self.__state_oso2 == 2:
-                    self.__stateOSO2_2()
-            except Exception as e:
-                if str(e) == 'read error':
-                    self.__stopMeasure()
-                    LogMesssage('Disconnected with OSO2 device')
-                    
-                    # Notify user to turn on OSO2 device
-                    request = {'type': glo_va.REQUEST_NOTIFY_DISCONNECT_OSO2_DEVICE, 'data': ''}
-                    glo_va.measure_sensor_dialog.queue_request_states_thread.put(request)
-
-                else:
-                    LogMesssage('Has error at __getSensorsData: {e}'.format(e=e))
-
-                self.__time_missing_data == 0
-                self.__state_oso2 = 0
-            
-        LogMesssage('Stop thread measuring herat rate and spo2')
+            else:
+                LogMesssage('Has error at __getSensorsData: {e}'.format(e=e))
+                return -1
     
     def __stateOSO2_0(self):
         data = self.__oso2_connection.read(64)
@@ -135,23 +111,44 @@ class MeasureSensor:
         # print(self.__list_heart_rate)
         # print(self.__list_spo2)
 
-        mean_spo2 = statistics.mean(self.__list_spo2)
-        mean_heart_rate = statistics.mean(self.__list_heart_rate)
+        self.has_oso2 = True
+        self.final_spo2 = str(int(statistics.mean(self.__list_spo2)))
+        self.final_heart_pulse = str(int(statistics.mean(self.__list_heart_rate)))
         
-        # print(mean_spo2)
-        # print(mean_heart_rate)
+        request = {
+            'type': glo_va.REQUEST_UPDATE_OSO2, 
+            'data': {
+                'heart_pulse': self.final_heart_pulse, 
+                'spo2': self.final_spo2,
+                'final': 0
+            }
+        }
+        glo_va.gui.queue_request_states_thread.put(request)
 
-        request = {'type': glo_va.REQUEST_UPDATE_OSO2, 'data': {'heart_rate': mean_heart_rate, 'spo2': mean_spo2, 'status': 0}}
-        glo_va.measure_sensor_dialog.queue_request_states_thread.put(request)
+        # simulate has esp
+        self.has_esp = True
+        self.final_temperature = str(round(float('37.2'),1))
+        self.final_height = str(round(float('1.74'),2))
+        self.final_weight = str(round(float('84.21'),1))
+        self.final_bmi = str(round(float(self.final_weight)/float(self.final_height), 1))
+
+        request = {
+            'type': glo_va.REQUEST_UPDATE_ESP, 
+            'data': {
+                'heart_pulse': self.final_heart_pulse, 'spo2': self.final_spo2, 
+                'height': self.final_height, 'weight': self.final_weight, 
+                'temperature': self.final_temperature, 'bmi': self.final_bmi, 
+                'final': 0
+            }
+        }
+        glo_va.gui.queue_request_states_thread.put(request)
         
-        LogMesssage('Back to wait read first data from OSO2 device')
-        self.__time_missing_data == 0
         self.__state_oso2 = 0
+        self.__list_spo2 = []
+        self.__list_heart_rate = []
+        self.__time_missing_data = 0
 
-        self.__has_oso2 = True
-
-        if self.__has_esp and self.__has_oso2:
-            self.__stopMeasure()
+        LogMesssage('Back to wait read first data from OSO2 device')
 
     def __readOSO2Date(self, data):
         # print(data)
@@ -172,20 +169,21 @@ class MeasureSensor:
                 hr_index = OFFSET + 2
                 spo2_index = OFFSET + 10
 
-                request = {'type': glo_va.REQUEST_UPDATE_OSO2, 'data': {'heart_rate': data[hr_index], 'spo2': data[spo2_index], 'status': -1}}
-                glo_va.measure_sensor_dialog.queue_request_states_thread.put(request)
+                request = {
+                    'type': glo_va.REQUEST_UPDATE_OSO2, 
+                    'data': {
+                        'heart_pulse': data[hr_index], 
+                        'spo2': data[spo2_index], 
+                        'final': -1
+                    }
+                }
+                glo_va.gui.queue_request_states_thread.put(request)
 
                 self.__list_heart_rate.append(data[hr_index])
                 self.__list_spo2.append(data[spo2_index])
-        
-    def __stopMeasure(self):
-        if self.__thread_read_sensors.is_alive():
-            self.__sensors_connected = False
-            self.__enable_run_thread_sensors = False
 
     def closeDevice(self):
         try:
-            self.__stopMeasure()
             self.__oso2_connection.close()
             LogMesssage("Closing connection Heart Rate and SPO2 measurement device", opt=0)
         except Exception as e:

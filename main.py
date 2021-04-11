@@ -50,6 +50,9 @@ def main():
             
             elif glo_va.STATE == glo_va.STATE_WAITING_SUB_EXAM:
                 State_7()
+            
+            elif glo_va.STATE == glo_va.STATE_MEASURING_SENSOR:
+                State_8()
 
         except Exception as e:
             print("Error at module main in main: {}".format(e))
