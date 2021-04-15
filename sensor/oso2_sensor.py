@@ -133,7 +133,7 @@ class MeasureSensor:
         self.final_temperature = str(round(float('37.2'),1))
         self.final_height = str(round(float('1.74'),2))
         self.final_weight = str(round(float('84.21'),1))
-        self.final_bmi = str(round(float(self.final_weight)/float(self.final_height), 1))
+        self.final_bmi = str(round(float(self.final_weight)/pow(float(self.final_height), 2), 1))
 
         request = {
             'type': glo_va.REQUEST_UPDATE_ESP, 

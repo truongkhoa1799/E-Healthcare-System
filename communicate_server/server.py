@@ -129,10 +129,10 @@ class Server:
                         ret_msg = int(method_request.payload['return'])
                         if ret_msg == 0:
                             glo_va.return_stt = method_request.payload['stt']
-                            LogMesssage('[__Listen_Reponse_Server]: Receive STT of patient: {id}'.format(id=glo_va.patient_ID))
+                            LogMesssage('[__Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=glo_va.patient_ID))
                         else:
                             glo_va.return_stt = None
-                            LogMesssage('[__Listen_Reponse_Server]: False receive STT of patient: {id}'.format(id=glo_va.patient_ID))
+                            LogMesssage('[__Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=glo_va.patient_ID))
 
                         glo_va.has_response_server = True
                     else:
