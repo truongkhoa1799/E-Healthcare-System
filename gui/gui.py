@@ -94,36 +94,6 @@ class GUI(QtWidgets.QMainWindow):
 
         self.__list_image = [self.first_instruction, self.second_instruction]
 
-        # img = cv2.imread('/Users/khoa1799/GitHub/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
-        # img = cv2.imread('/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face/train/1/IMG_3415.jpg')
-        # img = cv2.resize(img, (700,400))
-        # qp_image = self.__Convert_To_Display(img)
-        # self.img_new_user.setPixmap(qp_image)
-
-        # self.__SetBackgroudMainFrame(1)
-        # self.__UpdateListDepartments()
-
-        # self.__MeasureSensor()
-        
-        # self.__notificationDialog('Please capture sensor\ninformation and select\nexamination department', 0)
-
-        # data = {}
-        # data['opt'] = 1
-        # data['stt'] = 1
-        # data['room'] = 'C1-202'
-        # self.submit_dialog = OkDialogClass(-2, data)
-        # self.submit_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        # if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
-        #     glo_va.button = glo_va.BUTTON_OKAY
-
-        # dialog = QDialogClass(-1, glo_va.CONFIRM_NEW_PATIENT_DIALOG)
-        # dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        # if dialog.exec_() == QtWidgets.QDialog.Accepted:
-        #     print(int(dialog.ret))
-
-        # print(type(self.selected_room.text()))
-    
-
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
     

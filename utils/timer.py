@@ -42,7 +42,6 @@ class Timer:
 
                 # Check if time out for valifation or not
                 if self.__timeout_validate >= glo_va.TIMEOUT_VALIDATE:
-                    current_time = time.strftime("%H:%M:%S", time.localtime())
                     LogMesssage("[__Check_Timer]: Timer for validation is expired")
 
                     self.__Check_Timer()
@@ -52,7 +51,6 @@ class Timer:
 
                 # Get the examaniation room
                 if self.__timeout_get_examination_room >= glo_va.TIMEOUT_GET_EXAMINATION_ROOM:
-                    current_time = time.strftime("%H:%M:%S", time.localtime())
                     LogMesssage("[__Check_Timer]: Timer for getting examination room is expired")
 
                     self.__Check_Timer()
@@ -62,7 +60,6 @@ class Timer:
             
                 # Get the examaniation room
                 if self.__timeout_submit_examination >= glo_va.TIMEOUT_SUBMIT_EXAMINATION:
-                    current_time = time.strftime("%H:%M:%S", time.localtime())
                     LogMesssage("[__Check_Timer]: Timer for submit examination is expired")
                     
                     self.__Check_Timer()
@@ -76,29 +73,30 @@ class Timer:
 
     def __Check_Timer(self):
         # Acquire lock to stop server receive response
-        glo_va.lock_response_server.acquire(True)
-        LogMesssage('[__Check_Timer]: Acquire lock response server')
+        if glo_va.lock_response_server.acquire(False):
+            LogMesssage('[__Check_Timer]: Acquire lock response server')
 
-        # if server is not acquire first, get lock and resend again message
-        if glo_va.turn == -1:
-            glo_va.is_sending_message = False
-            # time.sleep(40)
-            glo_va.lock_response_server.release()
-            LogMesssage('[__Check_Timer]: is_sending_message is reset')
-            LogMesssage('[__Check_Timer]: Release lock response server')
+            # if server is not acquire first, get lock and resend again message
+            if glo_va.turn == -1:
+                glo_va.is_sending_message = False
+                # time.sleep(40)
+                LogMesssage('[__Check_Timer]: is_sending_message is reset')
+                LogMesssage('[__Check_Timer]: Release lock response server')
+                glo_va.lock_response_server.release()
 
-        # if server has received response, set lock = -1 for the next time out
-        elif glo_va.turn == 1:
-            glo_va.turn = -1
-            glo_va.lock_response_server.release()
-            LogMesssage('[__Check_Timer]: Has response from server first')
-            LogMesssage('[__Check_Timer]: Release lock response server')
-            return
-        
-        self.Clear_Timer()
+            # if server has received response, set lock = -1 for the next time out
+            elif glo_va.turn == 1:
+                glo_va.turn = -1
+                LogMesssage('[__Check_Timer]: Has response from server first')
+                LogMesssage('[__Check_Timer]: Release lock response server')
+                glo_va.lock_response_server.release()
+                return
+            
+            self.Clear_Timer()
+        else:
+            LogMesssage('[__Check_Timer]: Acquire lock response server fail')
 
     def Clear_Timer(self):
-        LogMesssage('[Clear_Timer]: Clear Timer')
         self.__timeout_validate = 0
         self.__flg_timeout_validate = False
         

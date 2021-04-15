@@ -44,6 +44,7 @@ def State_1():
             # Update UI
             request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
             glo_va.gui.queue_request_states_thread.put(request)
+
         elif user_infor.status == glo_va.USER_INFOR_NO_FACE and glo_va.times_missing_face == glo_va.TIMES_MISSING_FACE:
             LogMesssage('\t[State_1]: Patient exceed number of trying identify')
             # Go to state for new User
@@ -54,6 +55,7 @@ def State_1():
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
             glo_va.times_missing_face = 0
+
         else:
             LogMesssage('\t[State_1]: Dummy response from server')
 
@@ -415,10 +417,10 @@ def State_8():
 
 def Init_State():
     # Lock the response message from server when restart program
-    LogMesssage('[Init_State]: Acquire lock init state')
     glo_va.lock_init_state.acquire(True)
+    LogMesssage('[Init_State]: Acquire lock init state')
 
-    LogMesssage('Reset at STATE: {}'.format(glo_va.STATE))
+    LogMesssage('[Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
     # test when state is restarted server accept message or not
     # Clear button
     glo_va.button = -1

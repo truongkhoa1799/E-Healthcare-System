@@ -41,11 +41,11 @@ class CSI_Camera:
     def open(self, gstreamer_pipeline_string):
         try:
             # Jetson
-            self.video_capture = cv2.VideoCapture(
-                gstreamer_pipeline_string, cv2.CAP_GSTREAMER
-            )
+            # self.video_capture = cv2.VideoCapture(
+            #     gstreamer_pipeline_string, cv2.CAP_GSTREAMER
+            # )
             # Macos
-            # self.video_capture = cv2.VideoCapture(0)
+            self.video_capture = cv2.VideoCapture(0)
             
         except RuntimeError:
             self.video_capture = None

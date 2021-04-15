@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -839,7 +839,7 @@ border-radius: 5px;	</string>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>20</pointsize>
+            <pointsize>16</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2844,7 +2844,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2852,7 +2852,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2909,7 +2909,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2917,7 +2917,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2974,7 +2974,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2982,7 +2982,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
