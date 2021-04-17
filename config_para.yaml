@@ -24,12 +24,13 @@ preprocessing:
 
 identifying_face:
   cycle_count_face_period: 1
-  # number_deteced_face_allowed: 3
-  number_deteced_face_allowed: 12
+  number_deteced_face_allowed: 100
+  # number_deteced_face_allowed: 12
   max_edge: 150
   # MAX length for face Detector
   max_length_img: 100
   max_length_img_new_user: 150
+  # face_detector_model: hog
   face_detector_model: hog
   shape_predictor_model: 68
 

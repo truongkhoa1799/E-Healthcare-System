@@ -11,6 +11,9 @@ from utils.get_occuluded_angle.get_face_pose import Get_Face_Angle
 from utils.common_functions import Preprocessing_Img
 from utils.common_functions import LogMesssage
 
+from tensorflow import keras
+import tensorflow as tf
+
 class Face_Recognition:
     def __init__(self):
         if glo_va.SHAPE_PREDICTOR_MODEL == '68':
@@ -41,6 +44,22 @@ class Face_Recognition:
     def __face_encodings(self, face_image, known_face_locations):
         # Get landmarks
         raw_landmarks = self.__raw_face_landmarks(face_image, known_face_locations)
+        
+        # if glo_va.detected_face is not None:
+        #     print(glo_va.detected_face.shape)
+        #     fra = glo_va.detected_face.shape[0]/face_image.shape[0]
+
+        #     # Draw face mask location
+        #     left = int(raw_landmarks[0].part(0).x * fra) + glo_va.face_location[2]
+        #     top = int(raw_landmarks[0].part(0).y * fra) + glo_va.face_location[0]
+        #     right = int(raw_landmarks[0].part(15).x * fra) + glo_va.face_location[2]
+        #     bottom = glo_va.face_location[1]
+            
+        #     print(face_image.shape)
+        #     print(glo_va.face_location)
+        #     print("{}, {}, {}, {}".format(left, top, right, bottom))
+
+        #     cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
 
         # Get the embedded face
         embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
@@ -173,6 +192,20 @@ class Face_Recognition:
         # Pre-processing
         RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
         # print("size RGB_resized_adjusted_bright_img image: {}".format(RGB_resized_adjusted_bright_img.shape))
+        
+        image = cv2.resize(glo_va.detected_face, (150,150))
+        image = image[50:, :]
+        
+        img_array = keras.preprocessing.image.img_to_array(image)
+        img_array = tf.expand_dims(img_array, 0) # Create a batch
+
+        predictions = model.predict(img_array)
+        score = tf.nn.softmax(predictions[0])
+
+        print(
+            "This image most likely belongs to {} with a {:.2f} percent confidence."
+            .format(class_names[np.argmax(score)], 100 * np.max(score))
+        )
 
         # locations = (top, right, bottom, left)
         glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])[0]

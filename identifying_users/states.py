@@ -301,6 +301,7 @@ def State_7():
             if glo_va.return_stt is None:
                 data['opt'] = 1
                 glo_va.valid_stt = -1
+                
             elif glo_va.return_stt is not None:
                 dep_name, building, room = exam.Get_Exam_Room_Infor()
                 data['opt'] = 0
@@ -323,18 +324,15 @@ def State_7():
 
             glo_va.button_ok_pressed = False
     
-    elif glo_va.button_ok_pressed == False:
-        if glo_va.button == glo_va.BUTTON_OKAY:
-            if glo_va.valid_stt == -1:
-                glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-                glo_va.button_ok_pressed = True
-            elif glo_va.valid_stt == 0:
-                Init_State()
-                return
-                        
+    elif glo_va.button_ok_pressed == False and glo_va.button == glo_va.BUTTON_OKAY:
+        if glo_va.valid_stt == -1:
             glo_va.valid_stt = None
-        else:
-            pass
+            glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+            glo_va.button_ok_pressed = True
+
+        elif glo_va.valid_stt == 0:
+            Init_State()
+            return
     
     if glo_va.button == glo_va.BUTTON_EXIST:
         # If user reject, Clear user_infor, Ui and go to first state
@@ -416,11 +414,10 @@ def State_8():
     # state measuring sensor
 
 def Init_State():
+    LogMesssage('[Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
     # Lock the response message from server when restart program
     glo_va.lock_init_state.acquire(True)
     LogMesssage('[Init_State]: Acquire lock init state')
-
-    LogMesssage('[Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
     # test when state is restarted server accept message or not
     # Clear button
     glo_va.button = -1
@@ -431,9 +428,6 @@ def Init_State():
 
     # USER PARAMETERS-----------------------------------------------
     user_infor.Clear()
-    # send request clear patient inof
-    # request = {'type': glo_va.REQUEST_CLEAR_PATIENT_INFO, 'data': ''}
-    # glo_va.gui.queue_request_states_thread.put(request)
 
     # Clear list embedded face, embedded face and num images
     glo_va.patient_ID = -1

@@ -364,3 +364,11 @@ glo_va = GlobalVariable()
 user_infor = User_Infor()
 sensor = Sensor()
 exam = Examination()
+
+from tensorflow import keras
+import tensorflow as tf
+model = None
+class_names = ['mask', 'unmask']
+
+with open ('/Users/khoa1799/GitHub/mask_detector/mask_data/svm_mask_model', 'rb') as fp_2:
+    model = tf.keras.models.load_model('/Users/khoa1799/GitHub/mask_detector/mask_data/tf_mask_detector_model')
