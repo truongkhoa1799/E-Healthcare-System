@@ -1,44 +1,53 @@
-import cv2
+# import the necessary packages
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.models import load_model
 import numpy as np
-import tensorflow as tf
-from tensorflow import keras
+import argparse
+import imutils
+import time
+import cv2
+import os
 
-output_saved_model_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/tf_mask_detector_model_trt'
-input_saved_model_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/tf_mask_detector_model'
+from utils.parameters import *
+from identifying_users.face_recognition import Face_Recognition
+glo_va.face_recognition = Face_Recognition()
 
-# model = tf.keras.models.load_model(output_saved_model_dir)
-# img_path = '/home/thesis/Documents/thesis/mask_data/mask/0.jpg'
-# class_names = ['mask', 'unmask']
+mask_model = '/Users/khoa1799/GitHub/mask_detector/mask_detector.model'
+# load the face mask detector model from disk
+print("[INFO] loading face mask detector model...")
+maskNet = load_model(mask_model)
 
-model = tf.saved_model.load(output_saved_model_dir)
-
+# img_path = '/Users/khoa1799/GitHub/mask_detector/original_img/unmask/1.jpg'
+img_path = '/Users/khoa1799/GitHub/mask_detector/original_img/mask/437.jpg'
 img = cv2.imread(img_path)
-img = cv2.resize(img,(100, 150))
 
-img_array = keras.preprocessing.image.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0) # Create a batch
+fra = glo_va.MAX_LENGTH_IMG_NEW_USER / max(img.shape[0], img.shape[1]) 
+resized_img = cv2.resize(img, (int(img.shape[1] * fra), int(img.shape[0] * fra)))
+GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
 
-predictions = model.predict(img_array)
-score = tf.nn.softmax(predictions[0])
+face_locations = glo_va.face_recognition.Get_Face_Locations(GRAY_resized_img)
 
-print(
-    "This image most likely belongs to {} with a {:.2f} percent confidence."
-    .format(class_names[np.argmax(score)], 100 * np.max(score))
-)
+if len(face_locations) != 0:
+    face_location = face_locations[0]
+    top = int(face_location[0] / fra)
+    bottom = int(face_location[2] / fra)
+    left = int(face_location[3] / fra)
+    right = int(face_location[1] / fra)
 
-# from tensorflow.python.compiler.tensorrt import trt_convert as trt
+    mask_location = img[top:bottom, left:right]
+    face = cv2.resize(mask_location, (224, 224))
+    face = img_to_array(face)
+    face = preprocess_input(face)
 
-# # Conversion Parameters 
-# conversion_params = trt.TrtConversionParams(
-#     precision_mode=trt.TrtPrecisionMode. FP16)
+    faces = np.array([face], dtype="float32")
+    preds = maskNet.predict(faces, batch_size=32)
+    print(preds)
 
-# converter = trt.TrtGraphConverterV2(
-#     input_saved_model_dir=input_saved_model_dir,
-#     conversion_params=conversion_params)
+cv2.imshow('test', mask_location)
+cv2.waitKey(5000)
 
-# # Converter method used to partition and optimize TensorRT compatible segments
-# converter.convert()
-
-# # Save the model to the disk 
-# converter.save(output_saved_model_dir)
-
+# face_location 
+# face = cv2.resize(face, (224, 224))
+# face = img_to_array(face)
+# face = preprocess_input(face)
