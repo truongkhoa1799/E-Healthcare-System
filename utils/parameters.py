@@ -364,11 +364,3 @@ glo_va = GlobalVariable()
 user_infor = User_Infor()
 sensor = Sensor()
 exam = Examination()
-
-# from tensorflow import keras
-# import tensorflow as tf
-# model = None
-# class_names = ['mask', 'unmask']
-
-# filepath = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/tf_mask_detector_model'
-# model = tf.keras.models.load_model(filepath)

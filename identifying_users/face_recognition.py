@@ -192,21 +192,6 @@ class Face_Recognition:
         # Pre-processing
         RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
         # print("size RGB_resized_adjusted_bright_img image: {}".format(RGB_resized_adjusted_bright_img.shape))
-        
-        # image = cv2.resize(glo_va.detected_face, (150,150))
-        # image = image[50:, :]
-        
-        # img_array = keras.preprocessing.image.img_to_array(image)
-        # img_array = tf.expand_dims(img_array, 0) # Create a batch
-
-        # predictions = model.predict(img_array)
-        # score = tf.nn.softmax(predictions[0])
-
-        # print(
-        #     "This image most likely belongs to {} with a {:.2f} percent confidence."
-        #     .format(class_names[np.argmax(score)], 100 * np.max(score))
-        # )
-
         # locations = (top, right, bottom, left)
         glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])[0]
         # glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)

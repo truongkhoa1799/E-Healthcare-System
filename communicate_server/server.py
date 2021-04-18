@@ -103,11 +103,16 @@ class Server:
                             # print(method_request.payload)
                             user_infor.Update_Info(method_request.payload)
                             LogMesssage('[__Listen_Reponse_Server]: Update patient information')
+
+                        elif ret_msg == -2:
+                            # Patient is wearing mask
+                            LogMesssage('[__Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
+
                         elif glo_va.STATE == 1 and ret_msg == -1:
                             user_infor.NoFace()
                             glo_va.times_missing_face += 1
                             LogMesssage('[__Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
-
+                        
                         glo_va.has_response_server = True
 
                     # Get examination room response
