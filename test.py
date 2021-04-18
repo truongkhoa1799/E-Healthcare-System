@@ -1,64 +1,44 @@
-# from utils.parameters import *
-# import cv2
-# import os, re, uuid
-# import numpy as np
+import cv2
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
 
-# from azure.iot.device import IoTHubDeviceClient
-# from azure.core.exceptions import AzureError
+output_saved_model_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/tf_mask_detector_model_trt'
+input_saved_model_dir = '/home/thesis/Documents/thesis/E-Healthcare-System/model_engine/tf_mask_detector_model'
 
-# from identifying_users.face_recognition import Face_Recognition
-# from communicate_server.server import Server
-# from utils.timer import Timer
-# from utils.common_functions import Compose_Embedded_Face
+# model = tf.keras.models.load_model(output_saved_model_dir)
+# img_path = '/home/thesis/Documents/thesis/mask_data/mask/0.jpg'
+# class_names = ['mask', 'unmask']
 
-# ORIGINAL_DATA = '/home/thesis/Documents/E-Healthcare-System-Server/Manipulate_Data/Original_Face'
-# list_name = []
-# def __image_files_in_folder(folder):
-#     return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]
+model = tf.saved_model.load(output_saved_model_dir)
 
-# def test_validate(user_id):
-#     list_faces = ""
-#     glo_va.timer = Timer()
-#     glo_va.server = Server()
-#     glo_va.face_recognition = Face_Recognition()
-#     count = 0 
-#     # for img in __image_files_in_folder(ORIGINAL_DATA + '/test/' + str(user_id)):
-#     for img in __image_files_in_folder('/home/thesis/Documents/thesis/E-Healthcare-System/img_written'):
-#         # glo_va.img = cv2.imread(img)
+img = cv2.imread(img_path)
+img = cv2.resize(img,(100, 150))
 
-#         # ret = glo_va.face_recognition.Get_Face()
-#         # if ret == -2:
-#         #     print("Error Face locations")
-#         #     return
-#         # elif ret == 0:
-#         #     # Face Identifying
-#         #     print(img)
-#         #     glo_va.face_recognition.Encoding_Face()
-#         #     encoded_img_string = Compose_Embedded_Face(glo_va.embedded_face)
-#         #     list_faces += encoded_img_string + ' '
-#         count += 1
-#         if count > 20:
-#             break
-#         glo_va.detected_face = cv2.imread(img)
-#         print(img)
-#         glo_va.face_recognition.Encoding_Face()
-#         encoded_img_string = Compose_Embedded_Face(glo_va.embedded_face)
-#         list_faces += encoded_img_string + ' '
-        
-#     print(len(list_faces))
-#     glo_va.list_embedded_face = list_faces
-#     glo_va.timer.Start_Timer(glo_va.OPT_TIMER_VALIDATE)
-#     glo_va.is_sending_message = True
-#     glo_va.server.Validate_User()
+img_array = keras.preprocessing.image.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0) # Create a batch
 
-# test_validate(3)
+predictions = model.predict(img_array)
+score = tf.nn.softmax(predictions[0])
 
-import json
-import requests
+print(
+    "This image most likely belongs to {} with a {:.2f} percent confidence."
+    .format(class_names[np.argmax(score)], 100 * np.max(score))
+)
 
-# start_time = time.time()
-url = 'http://localhost:5005/model/parse'
-data = '{"text":"hi"}'
-response = json.loads(requests.post(url, data=data.encode('utf-8')).text)
+# from tensorflow.python.compiler.tensorrt import trt_convert as trt
 
-print(response)
+# # Conversion Parameters 
+# conversion_params = trt.TrtConversionParams(
+#     precision_mode=trt.TrtPrecisionMode. FP16)
+
+# converter = trt.TrtGraphConverterV2(
+#     input_saved_model_dir=input_saved_model_dir,
+#     conversion_params=conversion_params)
+
+# # Converter method used to partition and optimize TensorRT compatible segments
+# converter.convert()
+
+# # Save the model to the disk 
+# converter.save(output_saved_model_dir)
+

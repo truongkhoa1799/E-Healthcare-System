@@ -11,8 +11,8 @@ from utils.get_occuluded_angle.get_face_pose import Get_Face_Angle
 from utils.common_functions import Preprocessing_Img
 from utils.common_functions import LogMesssage
 
-from tensorflow import keras
-import tensorflow as tf
+# from tensorflow import keras
+# import tensorflow as tf
 
 class Face_Recognition:
     def __init__(self):
@@ -131,7 +131,7 @@ class Face_Recognition:
 
         return [self.__pose_predictor(face_image, face_location) for face_location in face_locations]
 
-    def __Get_Face_Locations(self, img):
+    def Get_Face_Locations(self, img):
         """
         Returns an array of bounding boxes of human faces in a image
         :param img: An image (as a numpy array)
@@ -158,7 +158,7 @@ class Face_Recognition:
             resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
             GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
             
-            face_locations = self.__Get_Face_Locations(GRAY_resized_img)
+            face_locations = self.Get_Face_Locations(GRAY_resized_img)
 
             if len(face_locations) == 0:
                 return -1

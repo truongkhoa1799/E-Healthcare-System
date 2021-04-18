@@ -2,14 +2,13 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
-import cv2
 import sys, time
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
-from utils.common_functions import LogMesssage
+from utils.common_functions import LogMesssage, Convert_To_Display
 
 from gui.ok_dialog import OkDialogClass
 from gui.yes_no_dialog import QDialogClass
@@ -332,17 +331,6 @@ class GUI(QtWidgets.QMainWindow):
                 self.progress_bar.setValue(0)
 
         return
-
-    ############################################################################
-    # GUI MODULE                                                            #
-    ############################################################################
-    def __Convert_To_Display(self, img):
-        # Get ndarray and return QImage
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        image = QImage(img, img.shape[1], img.shape[0], img.shape[1]*3, QImage.Format_RGB888)
-        qp_image = QPixmap(image)
-
-        return qp_image
     
     def __ChangeUI(self):
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
@@ -417,7 +405,7 @@ class GUI(QtWidgets.QMainWindow):
         if self.image_display is None:
             return
 
-        qp_image = self.__Convert_To_Display(self.image_display)
+        qp_image = Convert_To_Display(self.image_display)
 
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
             self.img_new_user.setPixmap(qp_image)

@@ -68,3 +68,14 @@ def Preprocessing_Img(img):
     resized_img = cv2.resize(img, (glo_va.IMAGE_SIZE,glo_va.IMAGE_SIZE))
     RGB_resized_adjusted_bright_img = AdjustBright(resized_img)
     return RGB_resized_adjusted_bright_img
+
+############################################################################
+# GUI MODULE                                                            #
+############################################################################
+def Convert_To_Display(img):
+    # Get ndarray and return QImage
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    image = QImage(img, img.shape[1], img.shape[0], img.shape[1]*3, QImage.Format_RGB888)
+    qp_image = QPixmap(image)
+
+    return qp_image

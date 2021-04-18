@@ -13,7 +13,7 @@ from utils.assis_parameters import *
 
 from assistant.states_assistant import *
 from utils.common_functions import LogMesssage
-from assistant.classify_department import ClassifyDepartment
+# from assistant.classify_department import ClassifyDepartment
 
 class RepeatTimer(Timer):
     def run(self):
@@ -24,7 +24,8 @@ class MomoAssistant:
     def __init__(self):
         # self.__momo_ear = speech_recognition.Recognizer()
         # self.__momo_ear.energy_threshold = 400
-        self.__dt_clf = ClassifyDepartment()
+        # self.__dt_clf = ClassifyDepartment()
+        print('hello')
 
         # glo_va.thread_assis = Thread(target=MomoCore, args=())
         # glo_va.thread_assis.daemon = True
@@ -85,6 +86,7 @@ class MomoAssistant:
 
     def Analyze_Sympton(self, ret_data):
         try:
+            return "hoho"
             list_problems = ret_data['list_problem']
             list_part_of_body = ret_data['list_part_of_body']
 
