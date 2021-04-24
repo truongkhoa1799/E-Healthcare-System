@@ -1,113 +1,103 @@
-from utils.assis_parameters import *
 from utils.parameters import *
-from assistant.extract_sympton.get_sympton import Get_Sympton
 # STATE -1: confirm message
 # STATE 1: ask want diagnosis
 # STATE 2: listen for department name
 # STATE 3: listen for display sympton
 
 # ask want diagnosis
-def State_1(user_voice):
-    msg = res_msg[-1]
-    ret_data = Get_Sympton(user_voice)
+def State_1(symptons):
+    msg = assis_para.res_msg[-1]
 
     # If intent does not in vocabulaty say do not understant
-    if ret_data == -1:
-        glo_va.momo_assis.Say(msg)
+    if symptons == -1:
+        glo_va.momo_assis.Say(msg, opt=1)
         return
 
-    if ret_data['intent'] == 'affirm':
+    if symptons['intent'] == 'affirm':
         glo_va.assis_state = glo_va.ASSIS_CHOOSE_DEP_STATE
-        msg = msg_for_states[glo_va.assis_state]
-    elif ret_data['intent'] == 'deny':
+        msg = assis_para.msg_for_states[glo_va.assis_state]
+    elif symptons['intent'] == 'deny':
         glo_va.assis_state = glo_va.ASSIS_DISPLAY_SYMPTON_STATE
-        msg = msg_for_states[glo_va.assis_state]
+        msg = assis_para.msg_for_states[glo_va.assis_state]
     else:
-        msg = Common_State(ret_data)
+        msg = Common_State(symptons)
 
     # print("Momo: {}".format(msg))
-    if msg != -1:
-        glo_va.momo_assis.Say(msg)
+    glo_va.momo_assis.Say(msg, opt=1)
     # print()
 
 # listen for department name
-def State_2(user_voice):
-    msg = res_msg[-1]
-    ret_data = Get_Sympton(user_voice)
+def State_2(symptons):
+    msg = assis_para.res_msg[-1]
 
     # If intent does not in vocabulaty say do not understant
-    if ret_data == -1:
-        glo_va.momo_assis.Say(msg)
+    if symptons == -1:
+        glo_va.momo_assis.Say(msg, opt=1)
         return
 
-    if ret_data['intent'] == 'affirm':
+    if symptons['intent'] == 'affirm':
         msg = res_msg[8]
     else:
-        msg = Common_State(ret_data)
+        msg = Common_State(symptons)
 
     # print("Momo: {}".format(msg))
-    if msg != -1:
-        glo_va.momo_assis.Say(msg)
+    glo_va.momo_assis.Say(msg, opt=1)
     # print()
 
 # listen for display sympton
-def State_3(user_voice):
-    msg = res_msg[-1]
-    ret_data = Get_Sympton(user_voice)
+def State_3(symptons):
+    msg = assis_para.res_msg[-1]
 
     # If intent does not in vocabulaty say do not understant
-    if ret_data == -1:
-        glo_va.momo_assis.Say(msg)
+    if symptons == -1:
+        glo_va.momo_assis.Say(msg, opt=1)
         return
 
-    if ret_data['intent'] == 'affirm':
-        msg = res_msg[8]
+    if symptons['intent'] == 'affirm':
+        msg = assis_para.res_msg[8]
     else:
-        msg = Common_State(ret_data)
+        msg = Common_State(symptons)
 
     # print("Momo: {}".format(msg))
-    if msg != -1:
-        glo_va.momo_assis.Say(msg)
+    glo_va.momo_assis.Say(msg, opt=1)
     # print()
 
 # confirm message : -1
-def Confirm_Message(user_voice):
-    msg = res_msg[-1]
-    ret_data = Get_Sympton(user_voice)
+def Confirm_Message(symptons):
+    msg = assis_para.res_msg[-1]
 
     # If intent does not in vocabulaty say do not understant
-    if ret_data == -1:
-        glo_va.momo_assis.Say(msg)
+    if symptons == -1:
+        glo_va.momo_assis.Say(msg, opt=1)
         return
 
-    if ret_data['intent'] == 'affirm':
-        msg = res_msg[9]
+    if symptons['intent'] == 'affirm':
+        msg = assis_para.res_msg[9]
         glo_va.assis_state = glo_va.assis_pre_state
         glo_va.assis_pre_state = glo_va.ASSIS_CONFIRM_STATE
-        msg = msg_for_states[glo_va.assis_state]
-    elif ret_data['intent'] == 'deny':
-        msg = res_msg[7]
+        msg = assis_para.msg_for_states[glo_va.assis_state]
+    elif symptons['intent'] == 'deny':
+        msg = assis_para.res_msg[7]
         glo_va.ClearAssisPara()
     else:
-        msg = Common_State(ret_data)
+        msg = Common_State(symptons)
 
     # print("Momo: {}".format(msg))
-    if msg != -1:
-        glo_va.momo_assis.Say(msg)
+    glo_va.momo_assis.Say(msg, opt=1)
     # print()
 
-def Common_State(ret_data):
-    msg = res_msg[-1]
-    if ret_data['intent'] == 'greet':
-        msg = res_msg[6]
-    elif ret_data['intent'] == 'goodbye':
-        msg = res_msg[4]
+def Common_State(symptons):
+    msg = assis_para.res_msg[-1]
+    if symptons['intent'] == 'greet':
+        msg = assis_para.res_msg[6]
+    elif symptons['intent'] == 'goodbye':
+        msg = assis_para.res_msg[4]
         glo_va.ClearAssisPara()
-    elif ret_data['intent'] == 'want_exam' and ret_data['deparment_name'] != -1:
-        msg = glo_va.momo_assis.Analyze_Department(ret_data['deparment_name'])
+    elif symptons['intent'] == 'want_exam' and symptons['deparment_name'] != -1:
+        msg = glo_va.momo_assis.Analyze_Department(symptons['deparment_name'])
         glo_va.ClearAssisPara()
-    elif ret_data['intent'] == 'display_symptom' and ret_data['list_problem'] != -1:
-        msg = glo_va.momo_assis.Analyze_Sympton(ret_data)
+    elif symptons['intent'] == 'display_symptom' and symptons['list_problem'] != -1:
+        msg = glo_va.momo_assis.Analyze_Sympton(symptons)
         glo_va.ClearAssisPara()
     else:
         # check if previous state is confirm state or not

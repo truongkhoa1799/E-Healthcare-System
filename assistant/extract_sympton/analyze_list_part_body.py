@@ -1,16 +1,16 @@
-from utils.assis_parameters import *
+from utils.parameters import assis_para
 
 def Analyze_List_Part_Body(all_nouns, list_part_body_of_current_verb):
     list_nouns_extracted = []
     all_nouns = all_nouns.strip()
     i = 0
-    while i < len(list_composite_words):
+    while i < len(assis_para.list_composite_words):
         # Check whether this composite noun exist in all_nouns
         # If yes, get the first appearance in all_noun
-        start_position = all_nouns.find(list_composite_words[i])
+        start_position = all_nouns.find(assis_para.list_composite_words[i])
         if start_position != -1:
             # Calculate the end of this word.
-            end_position = start_position + len(list_composite_words[i])
+            end_position = start_position + len(assis_para.list_composite_words[i])
             
             # append composite noun to list_nouns_extracted, dont forget to remove last white space
             noun_extracted = all_nouns[start_position:end_position]

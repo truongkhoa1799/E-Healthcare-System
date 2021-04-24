@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -439,7 +439,7 @@ background: rgb(0, 0, 0)</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Name</string>
+             <string>Họ và tên</string>
             </property>
            </widget>
           </item>
@@ -450,7 +450,7 @@ background: rgb(0, 0, 0)</string>
           <rect>
            <x>25</x>
            <y>135</y>
-           <width>121</width>
+           <width>131</width>
            <height>60</height>
           </rect>
          </property>
@@ -495,7 +495,7 @@ background: rgb(0, 0, 0)</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Birthday</string>
+             <string>Ngày sinh</string>
             </property>
            </widget>
           </item>
@@ -791,7 +791,7 @@ border-radius: 5px;	</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Address</string>
+             <string>Địa chỉ</string>
             </property>
            </widget>
           </item>
@@ -839,7 +839,7 @@ border-radius: 5px;	</string>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>16</pointsize>
+            <pointsize>18</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -859,7 +859,7 @@ border: 2px solid rgb(100,100,100);</string>
           <rect>
            <x>255</x>
            <y>135</y>
-           <width>121</width>
+           <width>161</width>
            <height>60</height>
           </rect>
          </property>
@@ -904,7 +904,7 @@ border: 2px solid rgb(100,100,100);</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Phone</string>
+             <string>Số điện thoại</string>
             </property>
            </widget>
           </item>
@@ -1033,7 +1033,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>Weight</string>
+            <string>Cân nặng</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1113,7 +1113,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>Height</string>
+            <string>Chiều cao</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1233,7 +1233,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>Temperature</string>
+            <string>Nhiệt độ</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1340,7 +1340,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>BMI</string>
+            <string>Trọng số cơ thể</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1460,7 +1460,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>So2</string>
+            <string>SPO2</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1567,7 +1567,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(100,100,100);</string>
            </property>
            <property name="text">
-            <string>Heart Pulse</string>
+            <string>Nhịp tim</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1741,7 +1741,7 @@ border-radius: 5px;	</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Buidling</string>
+             <string>Tòa nhà</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1789,7 +1789,7 @@ border-radius: 5px;	</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Room</string>
+             <string>Phòng</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1837,7 +1837,7 @@ border-radius: 5px;	</string>
              <string notr="true">color: rgb(100,100,100);</string>
             </property>
             <property name="text">
-             <string>Department</string>
+             <string>Khoa</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2016,7 +2016,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string> Submit</string>
+          <string> Hoàn tất</string>
          </property>
          <property name="icon">
           <iconset>
@@ -2072,7 +2072,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string> Capture</string>
+          <string> Đo chỉ số</string>
          </property>
          <property name="icon">
           <iconset>
@@ -2128,7 +2128,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string> Departments</string>
+          <string> Danh sách khoa</string>
          </property>
          <property name="icon">
           <iconset>
@@ -2500,9 +2500,9 @@ border-radius: 5px;</string>
        <widget class="QPushButton" name="confirm_dep_but">
         <property name="geometry">
          <rect>
-          <x>750</x>
+          <x>710</x>
           <y>415</y>
-          <width>250</width>
+          <width>290</width>
           <height>110</height>
          </rect>
         </property>
@@ -2537,12 +2537,16 @@ QPushButton:pressed {
 }</string>
         </property>
         <property name="text">
-         <string>Confirm</string>
+         <string>Xác nhận</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>icons/confirm.png</normaloff>icons/confirm.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
        </widget>
@@ -2551,7 +2555,7 @@ QPushButton:pressed {
          <rect>
           <x>9</x>
           <y>414</y>
-          <width>461</width>
+          <width>390</width>
           <height>111</height>
          </rect>
         </property>
@@ -2575,7 +2579,7 @@ QPushButton:pressed {
           <rect>
            <x>2</x>
            <y>2</y>
-           <width>457</width>
+           <width>385</width>
            <height>107</height>
           </rect>
          </property>
@@ -2598,7 +2602,7 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_dep">
           <property name="geometry">
            <rect>
-            <x>190</x>
+            <x>120</x>
             <y>60</y>
             <width>251</width>
             <height>31</height>
@@ -2622,7 +2626,7 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_room">
           <property name="geometry">
            <rect>
-            <x>190</x>
+            <x>120</x>
             <y>15</y>
             <width>251</width>
             <height>31</height>
@@ -2648,7 +2652,7 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>15</y>
-            <width>151</width>
+            <width>90</width>
             <height>31</height>
            </rect>
           </property>
@@ -2664,7 +2668,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(100,100,100);</string>
           </property>
           <property name="text">
-           <string>Room               :</string>
+           <string>Phòng :</string>
           </property>
          </widget>
          <widget class="QLabel" name="seleted_dep_4">
@@ -2672,7 +2676,7 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>60</y>
-            <width>151</width>
+            <width>90</width>
             <height>31</height>
            </rect>
           </property>
@@ -2688,7 +2692,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(100,100,100);</string>
           </property>
           <property name="text">
-           <string>Department :</string>
+           <string>Khoa    :</string>
           </property>
          </widget>
         </widget>
@@ -2696,9 +2700,9 @@ QPushButton:pressed {
        <widget class="QPushButton" name="select_dep_but">
         <property name="geometry">
          <rect>
-          <x>485</x>
+          <x>410</x>
           <y>415</y>
-          <width>251</width>
+          <width>290</width>
           <height>110</height>
          </rect>
         </property>
@@ -2733,12 +2737,12 @@ QPushButton:pressed {
 }</string>
         </property>
         <property name="text">
-         <string>Select</string>
+         <string> Chọn khoa</string>
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
        </widget>
@@ -2844,7 +2848,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2852,7 +2856,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2909,7 +2913,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2917,7 +2921,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2974,7 +2978,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2982,7 +2986,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
@@ -3275,7 +3279,7 @@ QHeaderView::section:vertical
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(0, 114, 177);
+          <string notr="true">background-color: rgb(13, 17, 55);
 border-top-left-radius: 15px;
 border-top-right-radius: 15px;
 border-bottom-left-radius: 2px;
@@ -3283,7 +3287,51 @@ border-bottom-right-radius: 2px;
 color: rgb(255, 255, 255)</string>
          </property>
          <property name="text">
-          <string>  Exam Room             Department Name</string>
+          <string>  Phòng khám             Khoa khám</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="diagnose_but">
+         <property name="geometry">
+          <rect>
+           <x>850</x>
+           <y>5</y>
+           <width>135</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-top-left-radius: 2px;
+	border-top-right-radius: 10px;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string> Chuẩn đoán</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/diagnose_symptoms.png</normaloff>icons/diagnose_symptoms.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
         </widget>
        </widget>
@@ -3373,7 +3421,11 @@ QPushButton:pressed {
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: rgb(50,50,50);</string>
+             <string notr="true">background: transparent;
+background-image: url(icons/guilde_page_0.jpeg);
+background-position: center;
+background-repeat: no-repeat;
+</string>
             </property>
             <property name="text">
              <string/>
@@ -3391,7 +3443,33 @@ QPushButton:pressed {
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: rgb(100,100,100);</string>
+             <string notr="true">background: transparent;
+background-image: url(icons/guilde_page_1.jpeg);
+background-position: center;
+background-repeat: no-repeat;
+</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="third_instruction">
+           <widget class="QLabel" name="label">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>1024</width>
+              <height>550</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: transparent;
+background-image: url(icons/guilde_page_2.jpeg);
+background-position: center;
+background-repeat: no-repeat;
+</string>
             </property>
             <property name="text">
              <string/>
@@ -3502,8 +3580,8 @@ QPushButton:pressed {
           </property>
          </widget>
          <zorder>instruction_stack</zorder>
-         <zorder>pre_instruction</zorder>
          <zorder>next_instruction</zorder>
+         <zorder>pre_instruction</zorder>
          <zorder>back_measuring_frame_but</zorder>
         </widget>
         <widget class="QWidget" name="measuring_frame">
@@ -3517,7 +3595,7 @@ QPushButton:pressed {
            </rect>
           </property>
           <property name="value">
-           <number>67</number>
+           <number>0</number>
           </property>
           <property name="textVisible">
            <bool>true</bool>
@@ -3575,7 +3653,7 @@ QPushButton:pressed {
 }</string>
            </property>
            <property name="text">
-            <string> Connect Device</string>
+            <string> Kết nối thiết bị</string>
            </property>
            <property name="icon">
             <iconset>
@@ -3631,7 +3709,7 @@ QPushButton:pressed {
 }</string>
            </property>
            <property name="text">
-            <string> Confirm</string>
+            <string> Xác nhận</string>
            </property>
            <property name="icon">
             <iconset>

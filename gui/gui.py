@@ -10,8 +10,11 @@ sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
 
+from gui.momo_gui import MomoGuiDialog
 from gui.ok_dialog import OkDialogClass
 from gui.yes_no_dialog import QDialogClass
+
+# from momo_gui import MomoGuiDialog
 # from ok_dialog import OkDialogClass
 # from yes_no_dialog import QDialogClass
 
@@ -30,6 +33,7 @@ class GUI(QtWidgets.QMainWindow):
         self.capture_sensor_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CAPTURE_SENSOR))
         self.submit_exam_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SUBMIT_EXAM))
         self.select_dep_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SELECT_DEP))
+        self.diagnose_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_DIAGNOSE_SYMPTOMS))
 
         # All frame of gui
         self.stackedWidget.addWidget(self.recognize_frame)
@@ -63,12 +67,14 @@ class GUI(QtWidgets.QMainWindow):
         # test.start(3000)
 
         self.list_shape_face = [self.front_face, self.up_face, self.down_face, self.left_face, self.right_face]
+        self.__map_department = None
+        self.__list_department = None
 
         ########################################################
         # MEASURING SENSOR FRAME                               #
         ########################################################
         self.index_instruction = 0
-        self.num_instruction = 2
+        self.num_instruction = 3
 
         self.MAIN_FRAME = 0
         self.INSTRUCTION_FRAME = 1
@@ -80,18 +86,23 @@ class GUI(QtWidgets.QMainWindow):
         self.connect_device_sensor_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONNECT_DEVICE_SENSOR))
         self.confirm_measuring_sensor.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONFIRM_SENSOR))
 
-        self.measure_sensor_stack.addWidget(self.guilde_frame)
         self.measure_sensor_stack.addWidget(self.measuring_frame)
+        self.measure_sensor_stack.addWidget(self.guilde_frame)
 
         self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
 
         self.instruction_stack.addWidget(self.first_instruction)
         self.instruction_stack.addWidget(self.second_instruction)
+        self.instruction_stack.addWidget(self.third_instruction)
         # 0: main frame
         # 1: instruction frame
         self.current_frame = self.MAIN_FRAME
 
-        self.__list_image = [self.first_instruction, self.second_instruction]
+        self.__list_image = [self.first_instruction, self.second_instruction, self.third_instruction]
+
+        # self.__UpdateListDepartments()
+        # self.__openMomoChatbotGui()
+        
 
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
@@ -112,6 +123,17 @@ class GUI(QtWidgets.QMainWindow):
         dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             return int(dialog.ret)
+    
+    def __openMomoChatbotGui(self):
+        ret = None
+
+        dialog = MomoGuiDialog(ret)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            ret = int(dialog.ret)
+            glo_va.button = glo_va.BUTTON_CLOSE_MOMO_GUI
+            return ret
+        
 
     ############################################################################
     # CONTROL MODULE                                                            #
@@ -165,16 +187,14 @@ class GUI(QtWidgets.QMainWindow):
 
             index = self.table_list_department.currentRow()
             if index != -1:
-                dep = glo_va.list_examination_room[index]
-                dep_name = dep['dep_name']
-                building_code = dep['building_code']
-                room_code = dep['room_code']
+                dep_name = self.__list_department[index]
+                self.__UpdateSelectedRoom(dep_name)
+        
+        elif opt == glo_va.BUTTON_DIAGNOSE_SYMPTOMS:
+            if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
+                return
 
-                # Acquire lock first predicted by MOMO
-                if glo_va.lock_update_exam_room.locked() == False:
-                    glo_va.lock_update_exam_room.acquire()
-                    self.__UpdateSelectedRoom(dep_name, building_code, room_code)
-                    glo_va.lock_update_exam_room.release()
+            glo_va.button = glo_va.BUTTON_DIAGNOSE_SYMPTOMS
 
         ########################
         # Measuing frame       #
@@ -188,14 +208,22 @@ class GUI(QtWidgets.QMainWindow):
                 # print(self.state)
                 self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
 
+                message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                # MOMO saying
+                glo_va.momo_assis.Say(glo_va.momo_messages[message])
+
         elif opt == glo_va.BUTTON_NEXT_GUILDE_SENSOR:
             if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                 return
 
-            if self.index_instruction < 2 - 1:
+            if self.index_instruction < self.num_instruction - 1:
                 self.index_instruction += 1
                 # print(self.state)
                 self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+
+                message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                # MOMO saying
+                glo_va.momo_assis.Say(glo_va.momo_messages[message])
 
         elif opt == glo_va.BUTTON_GUILDE_SENSOR:
             if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
@@ -204,6 +232,11 @@ class GUI(QtWidgets.QMainWindow):
             self.current_frame = self.INSTRUCTION_FRAME
             self.instruction_stack.setCurrentWidget(self.first_instruction)
             self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
+
+            message = 'measure_sensor_inform_0'
+            # MOMO saying
+            glo_va.momo_assis.Say(glo_va.momo_messages[message])
+
             LogMesssage('Patient change to instruction measure sensor frame')
             
         elif opt == glo_va.BUTTON_QUIT_GUILDE_SENSOR:
@@ -249,9 +282,6 @@ class GUI(QtWidgets.QMainWindow):
         elif request['type'] == glo_va.REQUEST_UPDATE_PATIENT_INFO:
             info = request['data']
             self.__UpdatePatientInfo(info)
-
-        # elif request['type'] == glo_va.REQUEST_CLEAR_PATIENT_INFO:
-        #     self.__ClearPatientInfo()
         
         elif request['type'] == glo_va.REQUEST_ACTIVATE_NEW_FACE:
             current_shape = request['data']
@@ -271,9 +301,6 @@ class GUI(QtWidgets.QMainWindow):
         
         elif request['type'] == glo_va.REQUEST_CLEAR_DEPARTMENT_LIST:
             self.__ClearListDepartments()
-        
-        # elif request['type'] == glo_va.REQUEST_MEASURE_SENSOR:
-        #     self.__MeasureSensor()
 
         elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
             data = request['data']
@@ -283,11 +310,11 @@ class GUI(QtWidgets.QMainWindow):
             self.__ClearSelectedRoom()
         
         elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
-            data = request['data']
-            dep_name = data['dep_name']
-            building_code = data['building_code']
-            room_code = data['room_code']
-            self.__UpdateSelectedRoom(dep_name=dep_name, building_code=building_code, room_code=room_code)
+            dep_name = request['data']
+            self.__UpdateSelectedRoom(dep_name=dep_name)
+        
+        elif request['type'] == glo_va.REQUEST_OPEN_MOMO_GUI:
+            self.__openMomoChatbotGui()
         
         ########################
         # Measuing frame       #
@@ -448,7 +475,17 @@ class GUI(QtWidgets.QMainWindow):
         self.room_code.setText('')
         self.dep_name.setText('')
     
-    def __UpdateSelectedRoom(self, dep_name, building_code, room_code):
+    def __UpdateSelectedRoom(self, dep_name):
+        list_rooms = self.__map_department[dep_name]
+        min_patients = 100
+        building_code = None
+        room_code = None
+
+        for i in list_rooms:
+            if i['num_patients'] < min_patients:
+                room_code = i['room_code']
+                building_code = i['building_code']
+
         self.selected_dep.setText(dep_name)
         self.selected_room.setText('{}-{}'.format(building_code, room_code))
     
@@ -458,15 +495,25 @@ class GUI(QtWidgets.QMainWindow):
     
     def __UpdateListDepartments(self):
         count = 0
-        for dep in glo_va.list_examination_room:
-            room = dep['building_code'] + '-' + dep['room_code']
+        self.__map_department = {}
+        self.__list_department = []
+        for dep in list_exam_rooms.list_examination_room:
             dep_name = dep['dep_name']
-            self.table_list_department.setItem(count, 0, QTableWidgetItem(room))
-            self.table_list_department.setItem(count, 1, QTableWidgetItem(dep_name))
-            count += 1
+
+            if dep_name in self.__map_department:
+                self.__map_department[dep_name].append(dep)
+            else:
+                self.__map_department[dep_name] = [dep]
+                self.__list_department.append(dep_name)
+
+                self.table_list_department.setItem(count, 0, QTableWidgetItem(str(count + 1)))
+                self.table_list_department.setItem(count, 1, QTableWidgetItem(dep_name))
+                count += 1
+        
+        # print(self.__map_department)
     
     def __ClearListDepartments(self):
-        for count in range(len(glo_va.list_examination_room)):
+        for count in range(len(list_exam_rooms.list_examination_room)):
             self.table_list_department.setItem(count, 0, QTableWidgetItem(''))
             self.table_list_department.setItem(count, 1, QTableWidgetItem(''))
     

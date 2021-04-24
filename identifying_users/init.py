@@ -93,6 +93,5 @@ def Start_Server_Connection():
 def StartMomoAssistant():
     LogMesssage("Starting Momo Assistant", opt=0)
     glo_va.momo_assis = MomoAssistant()
-    glo_va.lock_update_exam_room = Lock()
     LogMesssage("Done Init Server Connection", opt=0)
     print()

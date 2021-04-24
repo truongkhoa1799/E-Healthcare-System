@@ -21,6 +21,9 @@ class Timer:
         self.__timeout_submit_examination = 0
         self.__flg_timeout_submit_examination = False
 
+        self.__timeout_send_voice_message = 0
+        self.__flg_timeout_send_voice_message = False
+
         self.__timeout_missing_face = 0
 
         self.timer_id = None
@@ -61,6 +64,15 @@ class Timer:
                 # Get the examaniation room
                 if self.__timeout_submit_examination >= glo_va.TIMEOUT_SUBMIT_EXAMINATION:
                     LogMesssage("[__Check_Timer]: Timer for submit examination is expired")
+                    
+                    self.__Check_Timer()
+
+            if self.__flg_timeout_send_voice_message:
+                self.__timeout_send_voice_message = self.__timeout_send_voice_message + 1
+            
+                # Get the examaniation room
+                if self.__timeout_send_voice_message >= glo_va.TIMEOUT_SEND_MESSAGE_VOICE:
+                    LogMesssage("[__Check_Timer]: Timer for send voice message is expired")
                     
                     self.__Check_Timer()
         
@@ -105,6 +117,9 @@ class Timer:
 
         self.__timeout_submit_examination = 0
         self.__flg_timeout_submit_examination = False
+
+        self.__timeout_send_voice_message = 0
+        self.__flg_timeout_send_voice_message = False
     
     def Start_Timer(self, opt):
         if opt == glo_va.OPT_TIMER_VALIDATE:
@@ -120,6 +135,11 @@ class Timer:
         if opt == glo_va.OPT_TIMER_SUBMIT_EXAMINATION:
             self.__timeout_submit_examination = 0
             self.__flg_timeout_submit_examination = True
+            self.timer_id = str(uuid.uuid4())
+
+        if opt == glo_va.OPT_TIMER_SEND_MESSAGE_VOICE:
+            self.__timeout_send_voice_message = 0
+            self.__flg_timeout_send_voice_message = True
             self.timer_id = str(uuid.uuid4())
     
     def Stop(self):

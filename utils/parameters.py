@@ -2,6 +2,7 @@ import os
 import yaml
 import pathlib
 from PyQt5 import uic
+from utils.assis_parameters import AssistantParameter
 
 show_fps = True
 PROJECT_PATH = pathlib.Path().absolute()
@@ -36,7 +37,6 @@ class GlobalVariable:
         self.is_sending_message = False
         self.has_response_server = False
         self.lock_response_server = None
-        self.has_examination_room = False
         # Timer
         # -1: none, 1 server
         self.turn = -1 
@@ -61,10 +61,32 @@ class GlobalVariable:
         self.num_face_new_user = 5
         self.current_shape = 0
         self.check_current_shape = False
-        self.list_shape_face = ['Looking foward', 'Looking up', 'Looking down', 'Looking left', 'Looking right']
         self.dict_user_pose = {}
         self.num_user_pose = 0
         self.list_embedded_face_origin_new_patient = []
+
+        # sympton send back from server
+        self.patient_symptons = None
+
+        # PARAMETERS for user_info
+        self.USER_INFOR_HAS_FACE = 0
+        self.USER_INFOR_NO_FACE = -1
+        self.USER_INFOR_DEFAULT = -2
+
+        self.HAS_LIST_EXAM_ROOMS = 0
+        self.DEFAULT_LIST_EXAM_ROOMS = -1
+
+        self.SENSOR_HAS_VALUE = 0
+        self.SENSOR_DEFAULT = -1
+
+        self.EXAM_HAS_VALUE = 0
+        self.EXAM_DEFAULT = -1
+
+        self.patient_ID = -1
+        self.dep_ID_chosen = None
+        self.list_examination_room = []
+        self.return_stt = None
+        self.valid_stt = None
 
         # self.list_examination_room = [
         # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
@@ -75,24 +97,6 @@ class GlobalVariable:
         # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
         # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
         # ]
-        # PARAMETERS for user_info
-        self.USER_INFOR_HAS_FACE = 0
-        self.USER_INFOR_NO_FACE = -1
-        self.USER_INFOR_DEFAULT = -2
-
-        self.SENSOR_HAS_VALUE = 0
-        self.SENSOR_DEFAULT = -1
-
-        self.EXAM_HAS_VALUE = 0
-        self.EXAM_DEFAULT = -1
-
-        self.patient_ID = -1
-        self.hospital_ID = None
-        self.dep_ID_chosen = None
-        self.list_examination_room = []
-        self.map_num_departments = {3: 17, 6: 8, 9: 5, 12: 4, 15:3, 18:2}
-        self.return_stt = None
-        self.valid_stt = None
 
         ########################################################
         # SENSOR                                               #
@@ -112,7 +116,7 @@ class GlobalVariable:
         # used to map predicted department with current running dep in database
         self.momo_assis = None
         self.thread_assis = None
-        self.lock_update_exam_room = None
+        self.enable_momo_run = False
         self.map_department_table = None
 
         self.assis_state = self.ASSIS_FIRST_STATE
@@ -160,6 +164,8 @@ class GlobalVariable:
         self.BUTTON_NEXT_GUILDE_SENSOR = 15
         self.BUTTON_BACK_GUILDE_SENSOR = 16
         self.BUTTON_CONNECT_DEVICE_SENSOR = 17
+        self.BUTTON_DIAGNOSE_SYMPTOMS = 18
+        self.BUTTON_CLOSE_MOMO_GUI = 19
 
         ########################################################
         # REQUEST MAIN GUI                                     #
@@ -180,13 +186,12 @@ class GlobalVariable:
         self.REQUEST_DEACTIVATE_NEW_FACE = 13
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
         self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
+        self.REQUEST_OPEN_MOMO_GUI = 18
         ########################################################
         # REQUEST MEASURE SENSOR GUI                           #
         ########################################################
         self.REQUEST_UPDATE_OSO2 = 16
         self.REQUEST_UPDATE_ESP = 17
-
-        
 
         # Dialog
         self.EXIST_DIALOG = 0
@@ -257,6 +262,7 @@ class GlobalVariable:
             self.MEASURE_SENSOR_GUI_PATH = str(documents['path']['measure_sensor_gui_path'])
             self.OKAY_DIALOG_PATH = str(documents['path']['okdialog_path'])
             self.YES_NO_DIALOG_PATH = str(documents['path']['yes_no_dialog'])
+            self.MOMO_GUI_DIALOG_PATH = str(documents['path']['momo_gui_dialog'])
 
             # Parameters for timer
             self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
@@ -271,12 +277,40 @@ class GlobalVariable:
             self.TIMEOUT_SUBMIT_EXAMINATION = int(documents['timer']['timeout_submit_examination'])
             self.OPT_TIMER_SUBMIT_EXAMINATION = int(documents['timer']['opt_timer_submit_examination'])
 
+            self.TIMEOUT_SEND_MESSAGE_VOICE = int(documents['timer']['timeout_send_voice_message'])
+            self.OPT_TIMER_SEND_MESSAGE_VOICE = int(documents['timer']['opt_timer_send_voice_message'])
+
+            # MOMO MESSAGES
+            self.momo_messages = {
+                'ask_confirm': '123',
+                'ask_new_patient': '123',
+                'say_bye': '123',
+                'inform_state_3': '123',
+                'inform_oso2': '123',
+                'measure_sensor_inform_0': '123',
+                'measure_sensor_inform_1': '123',
+                'measure_sensor_inform_2': '123',
+                'capture_img': '123'
+            }
+            self.momo_messages['ask_confirm'] = str(documents['momo_message']['ask_confirm'])
+            self.momo_messages['ask_new_patient'] = str(documents['momo_message']['ask_new_patient'])
+            self.momo_messages['say_bye'] = str(documents['momo_message']['say_bye'])
+            self.momo_messages['inform_state_3'] = str(documents['momo_message']['inform_state_3'])
+            self.momo_messages['inform_oso2'] = str(documents['momo_message']['inform_oso2'])
+            self.momo_messages['measure_sensor_inform_0'] = str(documents['momo_message']['measure_sensor_inform_0'])
+            self.momo_messages['measure_sensor_inform_1'] = str(documents['momo_message']['measure_sensor_inform_1'])
+            self.momo_messages['measure_sensor_inform_2'] = str(documents['momo_message']['measure_sensor_inform_2'])
+            self.momo_messages['capture_img'] = documents['momo_message']['capture_img']
+                   
+        # print(self.momo_messages)
+
 
         ########################################################
         # GUI PARAMETERS                                       #
         ########################################################
         self.yes_no_dialog = uic.loadUiType(self.YES_NO_DIALOG_PATH)[0]
         self.ok_dialog = uic.loadUiType(self.OKAY_DIALOG_PATH)[0]
+        self.momo_gui_dialog = uic.loadUiType(self.MOMO_GUI_DIALOG_PATH)[0]
         
 
         # load parameters for assistant
@@ -311,6 +345,23 @@ class User_Infor:
     
     def NoFace(self):
         self.status = glo_va.USER_INFOR_NO_FACE
+
+class ListExamRooms:
+    def __init__(self):
+        self.status = glo_va.DEFAULT_LIST_EXAM_ROOMS
+        self.hospital_ID = None
+        self.list_examination_room = []
+        self.Clear()
+
+    def Clear(self):
+        self.status = glo_va.DEFAULT_LIST_EXAM_ROOMS
+        self.hospital_ID = None
+        self.list_examination_room = []
+    
+    def updateListExamRooms(self, payload):
+        self.status = glo_va.HAS_LIST_EXAM_ROOMS
+        self.hospital_ID = payload['hospital_ID']
+        self.list_examination_room = payload['msg']
     
 class Sensor:
     def __init__(self):
@@ -361,6 +412,8 @@ class Examination:
         return self.__department, self.__building, self.__room
 
 glo_va = GlobalVariable()
+assis_para = AssistantParameter()
 user_infor = User_Infor()
 sensor = Sensor()
 exam = Examination()
+list_exam_rooms = ListExamRooms()

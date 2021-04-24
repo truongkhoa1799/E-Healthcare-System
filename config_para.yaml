@@ -12,6 +12,7 @@ path:
   measure_sensor_gui_path: gui/progressbar.ui
   okdialog_path: gui/okpopup.ui
   yes_no_dialog: gui/dialog.ui
+  momo_gui_dialog: gui/momo_chatbot_gui.ui
 
 azure:
   eventhub_name: receivemsg
@@ -60,7 +61,7 @@ gui:
   sensor_exam_layout_height: 360
 
 timer:
-  times_missing_face: 3
+  times_missing_face: 1
   timeout_missing_face: 10
 
   timeout_validate: 10
@@ -71,3 +72,27 @@ timer:
 
   timeout_submit_examination: 10
   opt_timer_submit_examination: 2
+
+  timeout_send_voice_message: 10
+  opt_timer_send_voice_message: 3
+
+momo_message:
+  ask_confirm: Momo chào bạn, vui lòng xác nhận thông tin của mình ạ
+  ask_new_patient: Bạn đến khám lần đầu phải không, nếu đúng momo giúp bạn đăng ký nhé
+  say_bye: Bài bai.
+  inform_state_3: Bấm vào nút danh sách khoa để chọn khoa mình muốn khám. Sau đó bấm vào đo chỉ số để lấy thông tin sensor.
+  inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
+
+  measure_sensor_inform_0: đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
+  measure_sensor_inform_1: bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và đợi đến khi có thông báo đo xong.
+  measure_sensor_inform_2: tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
+
+  capture_img:
+    - nhìn thẳng
+    - nhìn lên
+    - nhìn xuống
+    - quay trái
+    - quay phải
+    - hoàn tất
+
+

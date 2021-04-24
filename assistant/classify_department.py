@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 
 from utils.parameters import *
-from utils.assis_parameters import *
 
 class ClassifyDepartment:
     def __init__(self):
@@ -61,32 +60,3 @@ class ClassifyDepartment:
         # Đảm bảo luôn có part_body
         # return department[int(ret_predict_department)]
         return int(ret_predict_department)
-        
-
-
-cd = ClassifyDepartment()
-# temp_list_problems = ['co giật', 'dị ứng', "khó chịu", 'ngứa', 'khó chịu']
-# temp_list_part_bodies = ['da đầu', 'ngón tay', 'cổ', 'đầu', 'none']
-# list_part_bodies = []
-# list_problems = []
-
-# for i in temp_list_problems:
-#     try:
-#         list_problems.append(dict_synonym_problem[i])
-#         # print(dict_synonym_problem[i])
-#     except:
-#         list_problems.append(i)
-
-# for i in temp_list_part_bodies:
-#     try:
-#         list_part_bodies.append(dict_synonym_part_body[i])
-#         # print(dict_synonym_part_body[i])
-#     except:
-#         list_part_bodies.append(i)
-
-# print(list_problems)
-# print(list_part_bodies)
-# print()
-# print(cd.Get_Department(list_problems, list_part_bodies))
-
-# PATH_PARA

@@ -128,6 +128,13 @@ class MeasureSensor:
         }
         glo_va.gui.queue_request_states_thread.put(request)
 
+        self.__state_oso2 = 0
+        self.__list_spo2 = []
+        self.__list_heart_rate = []
+        self.__time_missing_data = 0
+
+        LogMesssage('Back to wait read first data from OSO2 device')
+
         # simulate has esp
         self.has_esp = True
         self.final_temperature = str(round(float('37.2'),1))
@@ -138,20 +145,12 @@ class MeasureSensor:
         request = {
             'type': glo_va.REQUEST_UPDATE_ESP, 
             'data': {
-                'heart_pulse': self.final_heart_pulse, 'spo2': self.final_spo2, 
                 'height': self.final_height, 'weight': self.final_weight, 
                 'temperature': self.final_temperature, 'bmi': self.final_bmi, 
                 'final': 0
             }
         }
         glo_va.gui.queue_request_states_thread.put(request)
-        
-        self.__state_oso2 = 0
-        self.__list_spo2 = []
-        self.__list_heart_rate = []
-        self.__time_missing_data = 0
-
-        LogMesssage('Back to wait read first data from OSO2 device')
 
     def __readOSO2Date(self, data):
         # print(data)
