@@ -13,7 +13,7 @@ class GlobalVariable:
 
         # parameters for services
         self.gui = None
-        self.measure_sensor_dialog = None
+        self.momo_gui = None
         self.timer = None
         self.camera = None
         self.server = None
@@ -73,8 +73,8 @@ class GlobalVariable:
         self.USER_INFOR_NO_FACE = -1
         self.USER_INFOR_DEFAULT = -2
 
-        self.HAS_LIST_EXAM_ROOMS = 0
-        self.DEFAULT_LIST_EXAM_ROOMS = -1
+        self.HAS_INIT_PARAMETERS = 0
+        self.NOT_HAS_INIT_PARAMETERS = -1
 
         self.SENSOR_HAS_VALUE = 0
         self.SENSOR_DEFAULT = -1
@@ -85,8 +85,8 @@ class GlobalVariable:
         self.patient_ID = -1
         self.dep_ID_chosen = None
         self.list_examination_room = []
-        self.return_stt = None
-        self.valid_stt = None
+        self.return_stt = -1
+        self.valid_stt = -1
 
         # self.list_examination_room = [
         # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
@@ -187,6 +187,8 @@ class GlobalVariable:
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
         self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
         self.REQUEST_OPEN_MOMO_GUI = 18
+        self.REQUEST_UPDATE_DEP_MOMO_GUI = 19
+        self.REQUEST_UPDATE_CONVERSATION_MOMO_GUI = 20
         ########################################################
         # REQUEST MEASURE SENSOR GUI                           #
         ########################################################
@@ -280,6 +282,9 @@ class GlobalVariable:
             self.TIMEOUT_SEND_MESSAGE_VOICE = int(documents['timer']['timeout_send_voice_message'])
             self.OPT_TIMER_SEND_MESSAGE_VOICE = int(documents['timer']['opt_timer_send_voice_message'])
 
+            self.TIMEOUT_GET_INIT_PARAMETERS = int(documents['timer']['timeout_get_init_parameters'])
+            self.OPT_TIMER_GET_INIT_PARAMETERS = int(documents['timer']['opt_timer_get_init_parameters'])
+
             # MOMO MESSAGES
             self.momo_messages = {
                 'ask_confirm': '123',
@@ -346,35 +351,31 @@ class User_Infor:
     def NoFace(self):
         self.status = glo_va.USER_INFOR_NO_FACE
 
-class ListExamRooms:
+class InitParameters:
     def __init__(self):
-        self.status = glo_va.DEFAULT_LIST_EXAM_ROOMS
+        self.status = glo_va.NOT_HAS_INIT_PARAMETERS
         self.hospital_ID = None
         self.list_examination_room = []
-        self.Clear()
 
     def Clear(self):
-        self.status = glo_va.DEFAULT_LIST_EXAM_ROOMS
+        self.status = glo_va.NOT_HAS_INIT_PARAMETERS
         self.hospital_ID = None
         self.list_examination_room = []
     
-    def updateListExamRooms(self, payload):
-        self.status = glo_va.HAS_LIST_EXAM_ROOMS
-        self.hospital_ID = payload['hospital_ID']
-        self.list_examination_room = payload['msg']
+    def updateInitParameters(self, parameters):
+        self.status = glo_va.HAS_INIT_PARAMETERS
+        self.hospital_ID = parameters['hospital_ID']
+        self.list_examination_room = parameters['list_exam_rooms']
     
 class Sensor:
     def __init__(self):
-        self.__status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
         self.Clear()
     
     def Clear(self):
-        self.__status = glo_va.SENSOR_DEFAULT
         self.sensor_infor = None
     
     def Update_Sensor(self, sensor):
-        self.__status = glo_va.SENSOR_HAS_VALUE
         self.sensor_infor = sensor
     
     def getStatus(self):
@@ -416,4 +417,4 @@ assis_para = AssistantParameter()
 user_infor = User_Infor()
 sensor = Sensor()
 exam = Examination()
-list_exam_rooms = ListExamRooms()
+init_parameters = InitParameters()

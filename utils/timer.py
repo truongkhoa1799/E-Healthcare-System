@@ -24,6 +24,9 @@ class Timer:
         self.__timeout_send_voice_message = 0
         self.__flg_timeout_send_voice_message = False
 
+        self.__timeout_get_init_parameters = 0
+        self.__flg_timeout_get_init_parameters = False
+
         self.__timeout_missing_face = 0
 
         self.timer_id = None
@@ -75,13 +78,22 @@ class Timer:
                     LogMesssage("[__Check_Timer]: Timer for send voice message is expired")
                     
                     self.__Check_Timer()
+
+            if self.__flg_timeout_get_init_parameters:
+                self.__timeout_get_init_parameters = self.__timeout_get_init_parameters + 1
+            
+                # Get the examaniation room
+                if self.__timeout_get_init_parameters >= glo_va.TIMEOUT_GET_INIT_PARAMETERS:
+                    LogMesssage("[__Check_Timer]: Timer for getting init parameters is expired")
+                    
+                    self.__Check_Timer()
         
         except Exception as e:
             LogMesssage('Has error at Update_Timer in timer: {e}'.format(e=e))
 
             if glo_va.lock_response_server.locked() == True:
                 glo_va.lock_response_server.release()
-                LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
+                LogMesssage('[__Check_Timer]: Release lock response server')
 
     def __Check_Timer(self):
         # Acquire lock to stop server receive response
@@ -120,6 +132,9 @@ class Timer:
 
         self.__timeout_send_voice_message = 0
         self.__flg_timeout_send_voice_message = False
+
+        self.__timeout_get_init_parameters = 0
+        self.__flg_timeout_get_init_parameters = False
     
     def Start_Timer(self, opt):
         if opt == glo_va.OPT_TIMER_VALIDATE:
@@ -140,6 +155,11 @@ class Timer:
         if opt == glo_va.OPT_TIMER_SEND_MESSAGE_VOICE:
             self.__timeout_send_voice_message = 0
             self.__flg_timeout_send_voice_message = True
+            self.timer_id = str(uuid.uuid4())
+
+        if opt == glo_va.OPT_TIMER_GET_INIT_PARAMETERS:
+            self.__timeout_get_init_parameters = 0
+            self.__flg_timeout_get_init_parameters = True
             self.timer_id = str(uuid.uuid4())
     
     def Stop(self):

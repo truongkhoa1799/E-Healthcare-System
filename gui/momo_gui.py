@@ -1,25 +1,50 @@
 from utils.common_functions import LogMesssage
 from PyQt5.QtWidgets import QDialog
 from PyQt5 import uic
+from PyQt5.QtCore import QTimer
 import sys, time, threading, queue
 
 sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
+import queue
 from utils.parameters import *
 
 class MomoGuiDialog(QDialog, glo_va.momo_gui_dialog):
     def __init__(self, ret, parent=None):
         QDialog.__init__(self, parent)
         # uic.loadUi(glo_va.OKAY_DIALOG_PATH, self) # Load the .ui file
-        self.ret = -2
+        self.ret = ""
         self.text = None
         self.setupUi(self)
 
         self.confirm_symptoms.clicked.connect(lambda: self.__onButtonListenning())
+
+        self.queue_request_states_thread = queue.Queue(maxsize = 10)
+        check_request_states_thread = QTimer(self)
+        check_request_states_thread.timeout.connect(self.__CheckRequestStatesThread)
+        check_request_states_thread.start(10)
         # self.__updateConversation('Vậy bạn có thể cho Momo biết bạn bị đau hoặc cảm thấy khó chịu ở chỗ nào được không? Để Momo có thể giúp bạn tìm khoa phù hợp', 0)
     
+    def __CheckRequestStatesThread(self):
+        if self.queue_request_states_thread.empty():
+            return
+        
+        request = self.queue_request_states_thread.get()
+
+        if request['type'] == glo_va.REQUEST_UPDATE_DEP_MOMO_GUI:
+            dep_name = request['data']
+            self.__updateDepartmentName(dep_name)
+        elif request['type'] == glo_va.REQUEST_UPDATE_CONVERSATION_MOMO_GUI:
+            data = request['data']
+            text = data['text']
+            opt = int(data['opt'])
+            self.__updateConversation(text, opt)
+            
+    def __updateDepartmentName(self, dep_name):
+        self.department_predicted.setText(dep_name)
+
     def __onButtonListenning(self):
-        self.ret = 0
+        self.ret = self.department_predicted.text()
         self.accept()
         self.close()
     
@@ -54,6 +79,6 @@ class MomoGuiDialog(QDialog, glo_va.momo_gui_dialog):
 
     
     def closeEvent(self, event):
-        if self.ret == -2:
-            self.ret = -1
+        if self.ret == "":
+            self.ret = ""
             self.accept()

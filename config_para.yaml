@@ -76,6 +76,9 @@ timer:
   timeout_send_voice_message: 10
   opt_timer_send_voice_message: 3
 
+  timeout_get_init_parameters: 10
+  opt_timer_get_init_parameters: 4
+
 momo_message:
   ask_confirm: Momo chào bạn, vui lòng xác nhận thông tin của mình ạ
   ask_new_patient: Bạn đến khám lần đầu phải không, nếu đúng momo giúp bạn đăng ký nhé

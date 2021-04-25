@@ -534,7 +534,6 @@ class Recognizer(AudioSource):
                     self.energy_threshold = self.energy_threshold * damping + target_energy * (1 - damping)
                 
                 if glo_va.enable_momo_run == False:
-                    print('Patient turn off momo gui')
                     return -1
 
             # read audio input until the phrase ends
@@ -561,7 +560,6 @@ class Recognizer(AudioSource):
                     break
                 
                 if glo_va.enable_momo_run == False:
-                    print('Patient turn off momo gui')
                     return -1
 
             # check how long the detected phrase is, and retry listening if the phrase is too short
@@ -573,7 +571,6 @@ class Recognizer(AudioSource):
         frame_data = b"".join(frames)
 
         if glo_va.enable_momo_run == False:
-            print('Patient turn off momo gui')
             return -1
         return AudioData(frame_data, source.SAMPLE_RATE, source.SAMPLE_WIDTH)
 
