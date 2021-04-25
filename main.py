@@ -14,6 +14,10 @@ def EndProcHandler(signal_received, frame):
     # Handle any cleanup here
     print('SIGINT or CTRL-C detected. Exiting gracefully')
     End()
+    exit(0)
+
+# def resetProgram():
+
 
 def main():
     while glo_va.ENABLE_PROGRAM_RUN:
@@ -21,7 +25,9 @@ def main():
             continue
         
         try:
+            # Reset program
             if glo_va.STATE == -1:
+                # resetProgram()
                 End()
 
             # STATE DETECTING AND RECOGNIZING PATIENT
@@ -77,15 +83,14 @@ def Init_Gui():
 
 if __name__ == "__main__":
     signal(SIGINT, EndProcHandler)
-    try:
-        Init()
-        glo_va.main_thread = threading.Thread(target=main, args=())
-        glo_va.main_thread.daemon = True
-        glo_va.main_thread.start()
+    while True:
+        try:
+            Init()
+            glo_va.main_thread = threading.Thread(target=main, args=())
+            glo_va.main_thread.daemon = True
+            glo_va.main_thread.start()
 
-        Init_Gui()
-    except Exception as e:
-        print("Error at Init module: {}".format(e))
-
-    End()
-    exit(0)
+            Init_Gui()
+        except Exception as e:
+            print("Error at Init module: {}".format(e))
+            resetProgram()

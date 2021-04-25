@@ -13,7 +13,7 @@ def State_1():
     ret = glo_va.face_recognition.Get_Face()
     if ret == -2:
         LogMesssage("[State_1]: Error Face locations", opt=0)
-        glo_va.STATE = -1
+        Init_State()
         return
     elif ret == 0:
         # Face Identifying
@@ -74,8 +74,6 @@ def State_1():
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
         return
-
-    return
 
 def State_2():
     if glo_va.button == -1:

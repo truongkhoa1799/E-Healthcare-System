@@ -126,7 +126,7 @@ class MomoAssistant:
             if init_parameters.hospital_ID in list(glo_va.map_department_table[predict_department_id].keys()):
                 mapped_dep_ID = glo_va.map_department_table[predict_department_id][init_parameters.hospital_ID]
                 msg = MomoAssistant.Submit_Examination(mapped_dep_ID)
-                print(msg)
+                # print(msg)
                 
                 if msg == -1:
                     return assis_para.res_msg[14].format(dep_name=assis_para.department[predict_department_id])
@@ -187,6 +187,7 @@ class MomoAssistant:
                     user_voice = MomoAssistant.momoListen()
                     LogMesssage('[momo_assistant_momoCore]: Patient say {}'.format(user_voice))
                     if glo_va.enable_momo_run == False or user_voice == -1:
+                        MomoAssistant.stopCurrentConversation()
                         continue
 
                     data = {}
@@ -208,7 +209,7 @@ class MomoAssistant:
                         LogMesssage('[momo_assistant_momoCore]: Cannot get symptoms of patient')
                         continue
                     
-                    print(glo_va.patient_symptons)
+                    # print(glo_va.patient_symptons)
                     MomoAssistant.measureDepartment(glo_va.patient_symptons)
 
                     glo_va.patient_symptons = None

@@ -53,7 +53,6 @@ def End():
         glo_va.flg_init_timer = False
 
     if glo_va.flg_init_GUI:
-        # glo_va.window_GUI.close()
         Stop_GUI()
         glo_va.flg_init_GUI = False
 
