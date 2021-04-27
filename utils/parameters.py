@@ -11,7 +11,9 @@ class GlobalVariable:
     def __init__(self):
         self.main_thread = None
 
-        # parameters for services
+        ########################################################
+        # SERVICES PARAMETERS                                  #
+        ########################################################
         self.gui = None
         self.momo_gui = None
         self.timer = None
@@ -20,7 +22,9 @@ class GlobalVariable:
         self.count_face = None
         self.face_recognition = None
 
-        # flag init
+        ########################################################
+        # FLAG                                                 #
+        ########################################################
         self.flg_init_GUI = False
         self.flg_init_timer = False
         self.flg_init_camera = False
@@ -29,19 +33,19 @@ class GlobalVariable:
         self.flg_init_momo_assistant = False
         self.flg_init_face_recognition = False
         
-        # Server para and timer parameters
-        # this parameters prevents when you just send request and you restart to state 1
-        # all the message will be discard at state 1 when it do not send new request yet
-        # from state 2 to 7. they do not need to check
+        ########################################################
+        # SERVER PARAMETERS                                    #
+        ########################################################
         self.lock_init_state = None
         self.is_sending_message = False
         self.has_response_server = False
         self.lock_response_server = None
-        # Timer
         # -1: none, 1 server
         self.turn = -1 
 
-        # Parameters for face recognition
+        ########################################################
+        # FACE RECOGNITION PARAMETERS                          #
+        ########################################################
         self.img = None
         self.detected_face = None
         self.face_location = None
@@ -49,24 +53,42 @@ class GlobalVariable:
         self.list_embedded_face = ""
         self.times_missing_face = 0
 
-        # Parameter for connection of iot hub
+        ########################################################
+        # IOT HUB PARAMETERS                                   #
+        ########################################################
         self.device_ID = None
         self.eventhub_name = None
         self.eventhub_connection = None
         self.device_iothub_connection = None
 
-        # Parameters for new user
+        ########################################################
+        # NEW USER PARAMETERS                                  #
+        ########################################################
         self.list_embedded_face_new_user = ""
-        # up : 0, down : 1, left : 2, right : 3, forward : 4
-        self.num_face_new_user = 5
-        self.current_shape = 0
-        self.check_current_shape = False
-        self.dict_user_pose = {}
+        self.current_shape = 0 # up : 0, down : 1, left : 2, right : 3, forward : 4
         self.num_user_pose = 0
+        self.dict_user_pose = {}
+        self.num_face_new_user = 5
+        self.check_current_shape = False
         self.list_embedded_face_origin_new_patient = []
 
-        # sympton send back from server
+        ########################################################
+        # PREDICT DEPARMENT PARAMETERS                         #
+        ########################################################
         self.patient_symptons = None
+
+        ########################################################
+        # SUBMIT PARAMETERS                                    #
+        ########################################################
+        # self.patient_ID = -1
+        self.return_stt = -1
+        self.valid_stt = -1
+
+        ########################################################
+        # SENSOR                                               #
+        ########################################################
+        self.measuring_sensor = None
+        self.connected_sensor_device = False
 
         # PARAMETERS for user_info
         self.USER_INFOR_HAS_FACE = 0
@@ -82,12 +104,6 @@ class GlobalVariable:
         self.EXAM_HAS_VALUE = 0
         self.EXAM_DEFAULT = -1
 
-        self.patient_ID = -1
-        self.dep_ID_chosen = None
-        self.list_examination_room = []
-        self.return_stt = -1
-        self.valid_stt = -1
-
         # self.list_examination_room = [
         # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
         # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
@@ -97,12 +113,6 @@ class GlobalVariable:
         # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
         # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
         # ]
-
-        ########################################################
-        # SENSOR                                               #
-        ########################################################
-        self.measuring_sensor = None
-        self.connected_sensor_device = False
 
         ########################################################
         # ASSISTANT                                            #
@@ -125,10 +135,6 @@ class GlobalVariable:
         ########################################################
         # STATE of the program                                 #
         ########################################################
-        self.STATE = 1
-        self.ENABLE_PROGRAM_RUN = True
-        self.START_RUN = False
-        
         # STATES
         self.STATE_RECOGNIZE_PATIENT = 1
         self.STATE_CONFIRM_PATIENT = 2
@@ -138,6 +144,10 @@ class GlobalVariable:
         self.STATE_NEW_PATIENT = 6
         self.STATE_WAITING_SUB_EXAM = 7
         self.STATE_MEASURING_SENSOR = 8
+
+        self.STATE = self.STATE_RECOGNIZE_PATIENT
+        self.ENABLE_PROGRAM_RUN = True
+        self.START_RUN = False
         
         ########################################################
         # BUTTON                                               #
@@ -173,7 +183,7 @@ class GlobalVariable:
         self.REQUEST_CONFIRM_NEW_PATIENT = 0
         self.REQUEST_CHANGE_GUI = 1
         self.REQUEST_UPDATE_PATIENT_INFO = 2
-        self.REQUEST_CLEAR_PATIENT_INFO = 3
+        # self.REQUEST_CLEAR_PATIENT_INFO = 3
         self.REQUEST_ACTIVATE_NEW_FACE = 4
         self.REQUEST_UPDATE_EXAM_ROOM = 5
         self.REQUEST_CLEAR_EXAM_ROOM = 6
@@ -183,7 +193,7 @@ class GlobalVariable:
         self.REQUEST_CLEAR_SENSOR = 8
         # self.REQUEST_MEASURE_SENSOR = 11
         self.REQUEST_NOTIFY_MESSAGE = 12
-        self.REQUEST_DEACTIVATE_NEW_FACE = 13
+        # self.REQUEST_DEACTIVATE_NEW_FACE = 13
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
         self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
         self.REQUEST_OPEN_MOMO_GUI = 18
@@ -195,7 +205,9 @@ class GlobalVariable:
         self.REQUEST_UPDATE_OSO2 = 16
         self.REQUEST_UPDATE_ESP = 17
 
-        # Dialog
+        ########################################################
+        # DIALOG                                               #
+        ########################################################
         self.EXIST_DIALOG = 0
         self.CONFIRM_PATIENT_DIALOG = 1
         self.CONFIRM_NEW_PATIENT_DIALOG = 2
@@ -267,7 +279,7 @@ class GlobalVariable:
             self.MOMO_GUI_DIALOG_PATH = str(documents['path']['momo_gui_dialog'])
 
             # Parameters for timer
-            self.TIMES_MISSING_FACE = int(documents['timer']['times_missing_face'])
+            self.NUM_MISSING_FACE = int(documents['timer']['num_missing_face'])
             self.TIMEOUT_MISSING_FACE = int(documents['timer']['timeout_missing_face'])
 
             self.TIMEOUT_VALIDATE = int(documents['timer']['timeout_validate'])
@@ -306,9 +318,6 @@ class GlobalVariable:
             self.momo_messages['measure_sensor_inform_1'] = str(documents['momo_message']['measure_sensor_inform_1'])
             self.momo_messages['measure_sensor_inform_2'] = str(documents['momo_message']['measure_sensor_inform_2'])
             self.momo_messages['capture_img'] = documents['momo_message']['capture_img']
-                   
-        # print(self.momo_messages)
-
 
         ########################################################
         # GUI PARAMETERS                                       #
@@ -334,14 +343,14 @@ class User_Infor:
         # -1: no face
         # -2: default
         self.status = glo_va.USER_INFOR_DEFAULT
-        self.patient_ID = None
+        self.patient_ID = -1
         self.user_info = None
         self.Clear()
 
     def Clear(self):
         self.status = glo_va.USER_INFOR_DEFAULT
         self.user_info = None
-        self.patient_ID = None
+        self.patient_ID = -1
     
     def Update_Info(self, user_info):
         self.status = glo_va.USER_INFOR_HAS_FACE
@@ -397,9 +406,9 @@ class Examination:
     
     def Clear(self):
         self.status = glo_va.EXAM_DEFAULT
-        self.__department = ""
-        self.__room = ""
-        self.__building = ''
+        self.__department = None
+        self.__room = None
+        self.__building = None
     
     def Update_Examination(self, dep, room):
         self.status = glo_va.EXAM_HAS_VALUE

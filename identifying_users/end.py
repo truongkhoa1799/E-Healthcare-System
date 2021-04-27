@@ -8,32 +8,32 @@ from utils.common_functions import LogMesssage
 def Stop_Face_Recognition():
     LogMesssage("Stop Face Recognition", opt=0)
     del glo_va.face_recognition
-    print()
+    
 
 def Stop_Camera_Detecting():
     glo_va.camera.StopCamera()
     LogMesssage("Stop Camera Detecting", opt=0)
-    print()
+    
 
 def Stop_Connecting_Server():
     glo_va.server.Close()
     LogMesssage("Stop Connecting Server", opt=0)
-    print()
+    
 
 def Stop_Count_Face():
     glo_va.count_face.Stop()
     LogMesssage("Stop Count Face", opt=0)
-    print()
+    
 
 def Stop_Timer():
     glo_va.timer.Stop()
     LogMesssage("Stop Timer", opt=0)
-    print()
+    
 
 def Stop_GUI():
     glo_va.gui.close()
     LogMesssage("Stop GUI", opt=0)
-    print()
+    
 
 #########################################################################
 # End FUNCTION                                                          #
@@ -43,6 +43,12 @@ def End():
 
     glo_va.START_RUN = False
     glo_va.ENABLE_PROGRAM_RUN = False
+
+    LogMesssage("Stop Main Thread", opt=0)
+    glo_va.main_thread.join()
+    LogMesssage("Join Main Thread", opt=0)
+    
+
 
     if glo_va.flg_init_count_face:
         Stop_Count_Face()

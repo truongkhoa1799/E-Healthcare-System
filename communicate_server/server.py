@@ -103,16 +103,16 @@ class Server:
                         # TESTED
                         if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
                             ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
+                            if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == 0:
                                 # print(method_request.payload)
                                 user_infor.Update_Info(method_request.payload)
                                 LogMesssage('[__Listen_Reponse_Server]: Update patient information')
 
-                            elif ret_msg == -2:
+                            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == -2:
                                 # Patient is wearing mask
                                 LogMesssage('[__Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
 
-                            elif glo_va.STATE == 1 and ret_msg == -1:
+                            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == -1:
                                 user_infor.NoFace()
                                 glo_va.times_missing_face += 1
                                 LogMesssage('[__Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
@@ -136,22 +136,22 @@ class Server:
                             ret_msg = int(method_request.payload['return'])
                             if ret_msg == 0:
                                 glo_va.return_stt = method_request.payload['stt']
-                                LogMesssage('[__Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=glo_va.patient_ID))
+                                LogMesssage('[__Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
                             else:
                                 glo_va.return_stt = -1
-                                LogMesssage('[__Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=glo_va.patient_ID))
+                                LogMesssage('[__Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
 
                             glo_va.has_response_server = True
 
                         # Get_Sympton request response
                         elif method_request.name == "Get_Sympton" and glo_va.timer.timer_id == timer_id:
                             ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
+                            if glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS and ret_msg == 0:
                                 glo_va.patient_symptons =  method_request.payload['symptons']
-                                LogMesssage('[__Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=glo_va.patient_ID))
-                            else:
+                                LogMesssage('[__Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
+                            elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS and ret_msg == -1:
                                 glo_va.patient_symptons = None
-                                LogMesssage('[__Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=glo_va.patient_ID))
+                                LogMesssage('[__Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
 
                             glo_va.has_response_server = True
 
@@ -274,13 +274,13 @@ class Server:
                     'spo2': str(sensor_infor['spo2']),
                     'height': str(sensor_infor['height']),
                     'weight': str(sensor_infor['weight']),
-                    'patient_ID': str(glo_va.patient_ID)
+                    'patient_ID': str(user_infor.patient_ID)
                 }
                 
                 # Check is new user
-                if glo_va.patient_ID == -1:
+                if user_infor.patient_ID == -1:
                     data = EventData(glo_va.list_embedded_face_new_user)
-                elif glo_va.patient_ID != -1:
+                elif user_infor.patient_ID != -1:
                     data = EventData("")
 
                 data.properties = msg

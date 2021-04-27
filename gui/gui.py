@@ -293,8 +293,8 @@ class GUI(QtWidgets.QMainWindow):
             current_shape = request['data']
             self.__ActivateFaceRecored(current_shape)
         
-        elif request['type'] == glo_va.REQUEST_DEACTIVATE_NEW_FACE:
-            self.__DeactivateFaceRecored()
+        # elif request['type'] == glo_va.REQUEST_DEACTIVATE_NEW_FACE:
+        #     self.__DeactivateFaceRecored()
         
         elif request['type'] == glo_va.REQUEST_UPDATE_SENSOR:
             self.__UpdateSensorInfo()
@@ -367,6 +367,7 @@ class GUI(QtWidgets.QMainWindow):
     
     def __ChangeUI(self):
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
+            self.__DeactivateFaceRecored()
             self.stackedWidget.setCurrentWidget(self.add_new_patient_frame)
         
         elif glo_va.STATE == glo_va.STATE_MEASURE_SENSOR:

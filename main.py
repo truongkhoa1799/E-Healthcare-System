@@ -16,9 +16,6 @@ def EndProcHandler(signal_received, frame):
     End()
     exit(0)
 
-# def resetProgram():
-
-
 def main():
     while glo_va.ENABLE_PROGRAM_RUN:
         if glo_va.START_RUN == False:
@@ -83,14 +80,16 @@ def Init_Gui():
 
 if __name__ == "__main__":
     signal(SIGINT, EndProcHandler)
-    while True:
-        try:
-            Init()
-            glo_va.main_thread = threading.Thread(target=main, args=())
-            glo_va.main_thread.daemon = True
-            glo_va.main_thread.start()
+    # while True:
+    try:
+        Init()
+        glo_va.main_thread = threading.Thread(target=main, args=())
+        glo_va.main_thread.daemon = True
+        glo_va.main_thread.start()
 
-            Init_Gui()
-        except Exception as e:
-            print("Error at Init module: {}".format(e))
-            resetProgram()
+        Init_Gui()
+    except Exception as e:
+        print("Error at Init module: {}".format(e))
+    
+    End()
+    exit(0)
