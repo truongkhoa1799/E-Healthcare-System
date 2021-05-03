@@ -1,80 +1,75 @@
 import serial
 import time
-import statistics
-import json
+import numpy as np
 
-INTERVAL = 5
-HEIGHT_OFFSET = 1
-TEMP_OFFSET = 2
-TEMP_FLOAT_VAL_OFFSET = 3
-WEIGHT_OFFSET = 4
-WEIGHT_FLOAT_VAL_OFFSET = 5
-device_id = "/dev/tty.usbserial-0001"
-
-# data = [83, H, T, T.]
-
+list_height = []
+list_weight = []
+list_temperature = []
 
 def getSensorData():
-    conn = serial.Serial(device_id, baudrate=115200, timeout=1)
+    conn = serial.Serial("/dev/tty.usbserial-0001", baudrate=115200, timeout=1)
     conn.write(b"1")  # write a string
-    conn.close()
-    start = time.time()
-    data = []
-    # for j in range(5):
-    while time.time() - start < INTERVAL:
-        with serial.Serial(device_id, baudrate=115200, timeout=1) as ser:
-            try:
-                d = ser.read(64)
-                print(d)
-                decodeData = d.decode("utf-8")
-                # print(decodeData)
+    has_value = False
+    count = 0
 
-                data += decodeData.split("\r\n")
-                # print(j)
-                ser.close()
-            except:
-                print("CAN'T GET DEVICE")
-                # print(j)
-                ser.close()
-            # break;
-    conn = serial.Serial(device_id, baudrate=115200, timeout=1)
-    conn.write(b"0")  # write a string
-    conn.close()
-    print(data)
-    decData = []
-    tempArr = []
-    hArr = []
-    wArr = []
-    for x in data:
-        temp = []
-        print(x)
-        if x != "":
-            temp = x.split("-")
-            print(temp)
-            # decData.append(x)
-            if (
-                (temp[0] == "83" or temp[0] == "083")
-                and (float(temp[HEIGHT_OFFSET]) != 0 and float(temp[TEMP_OFFSET]) != 0)
-                and (len(temp) == 6)
-            ):
-                hArr.append(float(temp[HEIGHT_OFFSET]))
-                tempArr.append(
-                    float(temp[TEMP_OFFSET]) + float(temp[TEMP_FLOAT_VAL_OFFSET]) / 100
-                )
-                wArr.append(
-                    float(temp[WEIGHT_OFFSET]) + float(temp[WEIGHT_FLOAT_VAL_OFFSET]) / 100
-                )
+    while has_value == False:
+        try:
+            d = conn.read(64)
+            data_decoded = d.decode("utf-8").replace('\r\n', '')
+
+            index_start_str = data_decoded.find('0x83')
+            index_end_str = data_decoded.find('0x82')
+
+            if index_start_str != -1:
+                print('Has sensor data')
+                list_data = data_decoded[index_start_str: index_start_str + 19].split('/')
+                print(list_data)
+
+                weight = float(list_data[1])
+                height = float(list_data[2])
+                temperature = float(list_data[3])
+
+                if weight != -1.0:
+                    list_weight.append(weight)
+                if height != -1.0:
+                    list_height.append(height)
+                if temperature != -1.0:
+                    list_temperature.append(temperature)
+
+                if len(list_weight) >= 10 and len(list_height) >= 10 and len(list_temperature) >= 10:
+                    conn.write(b"0")
             
+            if index_end_str != -1:
+                has_value = True
+                print('Done reading sensor')
+                continue
+        except Exception as e:
+            print(e)
+    conn.close()
+    
+    print(list_weight)
+    print(list_height)
+    print(list_temperature)
 
-    # print(decData)
-    result = {"t": max(tempArr), "h": statistics.mean(hArr), "w": statistics.mean(wArr)}
-    return result
+    mean_weight = np.mean(list_weight)
+    mean_height = np.mean(list_height)
+    mean_temperature = np.mean(list_temperature)
+    std_weight = np.std(list_weight)
+    std_height = np.std(list_height)
+    std_temperature = np.std(list_temperature)
+
+    print("Mean weight: {}, Std weight: {}".format(mean_weight, std_weight))
+    print("Mean height: {}, Std height: {}".format(mean_height, std_height))
+    print("Mean temperature: {}, Std temperature: {}".format(mean_temperature, std_temperature))
+    
+    processed_list_height = [i for i in list_height if i >= (mean_height - std_height) and i <= (mean_height + std_height)]
+    processed_list_weight = [i for i in list_weight if i >= (mean_weight - std_weight) and i <= (mean_weight + std_weight)]
+    processed_list_temperature = [i for i in list_temperature if i >= (mean_temperature - std_temperature) and i <= (mean_temperature + std_temperature)]
+    
+    print(processed_list_weight)
+    print(processed_list_height)
+    print(processed_list_temperature)
+    return 1
 
 
 print(getSensorData())
-
-# import serial
-# open serial port
-# print(ser.name)         # check which port was really used
-# ser.write(b'0')  # write a string
-# ser.close()
