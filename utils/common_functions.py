@@ -2,8 +2,6 @@ import os
 import cv2
 import time
 import numpy as np
-import PySimpleGUI as sg
-from PIL import Image, ImageTk
 from threading import Lock, Timer
 from PyQt5.QtGui import QImage, QPixmap
 
