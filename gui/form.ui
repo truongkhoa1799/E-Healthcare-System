@@ -2646,9 +2646,9 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_room">
           <property name="geometry">
            <rect>
-            <x>210</x>
+            <x>220</x>
             <y>15</y>
-            <width>291</width>
+            <width>281</width>
             <height>80</height>
            </rect>
           </property>
@@ -2672,7 +2672,7 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>15</y>
-            <width>141</width>
+            <width>201</width>
             <height>81</height>
            </rect>
           </property>
@@ -2688,7 +2688,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(100,100,100);</string>
           </property>
           <property name="text">
-           <string>Phòng:</string>
+           <string>Phòng :</string>
           </property>
          </widget>
          <widget class="QLabel" name="seleted_dep_4">
@@ -2696,7 +2696,7 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>100</y>
-            <width>141</width>
+            <width>201</width>
             <height>80</height>
            </rect>
           </property>
@@ -2712,15 +2712,15 @@ QPushButton:pressed {
            <string notr="true">color: rgb(100,100,100);</string>
           </property>
           <property name="text">
-           <string>Khoa   :</string>
+           <string>Khoa    :</string>
           </property>
          </widget>
          <widget class="QLabel" name="selected_dep">
           <property name="geometry">
            <rect>
-            <x>210</x>
+            <x>220</x>
             <y>100</y>
-            <width>521</width>
+            <width>511</width>
             <height>80</height>
            </rect>
           </property>
