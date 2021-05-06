@@ -298,7 +298,7 @@ QPushButton:pressed {
          <rect>
           <x>20</x>
           <y>0</y>
-          <width>910</width>
+          <width>890</width>
           <height>950</height>
          </rect>
         </property>
@@ -323,7 +323,7 @@ background: rgb(0, 0, 0)</string>
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>890</width>
+           <width>870</width>
            <height>930</height>
           </rect>
          </property>
@@ -375,14 +375,14 @@ background: rgb(0, 0, 0)</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background: rgb(100,100,100);</string>
+         <string notr="true">background: rgb(255,255,255);</string>
         </property>
         <widget class="QFrame" name="name_label_frame_2">
          <property name="geometry">
           <rect>
-           <x>25</x>
+           <x>35</x>
            <y>0</y>
-           <width>891</width>
+           <width>881</width>
            <height>100</height>
           </rect>
          </property>
@@ -430,7 +430,7 @@ background: rgb(0, 0, 0)</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>40</pointsize>
+              <pointsize>35</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -448,9 +448,9 @@ background: rgb(0, 0, 0)</string>
         <widget class="QFrame" name="birthday_label_frame_2">
          <property name="geometry">
           <rect>
-           <x>30</x>
+           <x>40</x>
            <y>250</y>
-           <width>431</width>
+           <width>421</width>
            <height>100</height>
           </rect>
          </property>
@@ -486,7 +486,7 @@ background: rgb(0, 0, 0)</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>40</pointsize>
+              <pointsize>35</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -504,9 +504,9 @@ background: rgb(0, 0, 0)</string>
         <widget class="QFrame" name="birthday_text_frame_2">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>40</x>
            <y>350</y>
-           <width>441</width>
+           <width>431</width>
            <height>120</height>
           </rect>
          </property>
@@ -530,14 +530,14 @@ background: rgb(0, 0, 0)</string>
            <rect>
             <x>10</x>
             <y>0</y>
-            <width>430</width>
+            <width>420</width>
             <height>120</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>45</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -555,15 +555,15 @@ border-radius: 5px;	</string>
         <widget class="QPushButton" name="confirm_user_but">
          <property name="geometry">
           <rect>
-           <x>30</x>
+           <x>49</x>
            <y>760</y>
-           <width>901</width>
-           <height>191</height>
+           <width>881</width>
+           <height>190</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>60</pointsize>
+           <pointsize>50</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -593,17 +593,17 @@ QPushButton:pressed {
          </property>
          <property name="iconSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>70</width>
+           <height>70</height>
           </size>
          </property>
         </widget>
         <widget class="QFrame" name="name_text_frame">
          <property name="geometry">
           <rect>
-           <x>25</x>
+           <x>35</x>
            <y>100</y>
-           <width>901</width>
+           <width>891</width>
            <height>120</height>
           </rect>
          </property>
@@ -634,14 +634,14 @@ QPushButton:pressed {
            <rect>
             <x>10</x>
             <y>0</y>
-            <width>891</width>
+            <width>880</width>
             <height>120</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>45</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -689,16 +689,16 @@ border-radius: 5px;	</string>
          <widget class="QLabel" name="patient_phone">
           <property name="geometry">
            <rect>
-            <x>10</x>
+            <x>20</x>
             <y>0</y>
-            <width>430</width>
+            <width>420</width>
             <height>120</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>45</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -732,9 +732,9 @@ border-radius: 5px;	</string>
         <widget class="QFrame" name="name_label_frame_3">
          <property name="geometry">
           <rect>
-           <x>29</x>
+           <x>39</x>
            <y>500</y>
-           <width>901</width>
+           <width>891</width>
            <height>100</height>
           </rect>
          </property>
@@ -782,7 +782,7 @@ border-radius: 5px;	</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>40</pointsize>
+              <pointsize>35</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -800,9 +800,9 @@ border-radius: 5px;	</string>
         <widget class="QFrame" name="name_text_frame_2">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>40</x>
            <y>600</y>
-           <width>921</width>
+           <width>890</width>
            <height>120</height>
           </rect>
          </property>
@@ -832,14 +832,14 @@ border-radius: 5px;	</string>
            <rect>
             <x>10</x>
             <y>0</y>
-            <width>901</width>
+            <width>880</width>
             <height>120</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>30</pointsize>
+            <pointsize>25</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -850,7 +850,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>954/33 Quang Trung,  phuong 8, Go Vap,  thanh pho Ho Chi Minh</string>
+           <string>954/33 Quang Trung,  phuong 8, Go Vap,  TP.HCM</string>
           </property>
          </widget>
         </widget>
@@ -895,7 +895,7 @@ border-radius: 5px;	</string>
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>40</pointsize>
+              <pointsize>35</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -910,6 +910,22 @@ border-radius: 5px;	</string>
           </item>
          </layout>
         </widget>
+        <widget class="Line" name="line_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>5</width>
+           <height>950</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(100,100,100);</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
         <zorder>label_9</zorder>
         <zorder>name_label_frame_2</zorder>
         <zorder>confirm_user_but</zorder>
@@ -920,6 +936,7 @@ border-radius: 5px;	</string>
         <zorder>birthday_label_frame_3</zorder>
         <zorder>birthday_text_frame_2</zorder>
         <zorder>birthday_label_frame_2</zorder>
+        <zorder>line_4</zorder>
        </widget>
       </widget>
       <widget class="QWidget" name="measure_sensor_frame">
@@ -2878,7 +2895,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2886,7 +2903,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2943,7 +2960,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2951,7 +2968,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -3008,7 +3025,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3016,7 +3033,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>
