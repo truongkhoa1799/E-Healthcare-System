@@ -2541,9 +2541,9 @@ border-radius: 5px;</string>
        <widget class="QPushButton" name="confirm_dep_but">
         <property name="geometry">
          <rect>
-          <x>1330</x>
+          <x>1340</x>
           <y>750</y>
-          <width>560</width>
+          <width>550</width>
           <height>200</height>
          </rect>
         </property>
@@ -2599,7 +2599,7 @@ QPushButton:pressed {
          <rect>
           <x>20</x>
           <y>750</y>
-          <width>730</width>
+          <width>750</width>
           <height>200</height>
          </rect>
         </property>
@@ -2623,7 +2623,7 @@ QPushButton:pressed {
           <rect>
            <x>3</x>
            <y>3</y>
-           <width>723</width>
+           <width>743</width>
            <height>193</height>
           </rect>
          </property>
@@ -2646,9 +2646,9 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_room">
           <property name="geometry">
            <rect>
-            <x>250</x>
+            <x>210</x>
             <y>15</y>
-            <width>251</width>
+            <width>291</width>
             <height>80</height>
            </rect>
           </property>
@@ -2718,9 +2718,9 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_dep">
           <property name="geometry">
            <rect>
-            <x>250</x>
+            <x>210</x>
             <y>100</y>
-            <width>441</width>
+            <width>521</width>
             <height>80</height>
            </rect>
           </property>
@@ -2744,9 +2744,9 @@ QPushButton:pressed {
        <widget class="QPushButton" name="select_dep_but">
         <property name="geometry">
          <rect>
-          <x>770</x>
+          <x>790</x>
           <y>750</y>
-          <width>560</width>
+          <width>550</width>
           <height>200</height>
          </rect>
         </property>
@@ -3331,7 +3331,7 @@ border-bottom-right-radius: 2px;
 color: rgb(255, 255, 255)</string>
          </property>
          <property name="text">
-          <string>  STT           Khoa khám</string>
+          <string>  STT         Khoa khám</string>
          </property>
         </widget>
         <widget class="QPushButton" name="diagnose_but">
@@ -3345,7 +3345,7 @@ color: rgb(255, 255, 255)</string>
          </property>
          <property name="font">
           <font>
-           <pointsize>25</pointsize>
+           <pointsize>23</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -3387,7 +3387,7 @@ QPushButton:pressed {
        <widget class="Line" name="line_12">
         <property name="geometry">
          <rect>
-          <x>1330</x>
+          <x>1340</x>
           <y>750</y>
           <width>3</width>
           <height>200</height>
