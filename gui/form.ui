@@ -2966,7 +2966,7 @@ QPushButton:pressed {
                  <red>210</red>
                  <green>210</green>
                  <blue>210</blue>
-                </color> -->
+                </color>
                </brush>
               </colorrole> -->
              </inactive>
@@ -3031,9 +3031,9 @@ QPushButton:pressed {
                  <red>210</red>
                  <green>210</green>
                  <blue>210</blue>
-                </color> -->
+                </color>
                </brush>
-              </colorrole> --> -->
+              </colorrole> -->
              </disabled>
             </palette>
            </property>

@@ -42,7 +42,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.view_departments)
         self.stackedWidget.addWidget(self.measuring_sensor_frame)
         
-        self.stackedWidget.setCurrentWidget(self.measure_sensor_frame)
+        self.stackedWidget.setCurrentWidget(self.measuring_sensor_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
@@ -89,7 +89,7 @@ class GUI(QtWidgets.QMainWindow):
         self.measure_sensor_stack.addWidget(self.measuring_frame)
         self.measure_sensor_stack.addWidget(self.guilde_frame)
 
-        self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
+        self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
 
         self.instruction_stack.addWidget(self.first_instruction)
         self.instruction_stack.addWidget(self.second_instruction)
