@@ -2655,7 +2655,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>40</pointsize>
+            <pointsize>35</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2672,14 +2672,14 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>15</y>
-            <width>201</width>
+            <width>191</width>
             <height>81</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>40</pointsize>
+            <pointsize>35</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2696,14 +2696,14 @@ QPushButton:pressed {
            <rect>
             <x>20</x>
             <y>100</y>
-            <width>201</width>
+            <width>191</width>
             <height>80</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>40</pointsize>
+            <pointsize>35</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2727,7 +2727,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>40</pointsize>
+            <pointsize>35</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
