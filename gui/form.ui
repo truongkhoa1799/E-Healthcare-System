@@ -548,7 +548,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>01-07-1999</string>
+           <string/>
           </property>
          </widget>
         </widget>
@@ -652,7 +652,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>Trương Lê Vinh Khoa</string>
+           <string/>
           </property>
          </widget>
         </widget>
@@ -709,7 +709,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>0971155910</string>
+           <string/>
           </property>
          </widget>
         </widget>
@@ -850,7 +850,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>954/33 Quang Trung,  phuong 8, Go Vap,  TP.HCM</string>
+           <string/>
           </property>
          </widget>
         </widget>
@@ -1023,7 +1023,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>76.5</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1157,7 +1157,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>1.78</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1277,7 +1277,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>37.5</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1384,7 +1384,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>25.3</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1504,7 +1504,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>98</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1611,7 +1611,7 @@ border-radius: 5px;</string>
             <string notr="true">color: rgb(50, 50, 50);</string>
            </property>
            <property name="text">
-            <string>108</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1707,7 +1707,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>B4</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1910,7 +1910,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>202</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1964,7 +1964,7 @@ border: 3px solid rgb(100,100,100);
 border-radius: 5px;	</string>
           </property>
           <property name="text">
-           <string>Khoa Tai Mui Hong</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -2664,7 +2664,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(50, 50, 50);</string>
           </property>
           <property name="text">
-           <string>B1-202</string>
+           <string/>
           </property>
          </widget>
          <widget class="QLabel" name="seleted_dep_3">
@@ -2736,7 +2736,7 @@ QPushButton:pressed {
            <string notr="true">color: rgb(50, 50, 50);</string>
           </property>
           <property name="text">
-           <string>Khoa Tai Mui Hong</string>
+           <string/>
           </property>
          </widget>
         </widget>
@@ -3261,17 +3261,17 @@ QHeaderView::section:vertical
            </column>
            <item row="0" column="0">
             <property name="text">
-             <string>1</string>
+             <string/>
             </property>
            </item>
            <item row="0" column="1">
             <property name="text">
-             <string>Khoa tai mui hong</string>
+             <string/>
             </property>
            </item>
            <item row="1" column="1">
             <property name="text">
-             <string>Khoa tai mui hong</string>
+             <string/>
             </property>
            </item>
           </widget>
@@ -4028,7 +4028,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>34.6</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4136,7 +4136,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>1.75</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4244,7 +4244,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>85.4</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4352,7 +4352,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>25.4</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4488,7 +4488,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>190</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4612,7 +4612,7 @@ color: rgb(255, 255, 255);</string>
                <string notr="true">color: rgb(50, 50, 50);</string>
               </property>
               <property name="text">
-               <string>98</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
