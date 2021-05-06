@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -2556,7 +2556,7 @@ border-radius: 5px;</string>
         <property name="font">
          <font>
           <family>Segoe UI</family>
-          <pointsize>60</pointsize>
+          <pointsize>50</pointsize>
          </font>
         </property>
         <property name="styleSheet">
@@ -2646,7 +2646,7 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_room">
           <property name="geometry">
            <rect>
-            <x>210</x>
+            <x>250</x>
             <y>15</y>
             <width>251</width>
             <height>80</height>
@@ -2655,7 +2655,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>50</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2679,7 +2679,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>50</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2703,7 +2703,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>50</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2718,7 +2718,7 @@ QPushButton:pressed {
          <widget class="QLabel" name="selected_dep">
           <property name="geometry">
            <rect>
-            <x>210</x>
+            <x>250</x>
             <y>100</y>
             <width>441</width>
             <height>80</height>
@@ -2727,7 +2727,7 @@ QPushButton:pressed {
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>50</pointsize>
+            <pointsize>40</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -2759,7 +2759,7 @@ QPushButton:pressed {
         <property name="font">
          <font>
           <family>Segoe UI</family>
-          <pointsize>60</pointsize>
+          <pointsize>50</pointsize>
          </font>
         </property>
         <property name="styleSheet">
@@ -3039,7 +3039,7 @@ QPushButton:pressed {
            </property>
            <property name="font">
             <font>
-             <pointsize>55</pointsize>
+             <pointsize>50</pointsize>
             </font>
            </property>
            <property name="styleSheet">
@@ -3331,7 +3331,7 @@ border-bottom-right-radius: 2px;
 color: rgb(255, 255, 255)</string>
          </property>
          <property name="text">
-          <string>  STT                    Khoa khám</string>
+          <string>  STT           Khoa khám</string>
          </property>
         </widget>
         <widget class="QPushButton" name="diagnose_but">
@@ -3345,7 +3345,7 @@ color: rgb(255, 255, 255)</string>
          </property>
          <property name="font">
           <font>
-           <pointsize>30</pointsize>
+           <pointsize>25</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -3739,7 +3739,7 @@ QPushButton:pressed {
           <property name="geometry">
            <rect>
             <x>840</x>
-            <y>650</y>
+            <y>645</y>
             <width>1041</width>
             <height>31</height>
            </rect>
@@ -4010,7 +4010,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="measuring_temperature">
               <property name="geometry">
                <rect>
-                <x>200</x>
+                <x>180</x>
                 <y>30</y>
                 <width>210</width>
                 <height>130</height>
@@ -4037,7 +4037,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_8">
               <property name="geometry">
                <rect>
-                <x>550</x>
+                <x>480</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4118,7 +4118,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="measuring_height">
               <property name="geometry">
                <rect>
-                <x>200</x>
+                <x>180</x>
                 <y>30</y>
                 <width>210</width>
                 <height>130</height>
@@ -4145,7 +4145,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_9">
               <property name="geometry">
                <rect>
-                <x>550</x>
+                <x>480</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4226,7 +4226,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="measuring_weight">
               <property name="geometry">
                <rect>
-                <x>200</x>
+                <x>180</x>
                 <y>30</y>
                 <width>210</width>
                 <height>130</height>
@@ -4253,7 +4253,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_10">
               <property name="geometry">
                <rect>
-                <x>550</x>
+                <x>480</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4334,7 +4334,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="measuring_BMI">
               <property name="geometry">
                <rect>
-                <x>200</x>
+                <x>180</x>
                 <y>30</y>
                 <width>210</width>
                 <height>130</height>
@@ -4361,9 +4361,9 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_11">
               <property name="geometry">
                <rect>
-                <x>550</x>
+                <x>480</x>
                 <y>50</y>
-                <width>150</width>
+                <width>191</width>
                 <height>100</height>
                </rect>
               </property>
