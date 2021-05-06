@@ -24,8 +24,8 @@ def main():
         try:
             # Reset program
             if glo_va.STATE == -1:
-                # resetProgram()
                 End()
+                exit(0)
 
             # STATE DETECTING AND RECOGNIZING PATIENT
             elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:

@@ -158,7 +158,9 @@ class Face_Recognition:
             resized_img = cv2.resize(glo_va.img, (int(glo_va.img.shape[1] * fra), int(glo_va.img.shape[0] * fra)))
             GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
             
+            # start_detec = time.time()
             face_locations = self.Get_Face_Locations(GRAY_resized_img)
+            # glo_va.list_time_detection.append(time.time() - start_detec)
 
             if len(face_locations) == 0:
                 return -1
@@ -193,5 +195,21 @@ class Face_Recognition:
         RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
         # print("size RGB_resized_adjusted_bright_img image: {}".format(RGB_resized_adjusted_bright_img.shape))
         # locations = (top, right, bottom, left)
+
+        # start_iden = time.time()
         glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])[0]
+        # glo_va.list_time_recognition.append(time.time() - start_iden)
+
+        # glo_va.times_measure += 1
+        # if glo_va.times_measure == 100:
+        #     print()
+        #     print('Max time detec: {}'.format(np.max(glo_va.list_time_detection)))
+        #     print('Min time detec: {}'.format(np.min(glo_va.list_time_detection)))
+        #     print('Mean time detec: {}'.format(np.mean(glo_va.list_time_detection)))
+        #     print('Std time detec: {}'.format(np.std(glo_va.list_time_detection)))
+        #     print('Max time iden: {}'.format(np.max(glo_va.list_time_recognition)))
+        #     print('Min time iden: {}'.format(np.min(glo_va.list_time_recognition)))
+        #     print('Mean time iden: {}'.format(np.mean(glo_va.list_time_recognition)))
+        #     print('Std time iden: {}'.format(np.std(glo_va.list_time_recognition)))
+        #     print()
         # glo_va.embedded_face = np.array(glo_va.embedded_face).reshape(1,-1)

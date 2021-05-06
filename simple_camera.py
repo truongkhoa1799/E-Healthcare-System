@@ -27,32 +27,32 @@ maskNet = load_model(mask_model)
 # display_width and display_height determine the size of the window on the screen
 
 
-# def gstreamer_pipeline(
-#     capture_width=1024,
-#     capture_height=600,
-#     display_width=1024,
-#     display_height=600,
-#     framerate=30,
-#     flip_method=0,
-# ):
-#     return (
-#         "nvarguscamerasrc ! "
-#         "video/x-raw(memory:NVMM), "
-#         "width=(int)%d, height=(int)%d, "
-#         "format=(string)NV12, framerate=(fraction)%d/1 ! "
-#         "nvvidconv flip-method=%d ! "
-#         "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-#         "videoconvert ! "
-#         "video/x-raw, format=(string)BGR ! appsink"
-#         % (
-#             capture_width,
-#             capture_height,
-#             framerate,
-#             flip_method,
-#             display_width,
-#             display_height,
-#         )
-#     )
+def gstreamer_pipeline(
+    capture_width=1024,
+    capture_height=600,
+    display_width=1024,
+    display_height=600,
+    framerate=30,
+    flip_method=0,
+):
+    return (
+        "nvarguscamerasrc ! "
+        "video/x-raw(memory:NVMM), "
+        "width=(int)%d, height=(int)%d, "
+        "format=(string)NV12, framerate=(fraction)%d/1 ! "
+        "nvvidconv flip-method=%d ! "
+        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        "videoconvert ! "
+        "video/x-raw, format=(string)BGR ! appsink"
+        % (
+            capture_width,
+            capture_height,
+            framerate,
+            flip_method,
+            display_width,
+            display_height,
+        )
+    )
 
 
 
@@ -61,8 +61,8 @@ def show_camera():
     # To flip the image, modify the flip_method parameter (0 and 2 are the most common)
     # print(gstreamer_pipeline(flip_method=0))
     labels = ['mask', 'unmask']
-    # cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+    # cap = cv2.VideoCapture(0)
     if cap.isOpened():
         window_handle = cv2.namedWindow("CSI Camera", cv2.WINDOW_AUTOSIZE)
         # Window

@@ -10,6 +10,14 @@ PROJECT_PATH = pathlib.Path().absolute()
 class GlobalVariable:
     def __init__(self):
         self.main_thread = None
+        
+        # # test
+        # # self.times_measure = 0
+        # # self.list_time_detection = []
+        # # self.list_time_recognition = []
+        # self.times_send = 0
+        # self.start_time = None
+        # self.list_time_send_server = []
 
         ########################################################
         # SERVICES PARAMETERS                                  #

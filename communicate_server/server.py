@@ -1,6 +1,7 @@
 from azure.eventhub import EventData, EventHubProducerClient
 from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
 
+# import numpy as np
 import sys
 import time
 import pickle
@@ -102,6 +103,13 @@ class Server:
                         # Validation response
                         # TESTED
                         if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
+                            # glo_va.list_time_send_server.append(time.time()-glo_va.start_time)
+                            # glo_va.times_send += 1
+                            # if glo_va.times_send == 10:
+                            #     print('Max time detec: {}'.format(np.max(glo_va.list_time_send_server)))
+                            #     print('Min time detec: {}'.format(np.min(glo_va.list_time_send_server)))
+                            #     print('Mean time detec: {}'.format(np.mean(glo_va.list_time_send_server)))
+                            #     print('Std time detec: {}'.format(np.std(glo_va.list_time_send_server)))
                             ret_msg = int(method_request.payload['return'])
                             if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == 0:
                                 # print(method_request.payload)
@@ -214,6 +222,7 @@ class Server:
             self.__connection.send_method_response(method_response)
 
     def Validate_User(self):
+        # glo_va.start_time = time.time()
         try:
             event_data_batch = self.__producer.create_batch()
             try:

@@ -41,11 +41,11 @@ class CSI_Camera:
     def open(self, gstreamer_pipeline_string):
         try:
             # Jetson
-            # self.video_capture = cv2.VideoCapture(
-            #     gstreamer_pipeline_string, cv2.CAP_GSTREAMER
-            # )
+            self.video_capture = cv2.VideoCapture(
+                gstreamer_pipeline_string, cv2.CAP_GSTREAMER
+            )
             # Macos
-            self.video_capture = cv2.VideoCapture(0)
+            # self.video_capture = cv2.VideoCapture(0)
             
         except RuntimeError:
             self.video_capture = None
@@ -154,7 +154,7 @@ class CSI_Camera:
         self._gstreamer_pipeline = (
             '''nvarguscamerasrc exposuretimerange="10000000 10000000" ! video/x-raw(memory:NVMM), 
             width=(int){}, height=(int){},format=(string)NV12, 
-            framerate=(fraction)29/1 ! nvvidconv flip-method=0 ! video/x-raw, 
+            framerate=(fraction)29/1 ! nvvidconv flip-method=2 ! video/x-raw, 
             format=(string)BGRx ! videoconvert ! video/x-raw, 
             format=(string)BGR ! appsink max-buffers=1 drop=True'''.format(display_width, display_height)
         )

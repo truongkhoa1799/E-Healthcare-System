@@ -2848,7 +2848,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <colorrole role="PlaceholderText">
+              <!-- <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2856,7 +2856,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole>
+              </colorrole> -->
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2913,7 +2913,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <colorrole role="PlaceholderText">
+              <!-- <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2921,7 +2921,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole>
+              </colorrole> -->
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -2978,7 +2978,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <colorrole role="PlaceholderText">
+              <!-- <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2986,7 +2986,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole>
+              </colorrole> -->
              </disabled>
             </palette>
            </property>
