@@ -250,12 +250,13 @@ class GlobalVariable:
             self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
 
             # Display image
-            self.CAMERA_DISPLAY_WIDTH = int(documents['camera']['camera_display_width'])
-            self.CAMERA_DISPLAY_HEIGHT = int(documents['camera']['camera_display_height'])
+            self.CAMERA_CAPTURE_WIDTH = int(documents['camera']['camera_capture_width'])
+            self.CAMERA_CAPTURE_HEIGHT = int(documents['camera']['camera_capture_height'])
             # 1920x1080, 30 fps
             self.SENSOR_MODE_1080 = int(documents['camera']['camera_mode_1080'])
             # 1280x720, 60 fps
             self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
+            self.FLIP_METHOD_CAM = int(documents['camera']['flip_method'])
 
             # size for display patient
             self.LOCATION_RECOGNIZE_FACE_WIDTH = int(documents['gui']['location_recognize_face_width'])

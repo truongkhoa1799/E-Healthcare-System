@@ -48,7 +48,7 @@ def Init():
     glo_va.lock_response_server = Lock()
 
     # Get init parameters
-    loadParametersFromServer()
+    # loadParametersFromServer()
     
     # glo_va.STATE = 6
     time.sleep(2)

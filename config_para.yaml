@@ -36,21 +36,23 @@ identifying_face:
   shape_predictor_model: 68
 
 camera:
-  # Display image
-  camera_display_width: 960
-  camera_display_height: 540
+  # Capture image
+  camera_capture_width: 1920
+  camera_capture_height: 1080
   # 1920x1080, 30 fps
   camera_mode_1080: 2
   # 1280x720, 60 fps
   camera_mode_720: 3
+  flip_method: 0
 
 gui:
   # Width and height for patient face when recognizing
-  location_recognize_face_width: 520
-  location_recognize_face_height: 510
+  location_recognize_face_width: 890
+  location_recognize_face_height: 930
+
   # Width and height for patient face when create new user
-  location_add_face_width: 730
-  location_add_face_height: 480
+  location_add_face_width: 1450
+  location_add_face_height: 910
 
   # Parameters for GUI
   width_gui: 800
