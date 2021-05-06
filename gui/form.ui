@@ -278,7 +278,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -4037,7 +4037,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_8">
               <property name="geometry">
                <rect>
-                <x>480</x>
+                <x>460</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4145,7 +4145,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_9">
               <property name="geometry">
                <rect>
-                <x>480</x>
+                <x>460</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4253,7 +4253,7 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_10">
               <property name="geometry">
                <rect>
-                <x>480</x>
+                <x>460</x>
                 <y>50</y>
                 <width>150</width>
                 <height>100</height>
@@ -4361,9 +4361,9 @@ color: rgb(255, 255, 255);</string>
              <widget class="QLabel" name="heart_rate_11">
               <property name="geometry">
                <rect>
-                <x>480</x>
+                <x>460</x>
                 <y>50</y>
-                <width>191</width>
+                <width>221</width>
                 <height>100</height>
                </rect>
               </property>
@@ -4499,7 +4499,7 @@ color: rgb(255, 255, 255);</string>
                <rect>
                 <x>300</x>
                 <y>40</y>
-                <width>151</width>
+                <width>171</width>
                 <height>101</height>
                </rect>
               </property>
