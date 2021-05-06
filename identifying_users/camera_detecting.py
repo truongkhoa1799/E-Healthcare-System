@@ -13,17 +13,9 @@ from utils.common_functions import LogMesssage
 class CameraDetecting(Thread):
     def __init__(self):
         self.__csi_camera = CSI_Camera()
-        self.__csi_camera.create_gstreamer_pipeline(
-            sensor_id=0,
-            sensor_mode=glo_va.SENSOR_MODE_720,
-            framerate=30,
-            flip_method=0,
-            display_height=glo_va.CAMERA_DISPLAY_HEIGHT,
-            display_width=glo_va.CAMERA_DISPLAY_WIDTH,
-        )
 
         LogMesssage("Init camera", opt=0)
-        self.__csi_camera.open(self.__csi_camera.gstreamer_pipeline)
+        self.__csi_camera.open()
         self.__csi_camera.start()
         
         # cv2.namedWindow("Face Detect", cv2.WINDOW_AUTOSIZE)
@@ -46,6 +38,7 @@ class CameraDetecting(Thread):
     
     def RunCamera(self):
         _ , original_img = self.__csi_camera.read()
+        print(original_img.shape)
         
         if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
             margin_width = int((original_img.shape[1] - glo_va.LOCATION_RECOGNIZE_FACE_WIDTH) / 2)

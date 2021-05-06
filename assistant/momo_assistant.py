@@ -46,36 +46,40 @@ class MomoAssistant:
     
     @staticmethod
     def stopCurrentConversation():
-        try:
-            MomoAssistant.momo_mounth.terminate()
-        except Exception as e:
-            pass
+        # try:
+        #     MomoAssistant.momo_mounth.terminate()
+        # except Exception as e:
+        #     pass
+
+        print('Stop conversation')
 
     @staticmethod
     def momoSay(text, opt=0):
         # say without blocking
-        if opt == 0:
-            try:
-                tts = gTTS(text = text,lang='vi')
-                tts.save(glo_va.VOICE_PATH_FILE)
-                MomoAssistant.momo_mounth = subprocess.Popen(["afplay", glo_va.VOICE_PATH_FILE])
-            except Exception as e:
-                LogMesssage('Has error in [momo_assistant_momoSay]: {}'.format(e))
-        else:
-            try:
-                # send request to update conversation
-                data = {}
-                data['opt'] = 1
-                data['text'] = text
-                request = {'type': glo_va.REQUEST_UPDATE_CONVERSATION_MOMO_GUI, 'data': data}
-                glo_va.momo_gui.queue_request_states_thread.put(request)
+        # if opt == 0:
+        #     try:
+        #         tts = gTTS(text = text,lang='vi')
+        #         tts.save(glo_va.VOICE_PATH_FILE)
+        #         MomoAssistant.momo_mounth = subprocess.Popen(["afplay", glo_va.VOICE_PATH_FILE])
+        #     except Exception as e:
+        #         LogMesssage('Has error in [momo_assistant_momoSay]: {}'.format(e))
+        # else:
+        #     try:
+        #         # send request to update conversation
+        #         data = {}
+        #         data['opt'] = 1
+        #         data['text'] = text
+        #         request = {'type': glo_va.REQUEST_UPDATE_CONVERSATION_MOMO_GUI, 'data': data}
+        #         glo_va.momo_gui.queue_request_states_thread.put(request)
 
-                tts = gTTS(text =text,lang='vi')
-                tts.save(glo_va.VOICE_PATH_FILE)
-                # Change here to play music
-                os.system("afplay {}".format(glo_va.VOICE_PATH_FILE))
-            except Exception as e:
-                LogMesssage('\tHas error in [momo_assistant_momoSay]: {error}'.format(error=e))
+        #         tts = gTTS(text =text,lang='vi')
+        #         tts.save(glo_va.VOICE_PATH_FILE)
+        #         # Change here to play music
+        #         os.system("afplay {}".format(glo_va.VOICE_PATH_FILE))
+        #     except Exception as e:
+        #         LogMesssage('\tHas error in [momo_assistant_momoSay]: {error}'.format(error=e))
+
+        print(text)
 
     @staticmethod
     def Submit_Examination(dep_ID):

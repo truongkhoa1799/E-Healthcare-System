@@ -295,20 +295,20 @@ class MeasureSensor:
             LogMesssage('Fail to close device sensor connection')
 
 
-sensor = MeasureSensor()
-ret = sensor.openConnectionSensors()
-if ret == -1:
-    print("Not connected")
-    exit(-1)
+# sensor = MeasureSensor()
+# ret = sensor.openConnectionSensors()
+# if ret == -1:
+#     print("Not connected")
+#     exit(-1)
 
-while True:
-    ret = sensor.getSensorsData()
-    # disconnect
-    if ret == -2:
-        sensor.closeDevice()
-        LogMesssage("[State_8]: Connection with sensors device is disconnected")
-        break
-    elif ret == 1:
-        sensor.closeDevice()
-        LogMesssage("[State_8]: Have data from oso2 and esp device. Disconnect device")
-        break
+# while True:
+#     ret = sensor.getSensorsData()
+#     # disconnect
+#     if ret == -2:
+#         sensor.closeDevice()
+#         LogMesssage("[State_8]: Connection with sensors device is disconnected")
+#         break
+#     elif ret == 1:
+#         sensor.closeDevice()
+#         LogMesssage("[State_8]: Have data from oso2 and esp device. Disconnect device")
+#         break

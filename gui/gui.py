@@ -5,7 +5,7 @@ from PyQt5.QtCore import QTimer
 import sys, time
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
