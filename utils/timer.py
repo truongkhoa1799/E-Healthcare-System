@@ -29,7 +29,7 @@ class Timer:
 
         self.__timeout_missing_face = 0
 
-        self.timer_id = None
+        self.timer_id = -1
 
         self.__counter=RepeatTimer(CYCLE_TIMER_PERIOD, self.Update_Timer)
         self.__counter.daemon = True
@@ -101,16 +101,15 @@ class Timer:
             LogMesssage('[__Check_Timer]: Acquire lock response server')
 
             # if server is not acquire first, get lock and resend again message
-            if glo_va.turn == -1:
+            if glo_va.turn == glo_va.TIMER_GOT_BY_NO_ONE:
                 glo_va.is_sending_message = False
-                # time.sleep(40)
                 LogMesssage('[__Check_Timer]: is_sending_message is reset')
                 LogMesssage('[__Check_Timer]: Release lock response server')
                 glo_va.lock_response_server.release()
 
             # if server has received response, set lock = -1 for the next time out
-            elif glo_va.turn == 1:
-                glo_va.turn = -1
+            elif glo_va.turn == glo_va.TIMER_GOT_BY_SERVER:
+                glo_va.turn = glo_va.TIMER_GOT_BY_NO_ONE
                 LogMesssage('[__Check_Timer]: Has response from server first')
                 LogMesssage('[__Check_Timer]: Release lock response server')
                 glo_va.lock_response_server.release()
@@ -121,6 +120,8 @@ class Timer:
             LogMesssage('[__Check_Timer]: Acquire lock response server fail')
 
     def Clear_Timer(self):
+        self.timer_id = -1
+
         self.__timeout_validate = 0
         self.__flg_timeout_validate = False
         

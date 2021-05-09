@@ -4,19 +4,19 @@ from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 import sys, time
 
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
+# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 # sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
 
-# from gui.momo_gui import MomoGuiDialog
-# from gui.ok_dialog import OkDialogClass
-# from gui.yes_no_dialog import QDialogClass
+from gui.momo_gui import MomoGuiDialog
+from gui.ok_dialog import OkDialogClass
+from gui.yes_no_dialog import QDialogClass
 
-from momo_gui import MomoGuiDialog
-from ok_dialog import OkDialogClass
-from yes_no_dialog import QDialogClass
+# from momo_gui import MomoGuiDialog
+# from ok_dialog import OkDialogClass
+# from yes_no_dialog import QDialogClass
 
 import queue
 
@@ -42,7 +42,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.view_departments)
         self.stackedWidget.addWidget(self.measuring_sensor_frame)
         
-        self.stackedWidget.setCurrentWidget(self.view_departments)
+        self.stackedWidget.setCurrentWidget(self.recognize_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
@@ -102,6 +102,12 @@ class GUI(QtWidgets.QMainWindow):
 
         # self.__UpdateListDepartments()
         # self.__openMomoChatbotGui()
+
+        # data = {}
+        # data['opt'] = 0
+        # self.__notificationDialog(data)
+        
+        # self.__OpenDialog(glo_va.CONFIRM_SENSOR_INFORMATION)
         
 
     def closeEvent(self, event):
@@ -330,7 +336,6 @@ class GUI(QtWidgets.QMainWindow):
                 LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
                 return
 
-            # print(request['data'])
             if request['data']['final'] == 0:
                 if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
                     self.progress_bar.setValue(100)
@@ -346,22 +351,27 @@ class GUI(QtWidgets.QMainWindow):
             self.measuring_spo2.setText(str(int(request['data']['spo2'])))
         
         elif request['type'] == glo_va.REQUEST_UPDATE_ESP:
+            if self.current_frame != self.MAIN_FRAME:
+                LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
+                return
+            
+            if request['data']['final'] == 0:
+                if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
+                    self.progress_bar.setValue(100)
+                elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
+                    self.progress_bar.setValue(50)
+                else:
+                    self.progress_bar.setValue(0)
+                
+                self.height.setText(request['data']['height'])
+                self.weight.setText(request['data']['weight'])
+                self.temperature.setText(request['data']['temperature'])
+                self.bmi.setText(request['data']['bmi'])
+            
             self.measuring_height.setText(request['data']['height'])
             self.measuring_weight.setText(request['data']['weight'])
             self.measuring_temperature.setText(request['data']['temperature'])
             self.measuring_BMI.setText(request['data']['bmi'])
-            
-            self.height.setText(request['data']['height'])
-            self.weight.setText(request['data']['weight'])
-            self.temperature.setText(request['data']['temperature'])
-            self.bmi.setText(request['data']['bmi'])
-
-            if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
-                self.progress_bar.setValue(100)
-            elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
-                self.progress_bar.setValue(50)
-            else:
-                self.progress_bar.setValue(0)
 
         return
     
@@ -533,7 +543,7 @@ class GUI(QtWidgets.QMainWindow):
         self.progress_bar.setValue(0)
 
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()

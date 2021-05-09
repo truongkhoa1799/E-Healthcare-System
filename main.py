@@ -7,8 +7,12 @@ from PyQt5 import QtWidgets
 
 from utils.parameters import *
 
+import pycuda.driver as cuda
+
 import sys, threading
 from signal import signal, SIGINT
+
+from identifying_users.face_detector_centerface import FaceDetector
 
 def EndProcHandler(signal_received, frame):
     # Handle any cleanup here
@@ -17,6 +21,9 @@ def EndProcHandler(signal_received, frame):
     exit(0)
 
 def main():
+    cuda_ctx = cuda.Device(0).make_context()
+    glo_va.centerface_detector = FaceDetector()
+
     while glo_va.ENABLE_PROGRAM_RUN:
         if glo_va.START_RUN == False:
             continue
@@ -25,6 +32,8 @@ def main():
             # Reset program
             if glo_va.STATE == -1:
                 End()
+                cuda_ctx.pop()
+                del cuda_ctx
                 exit(0)
 
             # STATE DETECTING AND RECOGNIZING PATIENT
@@ -60,11 +69,9 @@ def main():
         except Exception as e:
             print("Error at module main in main: {}".format(e))
             End()
-            return
-        except KeyboardInterrupt:
-            print('Interrupted')
-            End()
-            return
+
+    cuda_ctx.pop()
+    del cuda_ctx
 
 def Init_Gui():
     app = QtWidgets.QApplication(sys.argv)
@@ -82,7 +89,11 @@ if __name__ == "__main__":
     signal(SIGINT, EndProcHandler)
     # while True:
     try:
-        Init()
+        ret = Init()
+        if ret == -1:
+            End()
+            exit(0)
+            
         glo_va.main_thread = threading.Thread(target=main, args=())
         glo_va.main_thread.daemon = True
         glo_va.main_thread.start()

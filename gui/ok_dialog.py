@@ -22,7 +22,8 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
                 background-position: center;
                 background-repeat: no-repeat;
             ''')
-            self.text = '             Your STT     : {}        \n             At Room      : {}'.format(data['stt'], data['room'])
+            self.text = '             Your STT\t: {}        \n             At Room\t: {}'.format(data['stt'], data['room'])
+            # self.text = '             Your STT\t: {}        \n             At Room\t: {}'.format("1", "C1-202")
         # fail to submit
         elif data['opt'] == 1:
             self.icon.setStyleSheet('''background: transparent;
@@ -30,7 +31,7 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
                 background-position: center;
                 background-repeat: no-repeat;
             ''')
-            self.text = '    False to submit examination.\n                Please try again.'
+            self.text = '     False to submit examination.\n                Please try again.'
         # ask capture sensor
         elif data['opt'] == 2:
             self.icon.setStyleSheet('''background: transparent;
@@ -38,7 +39,7 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
                 background-position: center;
                 background-repeat: no-repeat;
             ''')
-            self.text = '  Please capture sensor information\nand select examination department'
+            self.text = ' Please capture sensor information\nand select examination department'
         
         # Ask patient must have enought sensor information
         elif data['opt'] == 3:
@@ -47,7 +48,7 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
                 background-position: center;
                 background-repeat: no-repeat;
             ''')
-            self.text = '       Please turn on OSO2 device\n                or see instruction'
+            self.text = '       Please turn on OSO2 device\n               or see instruction'
         
         elif data['opt'] == 4:
             self.icon.setStyleSheet('''background: transparent;

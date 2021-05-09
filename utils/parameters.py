@@ -11,10 +11,12 @@ class GlobalVariable:
     def __init__(self):
         self.main_thread = None
         
+        # CENTER_FACE
+        self.centerface_detector = None
         # # test
-        # # self.times_measure = 0
-        # # self.list_time_detection = []
-        # # self.list_time_recognition = []
+        # self.times_measure = 0
+        # self.list_time_detection = []
+        # self.list_time_recognition = []
         # self.times_send = 0
         # self.start_time = None
         # self.list_time_send_server = []
@@ -49,6 +51,9 @@ class GlobalVariable:
         self.has_response_server = False
         self.lock_response_server = None
         # -1: none, 1 server
+        self.TIMER_GOT_BY_NO_ONE = -1
+        self.TIMER_GOT_BY_SERVER = 0
+
         self.turn = -1 
 
         ########################################################
@@ -102,25 +107,17 @@ class GlobalVariable:
         self.USER_INFOR_HAS_FACE = 0
         self.USER_INFOR_NO_FACE = -1
         self.USER_INFOR_DEFAULT = -2
+        self.USER_INFOR_WEARING_MASK = -3
 
         self.HAS_INIT_PARAMETERS = 0
         self.NOT_HAS_INIT_PARAMETERS = -1
+        self.INVALID_DEVICE_ID = -2
 
         self.SENSOR_HAS_VALUE = 0
         self.SENSOR_DEFAULT = -1
 
         self.EXAM_HAS_VALUE = 0
         self.EXAM_DEFAULT = -1
-
-        # self.list_examination_room = [
-        # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
-        # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
-        # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
-        # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
-        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
-        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
-        # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
-        # ]
 
         ########################################################
         # ASSISTANT                                            #
@@ -130,6 +127,9 @@ class GlobalVariable:
         self.ASSIS_CHOOSE_DEP_STATE = 2
         self.ASSIS_DISPLAY_SYMPTON_STATE = 3
         self.ASSIS_CONFIRM_STATE = -1
+
+        self.MOMO_SAY_BLOCKING = 0
+        self.MOMO_SAY_WITHOUT_BLOCKING = 1
 
         # used to map predicted department with current running dep in database
         self.momo_assis = None
@@ -164,6 +164,7 @@ class GlobalVariable:
         # Button used to check when return message of submitting examination
         self.button_ok_pressed = True
 
+        self.DEFAULT_BUTTON = -1
         self.BUTTON_EXIST = 0
         self.BUTTON_CANCEL_CONFIRM_PATIENT = 1
         self.BUTTON_ACCEPT_CONFIRM_PATIENT = 2
@@ -231,6 +232,7 @@ class GlobalVariable:
             self.MAP_DEP_TABLE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['map_dep_table_path']))
             self.DT_MODEL_PREDICT_DEP_PATH = os.path.join(PROJECT_PATH, str(documents['path']['decision_tree_model_predict_dep_path']))
             self.DICT_PART_BOD_PROBLEMS_PREDICT_DEP_PATH = os.path.join(PROJECT_PATH, str(documents['path']['dict_part_body_problems_predict_dep_path']))
+            self.CENTER_FACE_MODEL_PATH = os.path.join(PROJECT_PATH, str(documents['path']['center_face_model']))
 
             # Connection server
             self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
@@ -247,7 +249,6 @@ class GlobalVariable:
             self.MAX_LENGTH_IMG_NEW_USER = int(documents['identifying_face']['max_length_img_new_user'])
             self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
 
-
             self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
             self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
 
@@ -257,13 +258,13 @@ class GlobalVariable:
             self.CNN_FACE_DETECTOR = os.path.join(PROJECT_PATH, str(documents['path']['cnn_face_detector_model']))
             self.RESNET_MODEL = os.path.join(PROJECT_PATH, str(documents['path']['resnet_path']))
 
+            # CENTER FACE MODEL
+            self.WIDTH_IMG_CENTER_FACE = int(documents['identifying_face']['width_img_center_face'])
+            self.HEIGHT_IMG_CENTER_FACE = int(documents['identifying_face']['height_img_center_face'])
+
             # Display image
             self.CAMERA_CAPTURE_WIDTH = int(documents['camera']['camera_capture_width'])
             self.CAMERA_CAPTURE_HEIGHT = int(documents['camera']['camera_capture_height'])
-            # 1920x1080, 30 fps
-            self.SENSOR_MODE_1080 = int(documents['camera']['camera_mode_1080'])
-            # 1280x720, 60 fps
-            self.SENSOR_MODE_720 = int(documents['camera']['camera_mode_720'])
             self.FLIP_METHOD_CAM = int(documents['camera']['flip_method'])
 
             # size for display patient
@@ -273,13 +274,16 @@ class GlobalVariable:
             self.LOCATION_ADD_FACE_WIDTH = int(documents['gui']['location_add_face_width'])
             self.LOCATION_ADD_FACE_HEIGHT = int(documents['gui']['location_add_face_height'])
 
-            # Parameters for GUI
-            self.WIDTH_GUI = int(documents['gui']['width_gui'])
-            self.HEIGHT_GUI = int(documents['gui']['height_gui'])
-            self.CAM_EXAM_LAYOUT_WIDTH = int(documents['gui']['cam_exam_layout_width'])
-            self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
-            self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
-            self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
+            # MARGIN FACE LOCATION
+            self.MARGIN_FACE_LOCATION = int(documents['gui']['margin_face_location'])
+
+            # # Parameters for GUI
+            # self.WIDTH_GUI = int(documents['gui']['width_gui'])
+            # self.HEIGHT_GUI = int(documents['gui']['height_gui'])
+            # self.CAM_EXAM_LAYOUT_WIDTH = int(documents['gui']['cam_exam_layout_width'])
+            # self.CAM_EXAM_LAYOUT_HEIGHT = int(documents['gui']['cam_exam_layout_height'])
+            # self.INFOR_SENSOR_LAYOUT_WIDTH = int(documents['gui']['sensor_exam_layout_width'])
+            # self.INFOR_SENSOR_LAYOUT_HEIGHT = int(documents['gui']['sensor_exam_layout_height'])
             
             self.MAIN_GUI_PATH = str(documents['path']['main_gui_path'])
             self.MEASURE_SENSOR_GUI_PATH = str(documents['path']['measure_sensor_gui_path'])
@@ -316,7 +320,8 @@ class GlobalVariable:
                 'measure_sensor_inform_0': '123',
                 'measure_sensor_inform_1': '123',
                 'measure_sensor_inform_2': '123',
-                'capture_img': '123'
+                'capture_img': '123',
+                'ask_take_of_mask': '123'
             }
             self.momo_messages['ask_confirm'] = str(documents['momo_message']['ask_confirm'])
             self.momo_messages['ask_new_patient'] = str(documents['momo_message']['ask_new_patient'])
@@ -326,6 +331,8 @@ class GlobalVariable:
             self.momo_messages['measure_sensor_inform_0'] = str(documents['momo_message']['measure_sensor_inform_0'])
             self.momo_messages['measure_sensor_inform_1'] = str(documents['momo_message']['measure_sensor_inform_1'])
             self.momo_messages['measure_sensor_inform_2'] = str(documents['momo_message']['measure_sensor_inform_2'])
+            self.momo_messages['ask_take_of_mask'] = str(documents['momo_message']['ask_take_of_mask'])
+
             self.momo_messages['capture_img'] = documents['momo_message']['capture_img']
 
         ########################################################
@@ -366,6 +373,9 @@ class User_Infor:
         self.user_info = user_info
         self.patient_ID = user_info['user_ID']
     
+    def wearingMask(self):
+        self.status = glo_va.USER_INFOR_WEARING_MASK
+
     def NoFace(self):
         self.status = glo_va.USER_INFOR_NO_FACE
 
@@ -374,6 +384,16 @@ class InitParameters:
         self.status = glo_va.NOT_HAS_INIT_PARAMETERS
         self.hospital_ID = None
         self.list_examination_room = []
+
+        # self.list_examination_room = [
+        # {'dep_ID': 1, 'dep_name': 'Khoa noi', 'building_code': 'A1', 'room_code': '101'},
+        # {'dep_ID': 2, 'dep_name': 'Khoa ngoai', 'building_code': 'A1', 'room_code': '102'}, 
+        # {'dep_ID': 3, 'dep_name': 'Khoa tai mui hong', 'building_code': 'A1', 'room_code': '201'},
+        # {'dep_ID': 4, 'dep_name': 'Khoa Mat', 'building_code': 'B1', 'room_code': '101'}, 
+        # {'dep_ID': 5, 'dep_name': 'Khoa Than Kinh', 'building_code': 'B1', 'room_code': '201'},  
+        # {'dep_ID': 6, 'dep_name': 'Khoa Tim Mach', 'building_code': 'C1', 'room_code': '101'}, 
+        # {'dep_ID': 7, 'dep_name': 'Khoa San', 'building_code': 'C1', 'room_code': '201'}
+        # ]
 
     def Clear(self):
         self.status = glo_va.NOT_HAS_INIT_PARAMETERS

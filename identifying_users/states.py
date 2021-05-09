@@ -1,24 +1,48 @@
 import numpy as np
 import threading, time
 from utils.parameters import *
-from sensor.oso2_sensor import MeasureSensor
+from sensor.measure_sensors import MeasureSensor
 from utils.common_functions import LogMesssage
 from utils.common_functions import Compose_Embedded_Face
 
+########################################################
+# IDENTIFYING PATIENT                                  #
+########################################################
 def State_1():
     # Read camera
     glo_va.camera.RunCamera()
 
+    if glo_va.img is not None: face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
+    if len(face_locations) == 1:
+        ret = glo_va.face_recognition.Get_Face(face_locations)
+        if ret == -2:
+            LogMesssage("[State_1]: Error Face locations", opt=0)
+            Init_State()
+            return
+
+        elif ret == 0:
+            # Face Identifying
+            glo_va.face_recognition.Encoding_Face()
+            glo_va.count_face.Count_Face()
+
+    #     else:
+    #         time.sleep(0.025)
+    
+    # else:
+    #     time.sleep(0.025)
+
     # Face detecting
-    ret = glo_va.face_recognition.Get_Face()
-    if ret == -2:
-        LogMesssage("[State_1]: Error Face locations", opt=0)
-        Init_State()
-        return
-    elif ret == 0:
-        # Face Identifying
-        glo_va.face_recognition.Encoding_Face()
-        glo_va.count_face.Count_Face()
+    # ret = glo_va.face_recognition.Get_Face()
+    # if ret == -2:
+    #     LogMesssage("[State_1]: Error Face locations", opt=0)
+    #     Init_State()
+    #     return
+    # elif ret == 0:
+    #     # Face Identifying
+    #     glo_va.face_recognition.Encoding_Face()
+    #     glo_va.count_face.Count_Face()
+    # else:
+    #     time.sleep(0.025)
 
     # Update image to display
     glo_va.gui.image_display = glo_va.img
@@ -33,9 +57,9 @@ def State_1():
     #   3. Set flag is_sending_message and has_response_server = False
     if glo_va.has_response_server == True:
         if user_infor.status == glo_va.USER_INFOR_HAS_FACE:
-            LogMesssage('[State_1]: Patient: {id} has been detected'.format(id=user_infor.patient_ID))
+            LogMesssage('[states_State_1]: Patient: {id} has been detected'.format(id=user_infor.patient_ID))
             glo_va.STATE = glo_va.STATE_CONFIRM_PATIENT
-            # Clear all previous detected faces
+            # Clear all previous detected faces  
             glo_va.count_face.Clear()
             
             request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
@@ -45,7 +69,7 @@ def State_1():
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_confirm'])
 
         elif user_infor.status == glo_va.USER_INFOR_NO_FACE and glo_va.times_missing_face == glo_va.NUM_MISSING_FACE:
-            LogMesssage('[State_1]: Patient exceed number of trying identify')
+            LogMesssage('[states_State_1]: Patient exceed number of trying identify')
             glo_va.STATE = glo_va.STATE_CONFIRM_NEW_PATIENT
 
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
@@ -55,29 +79,30 @@ def State_1():
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_new_patient'])
             glo_va.times_missing_face = 0
 
-        else:
-            LogMesssage('[State_1]: Dummy response from server')
+        elif user_infor.status == glo_va.USER_INFOR_WEARING_MASK:
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'], opt=glo_va.MOMO_SAY_BLOCKING)
+            LogMesssage('[states_State_1]: Patient is asked to take of mask')
 
-        
         # set parameters for receive response to server. Make sure that there will not has dump response
         glo_va.is_sending_message = False
         glo_va.has_response_server = False
     
     if glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('[State_1]: Patient exist program')
+        LogMesssage('[states_State_1]: Patient exist program')
         # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
 
+############################################################
+# CONFIRMING PATIENT'S INFORMATION                         #
+############################################################
 def State_2():
-    # If user confirm, press button 3
+    ########################################################
+    # ACCEPT PATIENT'S INFORMATION                         #
+    ########################################################
     if glo_va.button == glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT:
-        glo_va.button = -1
+        glo_va.button = glo_va.DEFAULT_BUTTON
 
-        LogMesssage('[State_2]: Patient accept information of patient with ID: {id}'.format(id=user_infor.patient_ID))
-        # Get and save patient id for examination
-        # glo_va.patient_ID = user_infor.patient_ID
-        # send request clear patient inof
-        # user_infor.Clear()
+        LogMesssage('[states_State_2]: Patient accept information of patient with ID: {id}'.format(id=user_infor.patient_ID))
 
         # After user confrim their information, Clear user_infor, Ui and go to STATE measuring sensor
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
@@ -89,45 +114,60 @@ def State_2():
         glo_va.momo_assis.stopCurrentConversation()
         glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
 
-        LogMesssage('[State_2]: Clear patient information and screen. Save patient_id detected')
+        LogMesssage('[states_State_2]: Clear patient information and screen. Save patient_id detected')
     
+    ########################################################
+    # CANCEL PATIENT'S INFORMATION                         #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_CANCEL_CONFIRM_PATIENT or glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('[State_2]: Patient reject information of patient with ID: {id}'.format(id=user_infor.patient_ID))
-
-        # If user reject, Clear user_infor, Ui and go to first state
+        LogMesssage('[states_State_2]: Patient reject information of patient with ID: {id}'.format(id=user_infor.patient_ID))
         Init_State()
 
+############################################################
+# IDENTIFYING PATIENT                                      #
+############################################################
 def State_3():
-    # print(glo_va.button)
+    ########################################################
+    # CAPTURE SENSOR                                       #
+    ########################################################
     if glo_va.button == glo_va.BUTTON_CAPTURE_SENSOR:
-        glo_va.button = -1
-
+        glo_va.button = glo_va.DEFAULT_BUTTON
         glo_va.STATE = glo_va.STATE_MEASURING_SENSOR
 
+        # Clear current sensor information
+        request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
+        glo_va.gui.queue_request_states_thread.put(request)
+        
+        # send request to change gui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
         # MOMO saying
         glo_va.momo_assis.stopCurrentConversation()
         glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_oso2'])
-
+        
+        # Init measure sensor
         glo_va.measuring_sensor = MeasureSensor()
-        LogMesssage('[State_3]: Patient choose measuring sensor')
-
+        LogMesssage('[states_State_3]: Patient choose measuring sensor')
+    
+    ########################################################
+    # VIEW LIST DEPARTMENTS                                #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
-        glo_va.button = -1
-
+        glo_va.button = glo_va.DEFAULT_BUTTON
         # if init_parameters.status == glo_va.HAS_LIST_EXAM_ROOMS:
         glo_va.STATE = glo_va.STATE_VIEW_DEPARTMENTS
 
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
         
-        LogMesssage('[State_3]: Patient choose view department')
+        LogMesssage('[states_State_3]: Patient choose view department')
 
+    ########################################################
+    # SUBMIT EXAMINATION                                   #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_SUBMIT_EXAM:
-        glo_va.button = -1
-
+        glo_va.button = glo_va.DEFAULT_BUTTON
         if exam.status == glo_va.EXAM_HAS_VALUE and sensor.getStatus() == glo_va.SENSOR_HAS_VALUE:
             glo_va.is_sending_message = False
             glo_va.has_response_server = False
@@ -137,46 +177,50 @@ def State_3():
             glo_va.is_sending_message = True
             glo_va.server.Submit_Examination()
 
-            LogMesssage('[State_3]: Patient submit examination and go state waiting for response')
+            LogMesssage('[states_State_3]: Patient submit examination and go state waiting for response')
             
         else:
             data = {}
             data['opt'] = 2
             request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
             glo_va.gui.queue_request_states_thread.put(request)
-            LogMesssage('[State_3]: Patient do not have selected exam room and sensor. Notify for patient')
+            LogMesssage('[states_State_3]: Patient do not have selected exam room and sensor. Notify for patient')
 
+    ########################################################
+    # EXIST PROGRAM                                        #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('[State_3]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
+        LogMesssage('[states_State_3]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
         Init_State()
 
-    elif glo_va.button == glo_va.BUTTON_OKAY:
-        glo_va.button = -1
-
-    else:
-        if glo_va.has_response_server:
-            glo_va.is_sending_message = False
-            glo_va.has_response_server = False
-            LogMesssage('[State_3]: Dummy response from server')
-
+############################################################
+# CHOOSE DEPARTMENTS                                       #
+############################################################
 def State_4():
+    ########################################################
+    # CONFIRM DEPARTMENT                                   #
+    ########################################################
     if glo_va.button == glo_va.BUTTON_CONFIRM_DEP:
-        glo_va.button = -1
-
+        glo_va.button = glo_va.DEFAULT_BUTTON
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
-        LogMesssage('[State_4]: Patient confirm exam room')
-
+        LogMesssage('[states_State_4]: Patient confirm exam room')
+    
+    ########################################################
+    # EXIST PROGRAM                                        #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('[State_4]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
+        LogMesssage('[states_State_4]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
         Init_State()
 
+    ########################################################
+    # DIAGNOSIS SYMPTOMS WITH MOMO                         #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_DIAGNOSE_SYMPTOMS:
-        glo_va.button = -1
-
-        LogMesssage('[State_4]: Patient with id: {id} choose diagnosing symptoms'.format(id=user_infor.patient_ID))
+        glo_va.button = glo_va.DEFAULT_BUTTON
+        LogMesssage('[states_State_4]: Patient with id: {id} choose diagnosing symptoms'.format(id=user_infor.patient_ID))
 
         request = {'type': glo_va.REQUEST_OPEN_MOMO_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
@@ -185,6 +229,7 @@ def State_4():
         glo_va.ClearAssisPara()
         glo_va.enable_momo_run = True
         glo_va.patient_symptons is None
+
         glo_va.is_sending_message = False
         glo_va.has_response_server = False
 
@@ -194,29 +239,31 @@ def State_4():
         glo_va.thread_assis.daemon = True
         glo_va.thread_assis.start()
 
+    ########################################################
+    # CLOSE MOMO GUI                                       #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_CLOSE_MOMO_GUI:
-        glo_va.button = -1
-        
-        LogMesssage('[State_4]: Patient with id: {id} close diagnosing symptoms gui'.format(id=user_infor.patient_ID))
+        glo_va.button = glo_va.DEFAULT_BUTTON
+        LogMesssage('[states_State_4]: Patient with id: {id} close diagnosing symptoms gui'.format(id=user_infor.patient_ID))
         glo_va.enable_momo_run = False
         glo_va.thread_assis.join()
 
-    else:
-        # In case we are sending get_symptoms request but we out the momo gui and we have message from server
-        # we discard this message
-        if glo_va.has_response_server and glo_va.enable_momo_run == False:
-            glo_va.is_sending_message = False
-            glo_va.has_response_server = False
-            LogMesssage('[State_4]: Dummy response from server')
+        # Remove a chance to receive dummy response from server
+        glo_va.lock_response_server.acquire(True)
+        glo_va.is_sending_message = False
+        glo_va.has_response_server = False
+        glo_va.timer.Clear_Timer()
+        glo_va.lock_response_server.release()
 
+############################################################
+# CONFIRMING NEW PATIENT                                   #
+############################################################
 def State_5():
-    if glo_va.button == -1:
-        return
-
     if glo_va.button == glo_va.BUTTON_DENY_NEW_PATIENT:
         Init_State()
 
     elif glo_va.button == glo_va.BUTTON_ACCEPT_NEW_PATIENT:
+        glo_va.button = glo_va.DEFAULT_BUTTON
         # Set state for next state
         glo_va.STATE = glo_va.STATE_NEW_PATIENT
 
@@ -224,14 +271,16 @@ def State_5():
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
     
-        glo_va.button = -1
         return
 
     if glo_va.button == glo_va.BUTTON_EXIST:
         # If user reject, Clear user_infor, Ui and go to first state
-        LogMesssage('[State_3]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
+        LogMesssage('[states_State_3]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
         Init_State()
 
+############################################################
+# GETTING FACE NEW PATIENT                                 #
+############################################################
 def State_6():
     if glo_va.button == glo_va.BUTTON_EXIST:
         Init_State()
@@ -240,66 +289,126 @@ def State_6():
     # Read camera
     glo_va.camera.RunCamera()
 
-    # Face detecting
-    ret = glo_va.face_recognition.Get_Face()
-    if ret == -2:
-        LogMesssage("Error Face locations", opt=0)
-        glo_va.STATE = -1
-        return
-    elif ret == 0:
-        # Face Identifying
-        glo_va.face_recognition.Encoding_Face()
+    face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
+    if len(face_locations) == 1:
+        ret = glo_va.face_recognition.Get_Face(face_locations)
+        if ret == -2:
+            LogMesssage("[State_1]: Error Face locations", opt=0)
+            Init_State()
+            return
+        elif ret == 0:
+            glo_va.face_recognition.Encoding_Face()
 
-        if glo_va.num_user_pose >= 7:
-            max_pose = -1
-            for i in glo_va.dict_user_pose:
-                if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
-                    max_pose = i
-            
-            if max_pose == glo_va.current_shape:
-                if glo_va.check_current_shape == False:
-                    glo_va.check_current_shape = True
-                elif glo_va.check_current_shape == True:
-                    glo_va.check_current_shape = False
-                    # Activate image in the UI
-                    request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
-                    glo_va.gui.queue_request_states_thread.put(request)
-
-                    # Change to take next pose of user
-                    glo_va.current_shape += 1
-
-                    # MOMO saying
-                    glo_va.momo_assis.stopCurrentConversation()
-                    glo_va.momo_assis.momoSay(glo_va.momo_messages['capture_img'][glo_va.current_shape])
-                    
-                    # calculate the mean of all images in one pose
-                    mean_embedded_image = np.mean(glo_va.list_embedded_face_origin_new_patient ,axis=0)
-                    # save the current embedded face
-                    # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
-                    temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
-                    glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-
-                    if glo_va.current_shape == glo_va.num_face_new_user:
-                        LogMesssage('Done get face new user')
-                        glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-                        # send request change ui
-                        request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+            if glo_va.num_user_pose >= 7:
+                max_pose = -1
+                for i in glo_va.dict_user_pose:
+                    if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
+                        max_pose = i
+                
+                if max_pose == glo_va.current_shape:
+                    if glo_va.check_current_shape == False:
+                        glo_va.check_current_shape = True
+                    elif glo_va.check_current_shape == True:
+                        glo_va.check_current_shape = False
+                        # Activate image in the UI
+                        request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
                         glo_va.gui.queue_request_states_thread.put(request)
 
-                        time.sleep(1.5)
+                        # Change to take next pose of user
+                        glo_va.current_shape += 1
+
                         # MOMO saying
                         glo_va.momo_assis.stopCurrentConversation()
-                        glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
-            else:
-                glo_va.check_current_shape = False
+                        glo_va.momo_assis.momoSay(glo_va.momo_messages['capture_img'][glo_va.current_shape])
+                        
+                        # calculate the mean of all images in one pose
+                        mean_embedded_image = np.mean(glo_va.list_embedded_face_origin_new_patient ,axis=0)
+                        # save the current embedded face
+                        # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
+                        temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
+                        glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+
+                        if glo_va.current_shape == glo_va.num_face_new_user:
+                            LogMesssage('Done get face new user')
+                            glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+                            # send request change ui
+                            request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+                            glo_va.gui.queue_request_states_thread.put(request)
+
+                            time.sleep(1.5)
+                            # MOMO saying
+                            glo_va.momo_assis.stopCurrentConversation()
+                            glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+                else:
+                    glo_va.check_current_shape = False
+            
+                glo_va.num_user_pose = 0
+                glo_va.dict_user_pose = {}
+                glo_va.list_embedded_face_origin_new_patient = []
+    # # Face detecting
+    # ret = glo_va.face_recognition.Get_Face()
+    # if ret == -2:
+    #     LogMesssage("Error Face locations", opt=0)
+    #     glo_va.STATE = -1
+    #     return
+
+    # elif ret == 0:
+    #     # Face Identifying
+    #     glo_va.face_recognition.Encoding_Face()
+
+    #     if glo_va.num_user_pose >= 7:
+    #         max_pose = -1
+    #         for i in glo_va.dict_user_pose:
+    #             if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
+    #                 max_pose = i
+            
+    #         if max_pose == glo_va.current_shape:
+    #             if glo_va.check_current_shape == False:
+    #                 glo_va.check_current_shape = True
+    #             elif glo_va.check_current_shape == True:
+    #                 glo_va.check_current_shape = False
+    #                 # Activate image in the UI
+    #                 request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
+    #                 glo_va.gui.queue_request_states_thread.put(request)
+
+    #                 # Change to take next pose of user
+    #                 glo_va.current_shape += 1
+
+    #                 # MOMO saying
+    #                 glo_va.momo_assis.stopCurrentConversation()
+    #                 glo_va.momo_assis.momoSay(glo_va.momo_messages['capture_img'][glo_va.current_shape])
+                    
+    #                 # calculate the mean of all images in one pose
+    #                 mean_embedded_image = np.mean(glo_va.list_embedded_face_origin_new_patient ,axis=0)
+    #                 # save the current embedded face
+    #                 # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
+    #                 temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
+    #                 glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
+
+    #                 if glo_va.current_shape == glo_va.num_face_new_user:
+    #                     LogMesssage('Done get face new user')
+    #                     glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+    #                     # send request change ui
+    #                     request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
+    #                     glo_va.gui.queue_request_states_thread.put(request)
+
+    #                     time.sleep(1.5)
+    #                     # MOMO saying
+    #                     glo_va.momo_assis.stopCurrentConversation()
+    #                     glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+    #         else:
+    #             glo_va.check_current_shape = False
         
             
-            glo_va.num_user_pose = 0
-            glo_va.dict_user_pose = {}
-            glo_va.list_embedded_face_origin_new_patient = []
+    #         glo_va.num_user_pose = 0
+    #         glo_va.dict_user_pose = {}
+    #         glo_va.list_embedded_face_origin_new_patient = []
             
     glo_va.gui.image_display = glo_va.img
 
+############################################################
+# WAITING RESPONSE SUBMI EXAMMINATION                      #
+############################################################
 def State_7():
     if glo_va.button_ok_pressed == True:
         data = {}
@@ -343,35 +452,49 @@ def State_7():
         Init_State()
         return
 
-    glo_va.button = -1
-
+############################################################
+# MEASURING SENSOR INFORMATION                             #
+############################################################
 def State_8():
+    ########################################################
+    # CONFIRM SENSOR                                       #
+    ########################################################
     if glo_va.button == glo_va.BUTTON_CONFIRM_SENSOR:
-        sensor_infor = {
-            'height': glo_va.measuring_sensor.final_height, 'weight': glo_va.measuring_sensor.final_weight,
-            'spo2': glo_va.measuring_sensor.final_spo2, 'heart_pulse': glo_va.measuring_sensor.final_heart_pulse,
-            'temperature': glo_va.measuring_sensor.final_temperature, 'bmi': glo_va.measuring_sensor.final_bmi
-        }
+        glo_va.button = glo_va.DEFAULT_BUTTON
+        if glo_va.measuring_sensor.has_esp and glo_va.measuring_sensor.has_oso2:
+            # Get sensor information from MeasureSensor
+            sensor_infor = {
+                'height': glo_va.measuring_sensor.final_height, 'weight': glo_va.measuring_sensor.final_weight,
+                'spo2': glo_va.measuring_sensor.final_spo2, 'heart_pulse': glo_va.measuring_sensor.final_heart_pulse,
+                'temperature': glo_va.measuring_sensor.final_temperature, 'bmi': glo_va.measuring_sensor.final_bmi
+            }
 
-        sensor.Update_Sensor(sensor_infor)
+            # Update sensor entity
+            sensor.Update_Sensor(sensor_infor)
 
+        # Close sensor-devices connection
         glo_va.measuring_sensor.closeDevice()
         glo_va.measure_sensor = None
         glo_va.connected_sensor_device = False
 
+        # Change state
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
-        LogMesssage('[State_8]: Patient confirm measuring sensor')
-            
-        glo_va.button = -1
+        LogMesssage('[states_State_8]: Patient confirm measuring sensor')
 
+    ########################################################
+    # CONNECT DEVICE                                       #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
-        LogMesssage('[State_8]: Patient press connect sensor device')
+        glo_va.button = glo_va.DEFAULT_BUTTON
+        LogMesssage('[states_State_8]: Patient press connect sensor device')
 
+        # if connection is closed
         if glo_va.connected_sensor_device == False:
             is_opened = glo_va.measuring_sensor.openConnectionSensors()
+            # If open connection successfully
             if is_opened == 0:
                 glo_va.connected_sensor_device = True
                 
@@ -380,68 +503,73 @@ def State_8():
                 request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
                 glo_va.gui.queue_request_states_thread.put(request)
                 
-                LogMesssage('[State_8]: Patient successfully connect sensor device')
-
+                LogMesssage('[states_State_8]: Patient successfully connect sensor device')
+            
+            # If open connection unsuccessfully
             elif is_opened == -1:
                 data = {}
                 data['opt'] = 3
                 request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
                 glo_va.gui.queue_request_states_thread.put(request)
                 LogMesssage("[State_8]: Patient unsuccessfully connect sensor device")
+        
+        # If the connection is already opened
         else:
-            LogMesssage("[State_8]: Connection with sensors device is already connected")
+            LogMesssage("[states_State_8]: Connection with sensors device is already connected")
 
-        glo_va.button = -1
-
-
+    ########################################################
+    # EXIST PROGRAM                                        #
+    ########################################################
     elif glo_va.button == glo_va.BUTTON_EXIST:
-        LogMesssage('[State_8]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
+        LogMesssage('[states_State_8]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
         Init_State()
     
+    ########################################################
+    # PATIENT DO NOT PRESS ANYTHING                        #
+    ########################################################
     else:
         if glo_va.connected_sensor_device:
             # Check read data success for fail or disconnect
             ret = glo_va.measuring_sensor.getSensorsData()
+            
             # disconnect
             if ret == -2:
                 glo_va.measuring_sensor.closeDevice()
                 glo_va.measure_sensor = None
                 glo_va.connected_sensor_device = False
-                LogMesssage("[State_8]: Connection with sensors device is disconnected")
-            elif ret == 1:
-                glo_va.measuring_sensor.closeDevice()
-                glo_va.measure_sensor = None
-                glo_va.connected_sensor_device = False
-                LogMesssage("[State_8]: Have data from oso2 and esp device. Disconnect device")
+                LogMesssage("[states_State_8]: Connection with sensors device is disconnected")
 
+############################################################
+# INIT PROGRAM                                             #
+############################################################
 def Init_State():
-    LogMesssage('[Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
+    LogMesssage('[states_Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
     # Lock the response message from server when restart program
     glo_va.lock_init_state.acquire(True)
-    LogMesssage('[Init_State]: Acquire lock init state')
+    LogMesssage('[states_Init_State]: Acquire lock init state')
     
     ########################################################
     # BUTTON                                               #
     ########################################################
-    glo_va.button = -1
+    glo_va.button = glo_va.DEFAULT_BUTTON
     glo_va.button_ok_pressed = True
-    LogMesssage('\t[Init_State]: Set default button parameters')
+    LogMesssage('\t[states_Init_State]: Set default button parameters')
 
     ########################################################
     # SERVER                                               #
     ########################################################
-    glo_va.turn = -1 
+    glo_va.turn = glo_va.TIMER_GOT_BY_NO_ONE
     glo_va.timer.Clear_Timer()
     glo_va.is_sending_message = False
     glo_va.has_response_server = False
-    LogMesssage('\t[Init_State]: Set default server parameters')
+    LogMesssage('\t[states_Init_State]: Set default server parameters')
 
     ########################################################
     # FACE RECOGNITION PARAMETERS                          #
     ########################################################
     # glo_va.patient_ID = -1
     user_infor.Clear()
-    LogMesssage('\t[Init_State]: Clear patient information')
+    LogMesssage('\t[states_Init_State]: Clear patient information')
 
     ########################################################
     # NEW USER PARAMETERS                                  #
@@ -453,7 +581,7 @@ def Init_State():
         glo_va.num_user_pose = 0
         glo_va.dict_user_pose = {}
         glo_va.list_embedded_face_origin_new_patient = []
-        LogMesssage('\t[Init_State]: Set default parameters for new patients')
+        LogMesssage('\t[states_Init_State]: Set default parameters for new patients')
     
     # request = {'type': glo_va.REQUEST_DEACTIVATE_NEW_FACE, 'data': ''}
     # glo_va.gui.queue_request_states_thread.put(request)
@@ -468,7 +596,7 @@ def Init_State():
     glo_va.gui.queue_request_states_thread.put(request)
     request = {'type': glo_va.REQUEST_CLEAR_DEPARTMENT_LIST, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
-    LogMesssage('\t[Init_State]: Set default parameters for EXAM ROOMS')
+    LogMesssage('\t[states_Init_State]: Set default parameters for EXAM ROOMS')
 
     glo_va.patient_symptons = None
     
@@ -477,7 +605,7 @@ def Init_State():
     ########################################################
     glo_va.valid_stt = -1
     glo_va.return_stt = -1
-    LogMesssage('\t[Init_State]: Set default parameters for submit examination')
+    LogMesssage('\t[states_Init_State]: Set default parameters for submit examination')
 
     ########################################################
     # SENSOR PARAMETERS                                    #
@@ -492,7 +620,7 @@ def Init_State():
     sensor.Clear()
     request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
-    LogMesssage('\t[Init_State]: Set default parameters for Sensor')
+    LogMesssage('\t[states_Init_State]: Set default parameters for Sensor')
 
     ########################################################
     # BACK TO STATE 1                                      #
@@ -500,7 +628,7 @@ def Init_State():
     glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
     request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
-    LogMesssage('\t[Init_State]: Back to State 1')
+    LogMesssage('\t[states_Init_State]: Back to State 1')
         
     # MOMO saying
     glo_va.momo_assis.stopCurrentConversation()
@@ -508,4 +636,4 @@ def Init_State():
     time.sleep(1)
 
     glo_va.lock_init_state.release()
-    LogMesssage('[Init_State]: Release lock init state')
+    LogMesssage('[states_Init_State]: Release lock init state')

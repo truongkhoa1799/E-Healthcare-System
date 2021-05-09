@@ -13,6 +13,7 @@ path:
   okdialog_path: gui/okpopup.ui
   yes_no_dialog: gui/dialog.ui
   momo_gui_dialog: gui/momo_chatbot_gui.ui
+  center_face_model: model_engine/centerface_224_128.trt
 
 azure:
   eventhub_name: receivemsg
@@ -25,8 +26,8 @@ preprocessing:
 
 identifying_face:
   cycle_count_face_period: 1
-  # number_deteced_face_allowed: 100
-  number_deteced_face_allowed: 12
+  number_deteced_face_allowed: 100
+  # number_deteced_face_allowed: 12
   max_edge: 150
   # MAX length for face Detector
   max_length_img: 80
@@ -35,35 +36,36 @@ identifying_face:
   face_detector_model: hog
   shape_predictor_model: 68
 
+  width_img_center_face: 224
+  height_img_center_face: 128
+
 camera:
   # Capture image
-  camera_capture_width: 1920
-  camera_capture_height: 1080
-  # 1920x1080, 30 fps
-  camera_mode_1080: 2
-  # 1280x720, 60 fps
-  camera_mode_720: 3
+  camera_capture_width: 1280
+  camera_capture_height: 720
   flip_method: 0
 
 gui:
   # Width and height for patient face when recognizing
-  location_recognize_face_width: 890
-  location_recognize_face_height: 930
+  location_recognize_face_width: 975
+  location_recognize_face_height: 720
 
   # Width and height for patient face when create new user
-  location_add_face_width: 1450
-  location_add_face_height: 910
+  location_add_face_width: 1280
+  location_add_face_height: 720
 
-  # Parameters for GUI
-  width_gui: 800
-  height_gui: 480
-  cam_exam_layout_width: 370
-  cam_exam_layout_height: 360
-  sensor_exam_layout_width: 400
-  sensor_exam_layout_height: 360
+  margin_face_location: 30
+
+  # # Parameters for GUI
+  # width_gui: 800
+  # height_gui: 480
+  # cam_exam_layout_width: 370
+  # cam_exam_layout_height: 360
+  # sensor_exam_layout_width: 400
+  # sensor_exam_layout_height: 360
 
 timer:
-  num_missing_face: 3
+  num_missing_face: 1
   timeout_missing_face: 10
 
   timeout_validate: 10
@@ -87,6 +89,7 @@ momo_message:
   say_bye: Bài bai.
   inform_state_3: Bấm vào nút danh sách khoa để chọn khoa mình muốn khám. Sau đó bấm vào đo chỉ số để lấy thông tin sensor.
   inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
+  ask_take_of_mask: Vui lòng cởi khẩu trang để xác thực
 
   measure_sensor_inform_0: đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
   measure_sensor_inform_1: bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và đợi đến khi có thông báo đo xong.

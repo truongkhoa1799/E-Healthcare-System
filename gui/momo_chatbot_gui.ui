@@ -61,7 +61,7 @@ color: rgb(255, 255, 255)</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>460</y>
+       <y>450</y>
        <width>320</width>
        <height>120</height>
       </rect>
@@ -125,9 +125,9 @@ background-repeat: no-repeat;
     <widget class="QFrame" name="building_text_frame">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>350</y>
-       <width>400</width>
+       <x>10</x>
+       <y>320</y>
+       <width>340</width>
        <height>90</height>
       </rect>
      </property>
@@ -158,7 +158,7 @@ background-repeat: no-repeat;
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>25</pointsize>
+        <pointsize>24</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -196,9 +196,9 @@ border-bottom-right-radius: 20px;</string>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>119</x>
        <y>60</y>
-       <width>350</width>
+       <width>381</width>
        <height>200</height>
       </rect>
      </property>
@@ -213,9 +213,9 @@ border-radius: 30px;</string>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>330</y>
-       <width>351</width>
+       <x>120</x>
+       <y>340</y>
+       <width>380</width>
        <height>200</height>
       </rect>
      </property>
@@ -232,8 +232,8 @@ border-radius: 30px;</string>
       <rect>
        <x>0</x>
        <y>370</y>
-       <width>131</width>
-       <height>121</height>
+       <width>121</width>
+       <height>141</height>
       </rect>
      </property>
      <property name="maximumSize">
@@ -260,9 +260,9 @@ background-repeat: no-repeat;
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>100</y>
-       <width>131</width>
-       <height>121</height>
+       <y>90</y>
+       <width>111</width>
+       <height>141</height>
       </rect>
      </property>
      <property name="maximumSize">
@@ -288,10 +288,10 @@ background-repeat: no-repeat;
     <widget class="QLabel" name="patient_conversation">
      <property name="geometry">
       <rect>
-       <x>139</x>
+       <x>130</x>
        <y>360</y>
-       <width>311</width>
-       <height>150</height>
+       <width>360</width>
+       <height>160</height>
       </rect>
      </property>
      <property name="font">
@@ -311,10 +311,10 @@ color: rgb(50, 50, 50);
     <widget class="QLabel" name="momo_conversation">
      <property name="geometry">
       <rect>
-       <x>139</x>
+       <x>130</x>
        <y>80</y>
-       <width>311</width>
-       <height>150</height>
+       <width>360</width>
+       <height>160</height>
       </rect>
      </property>
      <property name="font">

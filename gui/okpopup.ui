@@ -19,10 +19,10 @@
   <widget class="QFrame" name="verticalFrame">
    <property name="geometry">
     <rect>
-     <x>-1</x>
-     <y>-1</y>
+     <x>0</x>
+     <y>0</y>
      <width>701</width>
-     <height>311</height>
+     <height>271</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -60,9 +60,9 @@ background-repeat: no-repeat;
    <widget class="QLabel" name="text_dialog">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>190</y>
-      <width>391</width>
+      <x>80</x>
+      <y>170</y>
+      <width>540</width>
       <height>91</height>
      </rect>
     </property>
@@ -87,7 +87,7 @@ and select examination department</string>
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>330</y>
+     <y>290</y>
      <width>400</width>
      <height>150</height>
     </rect>

@@ -32,15 +32,15 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>310</y>
+      <y>290</y>
       <width>701</width>
-      <height>191</height>
+      <height>211</height>
      </rect>
     </property>
     <widget class="QPushButton" name="deny_exist">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>40</x>
        <y>10</y>
        <width>300</width>
        <height>150</height>
@@ -81,7 +81,7 @@ QPushButton:pressed {
     <widget class="QPushButton" name="accept_exist">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>360</x>
        <y>10</y>
        <width>300</width>
        <height>150</height>
@@ -124,7 +124,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>100</y>
+      <y>150</y>
       <width>561</width>
       <height>121</height>
      </rect>
@@ -147,10 +147,10 @@ QPushButton:pressed {
    <widget class="QFrame" name="icon">
     <property name="geometry">
      <rect>
-      <x>205</x>
+      <x>200</x>
       <y>20</y>
-      <width>90</width>
-      <height>90</height>
+      <width>300</width>
+      <height>140</height>
      </rect>
     </property>
     <property name="maximumSize">

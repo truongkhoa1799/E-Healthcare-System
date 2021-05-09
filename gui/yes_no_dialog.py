@@ -22,7 +22,7 @@ class QDialogClass(QDialog, glo_va.yes_no_dialog):
         elif opt == glo_va.CONFIRM_NEW_PATIENT_DIALOG:
             self.text = 'Are you new user?'
         elif opt == glo_va.CONFIRM_SENSOR_INFORMATION:
-            self.text = 'Are you sure about these sensor'
+            self.text = 'Are you sure\nabout these sensor'
 
         self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning(0))

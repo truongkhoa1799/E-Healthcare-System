@@ -38,7 +38,6 @@ class CameraDetecting(Thread):
     
     def RunCamera(self):
         _ , original_img = self.__csi_camera.read()
-        print(original_img.shape)
         
         if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
             margin_width = int((original_img.shape[1] - glo_va.LOCATION_RECOGNIZE_FACE_WIDTH) / 2)

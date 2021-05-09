@@ -18,6 +18,23 @@ from threading import Lock
 def Init():
     LogMesssage('Start init program', opt=0)
 
+    # Init server connection
+    Start_Server_Connection()
+    glo_va.flg_server_connected = True
+
+    # Init Timer
+    Start_Timer()
+    glo_va.flg_init_timer = True
+
+    # Init lock response from server and timer
+    glo_va.lock_init_state = Lock()
+    glo_va.lock_response_server = Lock()
+
+    # Get init parameters
+    ret = loadParametersFromServer()
+    if ret == -1:
+        return ret
+
     # Init momo assistant
     StartMomoAssistant()
     glo_va.flg_init_momo_assistant = True
@@ -35,23 +52,10 @@ def Init():
     Start_Count_Face()
     glo_va.flg_init_count_face = True
 
-    # Init server connection
-    Start_Server_Connection()
-    glo_va.flg_server_connected = True
-
-    # Init Timer
-    Start_Timer()
-    glo_va.flg_init_timer = True
-
-    # Init lock response from server and timer
-    glo_va.lock_init_state = Lock()
-    glo_va.lock_response_server = Lock()
-
-    # Get init parameters
-    # loadParametersFromServer()
-    
     # glo_va.STATE = 6
     time.sleep(2)
+
+    return 0
 
 #########################################################################
 # START FUNCTIONS                                                       #
@@ -101,22 +105,28 @@ def StartMomoAssistant():
 def loadParametersFromServer():
     glo_va.is_sending_message = False
     glo_va.has_response_server = False
-    LogMesssage('Load init parameters', opt=0)
+    LogMesssage('[init_loadParametersFromServer]: Load init parameters', opt=0)
 
     glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_INIT_PARAMETERS)
     glo_va.is_sending_message = True
     glo_va.server.getInitParameters()
     
-    while init_parameters.status == glo_va.NOT_HAS_INIT_PARAMETERS and glo_va.ENABLE_PROGRAM_RUN:
+    while init_parameters.status != glo_va.HAS_INIT_PARAMETERS and glo_va.ENABLE_PROGRAM_RUN:
         if glo_va.has_response_server == True:
             glo_va.is_sending_message = False
             glo_va.has_response_server = False
-            LogMesssage('Has init parameters', opt=0)
+            LogMesssage('[init_loadParametersFromServer]: Has init parameters', opt=0)
         
-        if init_parameters.status == glo_va.NOT_HAS_INIT_PARAMETERS and glo_va.is_sending_message == False:
-            LogMesssage('Fail to get init parameters. Resend request')
-            glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_INIT_PARAMETERS)
-            glo_va.is_sending_message = True
-            glo_va.server.getInitParameters()
+        if glo_va.is_sending_message == False:
+            if init_parameters.status == glo_va.NOT_HAS_INIT_PARAMETERS:
+                LogMesssage('[init_loadParametersFromServer]: Fail to get init parameters. Resend request')
+                glo_va.timer.Start_Timer(glo_va.OPT_TIMER_GET_INIT_PARAMETERS)
+                glo_va.is_sending_message = True
+                glo_va.server.getInitParameters()
+
+            elif init_parameters.status == glo_va.INVALID_DEVICE_ID:
+                LogMesssage('[init_loadParametersFromServer]: Invalid device id. Exit the program')
+                return -1
     
-    LogMesssage('Done load init parameters', opt=0)
+    LogMesssage('[init_loadParametersFromServer]: Done load init parameters', opt=0)
+    return 0

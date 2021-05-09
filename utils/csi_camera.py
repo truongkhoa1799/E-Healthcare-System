@@ -41,9 +41,8 @@ class CSI_Camera:
     def open(self):
         try:
             # Jetson
-            self.video_capture = cv2.VideoCapture(
-                self.create_gstreamer_pipeline(), cv2.CAP_GSTREAMER
-            )
+            self.create_gstreamer_pipeline()
+            self.video_capture = cv2.VideoCapture(self.gstreamer_pipeline, cv2.CAP_GSTREAMER)
 
             # Macos
             # self.video_capture = cv2.VideoCapture(0)
@@ -85,9 +84,10 @@ class CSI_Camera:
     def read(self):
         with self.read_lock:
             # Jetson
-            # frame = self.frame.copy()
+            frame = self.frame.copy()
+            
             # Macos
-            frame = self.frame
+            # frame = self.frame
             
             grabbed=self.grabbed
         return grabbed, frame
@@ -128,32 +128,53 @@ class CSI_Camera:
     # Here we directly select sensor_mode 3 (1280x720, 59.9999 fps)
     def create_gstreamer_pipeline(
         self,
-        capture_width = 1920,
-        capture_height = 1080,
-        display_width=1920,
-        display_height=1080,
-        framerate=23,
-        flip_method = 2
+        display_width=glo_va.CAMERA_CAPTURE_WIDTH,
+        display_height=glo_va.CAMERA_CAPTURE_HEIGHT,
+        flip_method = glo_va.FLIP_METHOD_CAM
     ):
 
-        return (
-        "nvarguscamerasrc ! "
-        "video/x-raw(memory:NVMM), "
-        "width=(int)%d, height=(int)%d, "
-        "format=(string)NV12, framerate=(fraction)%d/1 ! "
-        "nvvidconv flip-method=%d ! "
-        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-        "videoconvert ! "
-        "video/x-raw, format=(string)BGR ! appsink"
-        % (
-            capture_width,
-            capture_height,
-            framerate,
-            flip_method,
-            display_width,
-            display_height
+        # self._gstreamer_pipeline = (
+        #     "nvarguscamerasrc sensor-id=%d sensor-mode=%d ! "
+        #     "video/x-raw(memory:NVMM), "
+        #     "format=(string)NV12, framerate=(fraction)%d/1 ! "
+        #     "nvvidconv flip-method=%d ! "
+        #     "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        #     "videoconvert ! "
+        #     "video/x-raw, format=(string)BGR ! appsink"
+        #     % (
+        #         sensor_id,
+        #         sensor_mode,
+        #         framerate,
+        #         flip_method,
+        #         display_width,
+        #         display_height,
+        #     )
+        # )
+        self._gstreamer_pipeline = (
+            '''nvarguscamerasrc exposuretimerange="13000 683709000" ! video/x-raw(memory:NVMM), 
+            width=(int){}, height=(int){},format=(string)NV12, 
+            framerate=(fraction)29/1 ! nvvidconv flip-method={} ! video/x-raw, 
+            format=(string)BGRx ! videoconvert ! video/x-raw, 
+            format=(string)BGR ! appsink max-buffers=1 drop=True'''.format(display_width, display_height, flip_method)
         )
-    )
+
+        # return (
+        # "nvarguscamerasrc ! "
+        # "video/x-raw(memory:NVMM), "
+        # "width=(int)%d, height=(int)%d, "
+        # "format=(string)NV12, framerate=(fraction)29/1 ! "
+        # "nvvidconv flip-method=%d ! "
+        # "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        # "videoconvert ! "
+        # "video/x-raw, format=(string)BGR ! appsink"
+        # % (
+        #     capture_width,
+        #     capture_height,
+        #     flip_method,
+        #     display_width,
+        #     display_height
+        # )
+    
 
 
     

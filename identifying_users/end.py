@@ -43,13 +43,7 @@ def End():
 
     glo_va.START_RUN = False
     glo_va.ENABLE_PROGRAM_RUN = False
-
-    LogMesssage("Stop Main Thread", opt=0)
-    glo_va.main_thread.join()
-    LogMesssage("Join Main Thread", opt=0)
     
-
-
     if glo_va.flg_init_count_face:
         Stop_Count_Face()
         glo_va.flg_init_count_face = False

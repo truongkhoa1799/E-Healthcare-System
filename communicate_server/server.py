@@ -54,55 +54,66 @@ class Server:
         while True:
             try:
                 method_request = self.__connection.receive_method_request()
+                
+                # Default response
+                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
+                response_status = 200
+                
                 if method_request.name == "Update_List_Exam_Rooms":
                     init_parameters.list_examination_room = method_request.payload['list_exam_rooms']
-                    LogMesssage('[__Listen_Reponse_Server]: Receive update request udpating list exam rooms')
+                    LogMesssage('[server___Listen_Reponse_Server]: Receive update request udpating list exam rooms')
                 
                 else:
                     timer_id = method_request.payload['request_id']
 
-                    # Default response
-                    response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
-                    response_status = 200
-
                     # Was not acquired
                     if not glo_va.lock_init_state.acquire(False):
-                        LogMesssage('[__Listen_Reponse_Server]: Lock init state was already acquired, do not accept new message')
+                        LogMesssage('[server___Listen_Reponse_Server]: Lock init state was already acquired, do not accept new message')
                         method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                         self.__connection.send_method_response(method_response)
                         continue
                     
                     if not glo_va.lock_response_server.acquire(False):
+                        # Release lock just acquire above
                         glo_va.lock_init_state.release()
 
-                        LogMesssage('[__Listen_Reponse_Server]: Lock response server was already acquired, do not accept new message')
+                        LogMesssage('[server___Listen_Reponse_Server]: Lock response server was already acquired, do not accept new message')
                         method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                         self.__connection.send_method_response(method_response)
                         continue
+                
+                    ########################################################
+                    # RESPONSE WITH DIFFERENT REQUEST ID                   #
+                    ########################################################
+                    if glo_va.timer.timer_id != timer_id:
+                        glo_va.lock_response_server.release()
+                        glo_va.lock_init_state.release()
 
-                    LogMesssage('[__Listen_Reponse_Server]: Acquire lock init state')
-                    LogMesssage('[__Listen_Reponse_Server]: Acquire lock response server')
+                        LogMesssage('[server___Listen_Reponse_Server]: Receive response with different current request id')
+                        
+                        response_payload = {"Response": "Wrong response {} not defined".format(method_request.name)}
+                        self.__connection.send_method_response(method_response)
+                        continue
 
-                    # time.sleep(20)
+                    LogMesssage('[server___Listen_Reponse_Server]: Acquire lock init state')
+                    LogMesssage('[server___Listen_Reponse_Server]: Acquire lock response server')
 
                     # if timer did not time out, receive timer and clear timer
                     # Check whether the state is init or not, if yes continue
                     if glo_va.is_sending_message == True:
                         # Notify the timer that server is in lock
-                        glo_va.turn = 1
+                        glo_va.turn = glo_va.TIMER_GOT_BY_SERVER
 
                         # Clear timer
                         glo_va.timer.Clear_Timer()
-                        LogMesssage('[__Listen_Reponse_Server]: Clear Timer')
+                        LogMesssage('[server___Listen_Reponse_Server]: Clear Timer')
 
-                        # Release lock
-                        glo_va.lock_response_server.release()
-                        LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
-                        LogMesssage("[__Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(request_name=method_request.name,timer_id=timer_id, name=method_request.name))
+                        LogMesssage("[server___Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(request_name=method_request.name,timer_id=timer_id, name=method_request.name))
                         
-                        # Validation response
-                        # TESTED
-                        if method_request.name == "Validate_User" and glo_va.timer.timer_id == timer_id:
+                        ########################################################
+                        # VALIDATION USERS RESPONSE                            #
+                        ########################################################
+                        if method_request.name == "Validate_User":
                             # glo_va.list_time_send_server.append(time.time()-glo_va.start_time)
                             # glo_va.times_send += 1
                             # if glo_va.times_send == 10:
@@ -111,102 +122,91 @@ class Server:
                             #     print('Mean time detec: {}'.format(np.mean(glo_va.list_time_send_server)))
                             #     print('Std time detec: {}'.format(np.std(glo_va.list_time_send_server)))
                             ret_msg = int(method_request.payload['return'])
-                            if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == 0:
+                            if ret_msg == 0:
                                 # print(method_request.payload)
                                 user_infor.Update_Info(method_request.payload)
-                                LogMesssage('[__Listen_Reponse_Server]: Update patient information')
+                                LogMesssage('[server___Listen_Reponse_Server]: Update patient information')
 
-                            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == -2:
+                            elif ret_msg == -2:
                                 # Patient is wearing mask
-                                LogMesssage('[__Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
+                                user_infor.wearingMask()
+                                LogMesssage('[server___Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
 
-                            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT and ret_msg == -1:
+                            elif ret_msg == -1:
                                 user_infor.NoFace()
                                 glo_va.times_missing_face += 1
-                                LogMesssage('[__Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
+                                LogMesssage('[server___Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
                             
                             glo_va.has_response_server = True
 
-                        # # Get examination room response
-                        # # TESTED
-                        # elif method_request.name == "Get_Examination_Room" and glo_va.timer.timer_id == timer_id:
-                        #     ret_msg = int(method_request.payload['return'])
-                        #     if ret_msg == 0:
-                        #         init_parameters.updateListExamRooms(method_request.payload)
-                        #         LogMesssage('[__Listen_Reponse_Server]: Get examination room and hospital_ID: {id}'.format(id=init_parameters.hospital_ID))
-                        #     else:
-                        #         LogMesssage('[__Listen_Reponse_Server]: False get examination room and hospital_ID: {id}'.format(id=init_parameters.hospital_ID))
-
-                        #     glo_va.has_response_server = True
-
-                        # Submit examination request response
-                        elif method_request.name == "Submit_Examination" and glo_va.timer.timer_id == timer_id:
+                        ########################################################
+                        # EXAMINATION SUBMISSION RESPONSE                     #
+                        ########################################################
+                        elif method_request.name == "Submit_Examination":
                             ret_msg = int(method_request.payload['return'])
                             if ret_msg == 0:
                                 glo_va.return_stt = method_request.payload['stt']
-                                LogMesssage('[__Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
+                                LogMesssage('[server___Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
                             else:
                                 glo_va.return_stt = -1
-                                LogMesssage('[__Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
+                                LogMesssage('[server___Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
 
                             glo_va.has_response_server = True
 
-                        # Get_Sympton request response
-                        elif method_request.name == "Get_Sympton" and glo_va.timer.timer_id == timer_id:
+                        ########################################################
+                        # GET SYMPTONS USERS RESPONSE                          #
+                        ########################################################
+                        elif method_request.name == "Get_Sympton":
                             ret_msg = int(method_request.payload['return'])
-                            if glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS and ret_msg == 0:
+                            if ret_msg == 0:
                                 glo_va.patient_symptons =  method_request.payload['symptons']
-                                LogMesssage('[__Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
-                            elif glo_va.STATE == glo_va.STATE_VIEW_DEPARTMENTS and ret_msg == -1:
+                                LogMesssage('[server___Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
+                            elif ret_msg == -1:
                                 glo_va.patient_symptons = None
-                                LogMesssage('[__Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
+                                LogMesssage('[server___Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
 
                             glo_va.has_response_server = True
 
-                        # Get init parameters request response
-                        elif method_request.name == "Get_Init_Parameters" and glo_va.timer.timer_id == timer_id:
+                        ########################################################
+                        # LOAD INIT PARAMETERS RESPONSE                        #
+                        ########################################################
+                        elif method_request.name == "Get_Init_Parameters":
                             ret_msg = int(method_request.payload['return'])
                             if ret_msg == 0:
                                 parameters = method_request.payload['parameters']
                                 init_parameters.updateInitParameters(parameters)
-                                LogMesssage('[__Listen_Reponse_Server]: Success to get init parameters')
+                                LogMesssage('[server___Listen_Reponse_Server]: Success to get init parameters')
+
                             else:
-                                LogMesssage('[__Listen_Reponse_Server]: False to get init parameters')
+                                init_parameters.status = ret_msg
+                                LogMesssage('[server___Listen_Reponse_Server]: False to get init parameters')
 
                             glo_va.has_response_server = True
 
-                        else:
-                            response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
-                            response_status = 404
-                    else:
-                        # if timer did timeout first, discard this response and wait for next response
-                        glo_va.lock_response_server.release()
-                        LogMesssage('[__Listen_Reponse_Server]: Release lock response server')
+                    # Release lock
+                    glo_va.lock_response_server.release()
+                    LogMesssage('[server___Listen_Reponse_Server]: Release lock response server')
 
                     glo_va.lock_init_state.release()
-                    LogMesssage('[__Listen_Reponse_Server]: Release lock init state')
-                
+                    LogMesssage('[server___Listen_Reponse_Server]: Release lock init state')
 
             except Exception as e:
                 if method_request.name == "Update_List_Exam_Rooms":
-                    LogMesssage('[__Listen_Reponse_Server]: Has error when updating list exam rooms')
+                    LogMesssage('[server___Listen_Reponse_Server]: Has error when updating list exam rooms')
                 
                 else:
                     LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
 
                     if glo_va.lock_init_state.locked() == True:
                         glo_va.lock_init_state.release()
-                        LogMesssage('[__Listen_Reponse_Server]: Has error: {e}. Release lock init state'.format(e=e))
+                        LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock init state'.format(e=e))
 
                     if glo_va.lock_response_server.locked() == True:
                         glo_va.lock_response_server.release()
-                        LogMesssage('[__Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
+                        LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
 
                     if method_request.name == "Validate_User":
                         user_infor.Clear()
-
-                    # elif method_request.name == "Get_Examination_Room":
-                    #     init_parameters.Clear()
 
                     elif method_request.name == "Get_Sympton":
                         glo_va.patient_symptons = None
@@ -215,8 +215,6 @@ class Server:
                         init_parameters.Clear()
 
                     glo_va.has_response_server = True
-                    # self.__establishConnectionServer()
-                    # LogMesssage('Re-establish connection with Server')
 
             method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
             self.__connection.send_method_response(method_response)
@@ -243,24 +241,6 @@ class Server:
             
             self.__establishConnectionServer()
             LogMesssage('Re-establish connection with Server')
-    
-    # def Get_Examination_Room(self):
-    #     try:
-    #         event_data_batch = self.__producer.create_batch()
-    #         try:
-    #             LogMesssage("[Get_Examination_Room]: Get Examination Room with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
-    #             data = EventData("")
-    #             data.properties = {'request_id':glo_va.timer.timer_id,'type_request':"4", 'device_ID': str(self.__device_ID)}
-    #             event_data_batch.add(data)
-    #         except Exception as e:
-    #             LogMesssage(e, opt=2)
-    #             glo_va.STATE = -1
-    #         self.__producer.send_batch(event_data_batch)
-    #     except Exception as e:
-    #         LogMesssage("Has error at module Get_Examination_Room in server.py: {}".format(e), opt=2)
-            
-    #         self.__establishConnectionServer()
-    #         LogMesssage('Re-establish connection with Server')
     
     def Submit_Examination(self):
         try:

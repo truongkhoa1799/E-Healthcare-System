@@ -65,6 +65,7 @@ def Compose_Embedded_Face(encoded_img):
 def Preprocessing_Img(img):
     resized_img = cv2.resize(img, (glo_va.IMAGE_SIZE,glo_va.IMAGE_SIZE))
     RGB_resized_adjusted_bright_img = AdjustBright(resized_img)
+    # RGB_resized_adjusted_bright_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
     return RGB_resized_adjusted_bright_img
 
 ############################################################################
