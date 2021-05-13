@@ -2,20 +2,20 @@ from logging import error
 import sys, time, threading
 from threading import Timer
 
-sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
+sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
 
 import os, time
 from threading import Lock
 import subprocess
 from gtts import gTTS
 
-# from utils.speech_recognition.speech_recognition import Recognizer, Microphone
-# from speech_recognition import Recognizer, Microphone
-
+from utils.speech_recognition.speech_recognition import Recognizer, Microphone
 from utils.parameters import *
-
 from utils.common_functions import LogMesssage
 from assistant.classify_department import ClassifyDepartment
+
+# from utils.timer import TimerModule
+# from communicate_server.server import Server
 
 class RepeatTimer(Timer):
     def run(self):
@@ -23,18 +23,18 @@ class RepeatTimer(Timer):
             self.function(*self.args, **self.kwargs)
 
 class MomoAssistant:
-    # momo_ear = Recognizer()
+    momo_ear = Recognizer()
     momo_mounth = None
-    # dt_clf = ClassifyDepartment()
+    dt_clf = ClassifyDepartment()
     
     @staticmethod
     def momoListen():
         # terminate voice of momo
         LogMesssage('[momo_assistant_momoListen]: Momo is listening')
         try:
-            with Microphone() as mic:
+            with Microphone(device_index=11, sample_rate=16000) as mic:
                 MomoAssistant.momo_ear.adjust_for_ambient_noise(mic)
-                audio = MomoAssistant.momo_ear.listen(mic, timeout=4)
+                audio = MomoAssistant.momo_ear.listen(mic)
                 if audio == -1:
                     return -1
 
@@ -43,6 +43,18 @@ class MomoAssistant:
         except Exception as e:
             LogMesssage('Has error in [momo_assistant_momoListen]: {}'.format(e))
             return -1
+    
+    @staticmethod
+    def testmomoListen():
+        # terminate voice of momo
+        LogMesssage('[momo_assistant_momoListen]: Test Momo is listening')
+        try:
+            with Microphone(device_index=11, sample_rate=16000) as mic:
+                MomoAssistant.momo_ear.adjust_for_ambient_noise(mic)
+                audio = MomoAssistant.momo_ear.listen(mic, timeout=1)
+        except:
+            pass
+    
     
     @staticmethod
     def stopCurrentConversation():
@@ -63,7 +75,15 @@ class MomoAssistant:
                 MomoAssistant.momo_mounth = subprocess.Popen(["mpg321", glo_va.VOICE_PATH_FILE])
             except Exception as e:
                 LogMesssage('Has error in [momo_assistant_momoSay]: {}'.format(e))
+
         elif opt == glo_va.MOMO_SAY_BLOCKING:
+            # send request to update conversation
+            data = {}
+            data['opt'] = 1
+            data['text'] = text
+            request = {'type': glo_va.REQUEST_UPDATE_CONVERSATION_MOMO_GUI, 'data': data}
+            glo_va.momo_gui.queue_request_states_thread.put(request)
+
             try:
                 tts = gTTS(text =text,lang='vi')
                 tts.save(glo_va.VOICE_PATH_FILE)
@@ -78,11 +98,7 @@ class MomoAssistant:
         for i in init_parameters.list_examination_room:
             if i['dep_ID'] == dep_ID:
                 dep_name = i['dep_name']
-                
-                # # send request to update selected exam room
-                # request = {'type': glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM, 'data': dep_name}
-                # glo_va.gui.queue_request_states_thread.put(request)
-                # send request to update selected exam room
+
                 request = {'type': glo_va.REQUEST_UPDATE_DEP_MOMO_GUI, 'data': dep_name}
                 glo_va.momo_gui.queue_request_states_thread.put(request)
                     
@@ -170,19 +186,10 @@ class MomoAssistant:
         MomoAssistant.stopCurrentConversation()
         time.sleep(0.1)
 
-        # send request to update conversation
-        data = {}
-        data['opt'] = 1
-        data['text'] = assis_para.msg_for_states[glo_va.assis_state]
-        request = {'type': glo_va.REQUEST_UPDATE_CONVERSATION_MOMO_GUI, 'data': data}
-        glo_va.momo_gui.queue_request_states_thread.put(request)
         MomoAssistant.momoSay(assis_para.msg_for_states[glo_va.assis_state], opt=glo_va.MOMO_SAY_BLOCKING)
 
         while glo_va.enable_momo_run:
             try:
-                # NEED TO FIX BUG
-                # print("Momo is listening")
-                # user_voice = glo_va.momo_assis.momoListen()
                 if glo_va.has_response_server == False:
                     if glo_va.is_sending_message == True:
                         continue
@@ -193,6 +200,7 @@ class MomoAssistant:
                         MomoAssistant.stopCurrentConversation()
                         continue
 
+                    # send request to update conversation
                     data = {}
                     data['opt'] = 0
                     data['text'] = user_voice
@@ -217,7 +225,6 @@ class MomoAssistant:
 
                     glo_va.patient_symptons = None
                     LogMesssage('[momo_assistant_momoCore]: Received analyzed symptons')
-
 
             except Exception as e:
                 print("Has error at momo_assistant_momoCore: {}".format(e))
@@ -351,19 +358,32 @@ def Common_State(symptons):
     
     return msg
 
+# glo_va.server = Server()
+# glo_va.timer = TimerModule()
 # glo_va.momo_assis = MomoAssistant()
-# glo_va.STATE = glo_va.STATE_VIEW_DEPARTMENTS
-
-# glo_va.momo_thread_say = subprocess.call([MomoCore, ])
 # glo_va.enable_momo_run = True
-# momo = MomoAssistant()
-# print(momo.momoListen())
 
-# momo.momoSay('Hello')
-# time.sleep(2)
-# momo.momoSay('Hello Khoa')
+# glo_va.thread_assis = threading.Thread(target=glo_va.momo_assis.momoCore, args=())
+# glo_va.thread_assis.daemon = True
+# glo_va.thread_assis.start()
 
-# time.sleep(5)
-# momo.momoSay('Hello Khoa')
+# while True:
+#     pass
 
-# time.sleep(5)
+# glo_va.enable_momo_run = True
+# momo_ear = Recognizer()
+# while True:
+#     with Microphone(device_index=11, sample_rate=16000) as mic:
+#         print("Listenning")
+#         momo_ear.adjust_for_ambient_noise(mic)
+#         audio = momo_ear.listen(mic)
+
+#     if audio != -1:        
+#         script = momo_ear.recognize_google(audio, language='vi-VN')
+#         print(script)
+
+# import pyaudio
+# p = pyaudio.PyAudio()
+# for i in range(p.get_device_count()):
+#     dev = p.get_device_info_by_index(i)
+#     print((i,dev['name'],dev['maxInputChannels']))

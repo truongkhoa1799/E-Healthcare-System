@@ -16,6 +16,7 @@ path:
   center_face_model: model_engine/centerface_224_128.trt
 
 azure:
+  partition_id: 0
   eventhub_name: receivemsg
   eventhub_connection: Endpoint=sb://thesisehealthcare.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AUeMD+PSZx675wFA4kPllGfSnMwhATPOGPPDWex5jSU=
   iothub_connection: HostName=thesisehealthcare.azure-devices.net;SharedAccessKeyName=serviceAndRegistryRead;SharedAccessKey=mqDNZkuK8UnoS9ccbb3bGm2OI1VCKHRfbODo6BKlfb4=
@@ -26,8 +27,8 @@ preprocessing:
 
 identifying_face:
   cycle_count_face_period: 1
-  number_deteced_face_allowed: 100
-  # number_deteced_face_allowed: 12
+  # number_deteced_face_allowed: 100
+  number_deteced_face_allowed: 12
   max_edge: 150
   # MAX length for face Detector
   max_length_img: 80
@@ -37,7 +38,7 @@ identifying_face:
   shape_predictor_model: 68
 
   width_img_center_face: 224
-  height_img_center_face: 128
+  height_img_center_face: 128 
 
 camera:
   # Capture image
@@ -65,7 +66,7 @@ gui:
   # sensor_exam_layout_height: 360
 
 timer:
-  num_missing_face: 1
+  num_missing_face: 3
   timeout_missing_face: 10
 
   timeout_validate: 10

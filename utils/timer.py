@@ -9,7 +9,7 @@ class RepeatTimer(Timer):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)
 
-class Timer:
+class TimerModule:
     def __init__(self):
         # opt: 0 timer for request validate user
         self.__timeout_validate = 0
@@ -102,6 +102,7 @@ class Timer:
 
             # if server is not acquire first, get lock and resend again message
             if glo_va.turn == glo_va.TIMER_GOT_BY_NO_ONE:
+                self.Clear_Timer()
                 glo_va.is_sending_message = False
                 LogMesssage('[__Check_Timer]: is_sending_message is reset')
                 LogMesssage('[__Check_Timer]: Release lock response server')
@@ -114,8 +115,7 @@ class Timer:
                 LogMesssage('[__Check_Timer]: Release lock response server')
                 glo_va.lock_response_server.release()
                 return
-            
-            self.Clear_Timer()
+                
         else:
             LogMesssage('[__Check_Timer]: Acquire lock response server fail')
 

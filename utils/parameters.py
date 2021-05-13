@@ -1,8 +1,10 @@
 import os
 import yaml
 import pathlib
+import queue
 from PyQt5 import uic
 from utils.assis_parameters import AssistantParameter
+from threading import Event
 
 show_fps = True
 PROJECT_PATH = pathlib.Path().absolute()
@@ -13,6 +15,9 @@ class GlobalVariable:
         
         # CENTER_FACE
         self.centerface_detector = None
+        self.stop_program = Event()
+        self.start_program = Event()
+        
         # # test
         # self.times_measure = 0
         # self.list_time_detection = []
@@ -60,10 +65,6 @@ class GlobalVariable:
         # FACE RECOGNITION PARAMETERS                          #
         ########################################################
         self.img = None
-        self.detected_face = None
-        self.face_location = None
-        self.embedded_face = None
-        self.list_embedded_face = ""
         self.times_missing_face = 0
 
         ########################################################
@@ -77,13 +78,25 @@ class GlobalVariable:
         ########################################################
         # NEW USER PARAMETERS                                  #
         ########################################################
+        # store embedded face of new user
         self.list_embedded_face_new_user = ""
+        self.num_face_new_user = 5
+        # all pose of new user
         self.current_shape = 0 # up : 0, down : 1, left : 2, right : 3, forward : 4
         self.num_user_pose = 0
-        self.dict_user_pose = {}
-        self.num_face_new_user = 5
+        # parameters for get the max user pose for new patient
         self.check_current_shape = False
+        self.num_correct_user_pose = 0
         self.list_embedded_face_origin_new_patient = []
+
+        self.check_pose = [
+            # sign_v, diff_v, sign_h, diff_h 
+            [-1, 5, -1, 5],  # front
+            [1, 7, -1, 5],   # up
+            [-1, 5, -1, 5],  # down
+            [-1, 5, -1, 7],  # left
+            [-1, 5, 1, 7]    # right
+        ]
 
         ########################################################
         # PREDICT DEPARMENT PARAMETERS                         #
@@ -154,8 +167,6 @@ class GlobalVariable:
         self.STATE_MEASURING_SENSOR = 8
 
         self.STATE = self.STATE_RECOGNIZE_PATIENT
-        self.ENABLE_PROGRAM_RUN = True
-        self.START_RUN = False
         
         ########################################################
         # BUTTON                                               #
@@ -235,6 +246,7 @@ class GlobalVariable:
             self.CENTER_FACE_MODEL_PATH = os.path.join(PROJECT_PATH, str(documents['path']['center_face_model']))
 
             # Connection server
+            self.PARTITION_ID = str(documents['azure']['partition_id'])
             self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
             
             # Parameters for image processing, and KNN model
@@ -371,7 +383,7 @@ class User_Infor:
     def Update_Info(self, user_info):
         self.status = glo_va.USER_INFOR_HAS_FACE
         self.user_info = user_info
-        self.patient_ID = user_info['user_ID']
+        self.patient_ID = user_info['patient_ID']
     
     def wearingMask(self):
         self.status = glo_va.USER_INFOR_WEARING_MASK

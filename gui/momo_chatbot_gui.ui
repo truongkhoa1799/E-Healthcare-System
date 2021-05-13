@@ -158,7 +158,7 @@ background-repeat: no-repeat;
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>24</pointsize>
+        <pointsize>22</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -169,7 +169,7 @@ border: 2px solid rgb(100,100,100);
 border-radius: 5px;	</string>
       </property>
       <property name="text">
-       <string>Khoa Tai Mui Hong</string>
+       <string></string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

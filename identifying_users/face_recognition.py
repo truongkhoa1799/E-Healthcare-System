@@ -1,5 +1,4 @@
 import os
-import cv2
 import time
 import pickle
 import numpy as np
@@ -34,57 +33,17 @@ class Face_Recognition:
         #     LogMesssage("\tLoad face detector CNN model")
         #     self.__face_detector_cnn = dlib.cnn_face_detection_model_v1(glo_va.CNN_FACE_DETECTOR)
 
+        # Test first image
         test_img = None
         test_img_path = os.path.join(PROJECT_PATH, 'model_engine/test_encoding_img')
         with open (test_img_path, mode='rb') as f1:
             test_img = pickle.load(f1)
 
-        test_encoded = self.__face_encodings(test_img, [(1, 149, 1, 149)])
-        time.sleep(1)
+        raw_landmarks = self.__raw_face_landmarks(test_img, [(1, 149, 1, 149)])
+        test_encoded = [np.array(self.__face_encoder.compute_face_descriptor(test_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks][0]
+        time.sleep(0.1)
+
         LogMesssage("\tDone load dlib model")
-    
-    def __face_encodings(self, face_image, known_face_locations):
-        # Get landmarks
-        # t = time.time()
-        raw_landmarks = self.__raw_face_landmarks(face_image, known_face_locations)
-        # print("Time process raw landmark: {}".format(time.time() - t))
-
-        # if glo_va.detected_face is not None:
-        #     print(glo_va.detected_face.shape)
-        #     fra = glo_va.detected_face.shape[0]/face_image.shape[0]
-
-        #     # Draw face mask location
-        #     left = int(raw_landmarks[0].part(0).x * fra) + glo_va.face_location[2]
-        #     top = int(raw_landmarks[0].part(0).y * fra) + glo_va.face_location[0]
-        #     right = int(raw_landmarks[0].part(15).x * fra) + glo_va.face_location[2]
-        #     bottom = glo_va.face_location[1]
-            
-        #     print(face_image.shape)
-        #     print(glo_va.face_location)
-        #     print("{}, {}, {}, {}".format(left, top, right, bottom))
-
-        #     cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
-
-        # Get the embedded face
-        # t = time.time()
-        embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(face_image, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
-        # print("Time process get embedded: {}".format(time.time() - t))
-
-        # If STATE = 6 (get face new user) check angle of face
-        if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
-            # glo_va.user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
-            user_pose = Get_Face_Angle(face_image, raw_landmarks[0])
-            if user_pose in glo_va.dict_user_pose:
-                glo_va.dict_user_pose[user_pose] += 1
-            else:
-                glo_va.dict_user_pose[user_pose] = 1
-
-            glo_va.num_user_pose += 1
-            # print("{} {}".format(glo_va.num_user_pose, user_pose))
-            # Save this in the list embedded for new user
-            glo_va.list_embedded_face_origin_new_patient.append(embedded_face[0])
-
-        return embedded_face
 
     ###############################################################################################
     # _css_to_rect                                                                                #
@@ -151,8 +110,9 @@ class Face_Recognition:
     #         return [self.__trim_css_to_bounds(self.__rect_to_css(face), img.shape) for face in self.__raw_face_locations(img, 1)]
 
     # def Get_Face(self):
-    def Get_Face(self, face_locations):
+    def Get_Location_Face(self, face_locations):
         max_edge = 0
+        max_face_location = ()
         try:
             boxes = face_locations[0][:4]
 
@@ -162,7 +122,9 @@ class Face_Recognition:
             bottom = int(boxes[3])
             
             # print("top: {}, left: {}, bottom: {}, right: {}".format(top, left, bottom, right))
-            if left >= glo_va.MARGIN_FACE_LOCATION and top >= glo_va.MARGIN_FACE_LOCATION and glo_va.img.shape[1] - right >= glo_va.MARGIN_FACE_LOCATION and glo_va.img.shape[0] - bottom >= glo_va.MARGIN_FACE_LOCATION:
+            if left >= glo_va.MARGIN_FACE_LOCATION and top >= glo_va.MARGIN_FACE_LOCATION \
+                and glo_va.img.shape[1] - right >= glo_va.MARGIN_FACE_LOCATION and glo_va.img.shape[0] - bottom >= glo_va.MARGIN_FACE_LOCATION:
+
                 left -= glo_va.MARGIN_FACE_LOCATION
                 top -= glo_va.MARGIN_FACE_LOCATION
                 right += glo_va.MARGIN_FACE_LOCATION
@@ -183,19 +145,16 @@ class Face_Recognition:
             edge = min((right - left), (bottom - top))
 
             if edge > max_edge:
-                glo_va.face_location = (top, bottom, left, right)
+                max_face_location = (top, bottom, left, right)
                 max_edge = edge
 
         except:
-            return -2
+            return -2, None
 
         if max_edge > glo_va.MAX_EDGE:
-            # detected_face = img[top: bottom, left: right]
-            glo_va.detected_face = glo_va.img[glo_va.face_location[0] : glo_va.face_location[1], glo_va.face_location[2] : glo_va.face_location[3]]
-            cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
-            return 0
+            return 0, max_face_location
         else:
-            return -1
+            return -1, None
 
         # if glo_va.img is not None:
         #     # locate faces in the images
@@ -238,17 +197,29 @@ class Face_Recognition:
         #         return -1
 
         # return -1
+    
+    def encodingFaceNewPatient(self, detected_face):
+        RGB_resized_adjusted_bright_img = Preprocessing_Img(detected_face)
 
-    def Encoding_Face(self):
+        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])
+
+        embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(RGB_resized_adjusted_bright_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
+        
+        user_pose = Get_Face_Angle(RGB_resized_adjusted_bright_img, raw_landmarks[0])
+
+        return user_pose, embedded_face[0]
+
+    def Encoding_Face(self, detected_face):
         # Pre-processing
-        # t = time.time()
-        RGB_resized_adjusted_bright_img = Preprocessing_Img(glo_va.detected_face)
-        # print("Preproc face identify: ", time.time() - t)
-        # print("size RGB_resized_adjusted_bright_img image: {}".format(RGB_resized_adjusted_bright_img.shape))
-        # locations = (top, right, bottom, left)
+        RGB_resized_adjusted_bright_img = Preprocessing_Img(detected_face)
 
-        # start_iden = time.time()
-        glo_va.embedded_face = self.__face_encodings(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])[0]
+        # locations = (top, right, bottom, left)
+        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])
+
+        embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(RGB_resized_adjusted_bright_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
+
+        return embedded_face[0]
+
         # print("face identify: ", time.time() - start_iden)
         # glo_va.list_time_recognition.append(time.time() - start_iden)
 

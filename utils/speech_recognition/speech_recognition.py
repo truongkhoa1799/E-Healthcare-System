@@ -17,6 +17,9 @@ from urllib.error import URLError, HTTPError
 
 from utils.parameters import *
 
+from ctypes import *
+from contextlib import contextmanager
+
 class WaitTimeoutError(Exception): pass
 class RequestError(Exception): pass
 class UnknownValueError(Exception): pass
@@ -30,6 +33,18 @@ class AudioSource(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         raise NotImplementedError("this is an abstract class")
+
+
+ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
+def py_error_handler(filename, line, function, err, fmt):
+    pass
+c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
+@contextmanager
+def noalsaerr():
+    asound = cdll.LoadLibrary('libasound.so')
+    asound.snd_lib_error_set_handler(c_error_handler)
+    yield
+    asound.snd_lib_error_set_handler(None)
 
 class Microphone(AudioSource):
     """
@@ -48,17 +63,20 @@ class Microphone(AudioSource):
 
         # set up PyAudio
         self.pyaudio_module = self.get_pyaudio()
-        audio = self.pyaudio_module.PyAudio()
-        try:
-            count = audio.get_device_count()  # obtain device count
-            if device_index is not None:  # ensure device index is in range
-                assert 0 <= device_index < count, "Device index out of range ({} devices available; device index should be between 0 and {} inclusive)".format(count, count - 1)
-            if sample_rate is None:  # automatically set the sample rate to the hardware's default sample rate if not specified
-                device_info = audio.get_device_info_by_index(device_index) if device_index is not None else audio.get_default_input_device_info()
-                assert isinstance(device_info.get("defaultSampleRate"), (float, int)) and device_info["defaultSampleRate"] > 0, "Invalid device info returned from PyAudio: {}".format(device_info)
-                sample_rate = int(device_info["defaultSampleRate"])
-        finally:
-            audio.terminate()
+
+        with noalsaerr():
+            audio = self.pyaudio_module.PyAudio()
+        
+        # try:
+        #     count = audio.get_device_count()  # obtain device count
+        #     if device_index is not None:  # ensure device index is in range
+        #         assert 0 <= device_index < count, "Device index out of range ({} devices available; device index should be between 0 and {} inclusive)".format(count, count - 1)
+        #     if sample_rate is None:  # automatically set the sample rate to the hardware's default sample rate if not specified
+        #         device_info = audio.get_device_info_by_index(device_index) if device_index is not None else audio.get_default_input_device_info()
+        #         assert isinstance(device_info.get("defaultSampleRate"), (float, int)) and device_info["defaultSampleRate"] > 0, "Invalid device info returned from PyAudio: {}".format(device_info)
+        #         sample_rate = int(device_info["defaultSampleRate"])
+        # finally:
+        #     audio.terminate()
 
         self.device_index = device_index
         self.format = self.pyaudio_module.paInt16  # 16-bit int sampling

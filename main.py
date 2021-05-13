@@ -17,27 +17,27 @@ from identifying_users.face_detector_centerface import FaceDetector
 def EndProcHandler(signal_received, frame):
     # Handle any cleanup here
     print('SIGINT or CTRL-C detected. Exiting gracefully')
+    try:
+        glo_va.stop_program.set()
+        glo_va.main_thread.join()
+
+    except:
+        pass
+
     End()
-    exit(0)
 
 def main():
+    LogMesssage('Start init Center Face', opt=0)
     cuda_ctx = cuda.Device(0).make_context()
     glo_va.centerface_detector = FaceDetector()
 
-    while glo_va.ENABLE_PROGRAM_RUN:
-        if glo_va.START_RUN == False:
+    while not glo_va.stop_program.is_set():
+        while not glo_va.start_program.is_set():
             continue
         
         try:
-            # Reset program
-            if glo_va.STATE == -1:
-                End()
-                cuda_ctx.pop()
-                del cuda_ctx
-                exit(0)
-
             # STATE DETECTING AND RECOGNIZING PATIENT
-            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
+            if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
                 State_1()
 
             # STATE CONFIRMING PATIENT INFORMATION
@@ -68,17 +68,25 @@ def main():
 
         except Exception as e:
             print("Error at module main in main: {}".format(e))
+            
+            cuda_ctx.pop()
+            del cuda_ctx
+            LogMesssage('Stop Center Face', opt=0)
+
+            # clear all services
             End()
+            exit(0)
 
     cuda_ctx.pop()
     del cuda_ctx
+    LogMesssage('Stop Center Face', opt=0)
 
 def Init_Gui():
     app = QtWidgets.QApplication(sys.argv)
     glo_va.gui = GUI()
     glo_va.gui.show()
     glo_va.flg_init_GUI = True
-    glo_va.START_RUN = True
+    glo_va.start_program.set()
     app.exec_()
     
 #########################################################################
@@ -101,6 +109,10 @@ if __name__ == "__main__":
         Init_Gui()
     except Exception as e:
         print("Error at Init module: {}".format(e))
-    
-    End()
-    exit(0)
+        try:
+            glo_va.stop_program.set()
+            glo_va.main_thread.join()
+        except:
+            pass
+        End()
+        exit(0)

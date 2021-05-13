@@ -40,7 +40,7 @@ class ClassifyDepartment:
                         list_predict_departments.append(i)
                         break
 
-        print(list_predict_departments)
+        # print(list_predict_departments)
         # print()
         for i in list_predict_departments:
             list_departmeents = i.split('-')
@@ -55,8 +55,8 @@ class ClassifyDepartment:
                     max_department_occurence = dict_predict_departments[list_departmeents[j]]
                     ret_predict_department = list_departmeents[j]
         
-        print(dict_predict_departments)
-        print(ret_predict_department)
+        # print(dict_predict_departments)
+        # print(ret_predict_department)
         # Đảm bảo luôn có part_body
         # return department[int(ret_predict_department)]
         return int(ret_predict_department)

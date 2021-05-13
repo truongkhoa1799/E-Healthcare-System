@@ -151,7 +151,7 @@ class CSI_Camera:
         #     )
         # )
         self._gstreamer_pipeline = (
-            '''nvarguscamerasrc exposuretimerange="13000 683709000" ! video/x-raw(memory:NVMM), 
+            '''nvarguscamerasrc ! video/x-raw(memory:NVMM), 
             width=(int){}, height=(int){},format=(string)NV12, 
             framerate=(fraction)29/1 ! nvvidconv flip-method={} ! video/x-raw, 
             format=(string)BGRx ! videoconvert ! video/x-raw, 

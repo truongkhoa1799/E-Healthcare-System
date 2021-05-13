@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 import threading, time
 from utils.parameters import *
@@ -14,7 +15,7 @@ def State_1():
 
     if glo_va.img is not None: face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
     if len(face_locations) == 1:
-        ret = glo_va.face_recognition.Get_Face(face_locations)
+        ret, location_detected_face = glo_va.face_recognition.Get_Location_Face(face_locations)
         if ret == -2:
             LogMesssage("[State_1]: Error Face locations", opt=0)
             Init_State()
@@ -22,14 +23,14 @@ def State_1():
 
         elif ret == 0:
             # Face Identifying
-            glo_va.face_recognition.Encoding_Face()
-            glo_va.count_face.Count_Face()
+            # detected_face = img[top: bottom, left: right]
+            detected_face = glo_va.img[location_detected_face[0] : location_detected_face[1], location_detected_face[2] : location_detected_face[3]]
+            
+            # cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+            cv2.rectangle(glo_va.img, (location_detected_face[2], location_detected_face[0]), (location_detected_face[3], location_detected_face[1]) , (2, 255, 0), 2)
 
-    #     else:
-    #         time.sleep(0.025)
-    
-    # else:
-    #     time.sleep(0.025)
+            embedded_face = glo_va.face_recognition.Encoding_Face(detected_face)
+            glo_va.count_face.Count_Face(embedded_face)
 
     # Face detecting
     # ret = glo_va.face_recognition.Get_Face()
@@ -289,27 +290,43 @@ def State_6():
     # Read camera
     glo_va.camera.RunCamera()
 
-    face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
+    if glo_va.img is not None: face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
     if len(face_locations) == 1:
-        ret = glo_va.face_recognition.Get_Face(face_locations)
+        ret, location_detected_face = glo_va.face_recognition.Get_Location_Face(face_locations)
         if ret == -2:
             LogMesssage("[State_1]: Error Face locations", opt=0)
             Init_State()
             return
+
         elif ret == 0:
-            glo_va.face_recognition.Encoding_Face()
+            # detected_face = img[top: bottom, left: right]
+            detected_face = glo_va.img[location_detected_face[0] : location_detected_face[1], location_detected_face[2] : location_detected_face[3]]
+
+            correct_user_pose, embedded_face = glo_va.face_recognition.encodingFaceNewPatient(detected_face)
+            if correct_user_pose:
+                glo_va.num_correct_user_pose += 1
+
+                # Draw green box for correct face
+                # cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+                cv2.rectangle(glo_va.img, (location_detected_face[2], location_detected_face[0]), (location_detected_face[3], location_detected_face[1]) , (0, 255, 0), 2)
+            else:
+                # Draw red box for incorrect face
+                # cv2.rectangle(glo_va.img, (left, top), (right, bottom) , (2, 255, 0), 2)
+                cv2.rectangle(glo_va.img, (location_detected_face[2], location_detected_face[0]), (location_detected_face[3], location_detected_face[1]) , (0, 0, 255), 2)
+
+            glo_va.num_user_pose += 1
+            # print("{} {}".format(glo_va.num_user_pose, user_pose))
+            # Save this in the list embedded for new user
+            glo_va.list_embedded_face_origin_new_patient.append(embedded_face)
 
             if glo_va.num_user_pose >= 7:
-                max_pose = -1
-                for i in glo_va.dict_user_pose:
-                    if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
-                        max_pose = i
-                
-                if max_pose == glo_va.current_shape:
+                if glo_va.num_correct_user_pose > 5:
                     if glo_va.check_current_shape == False:
                         glo_va.check_current_shape = True
+
                     elif glo_va.check_current_shape == True:
                         glo_va.check_current_shape = False
+                        
                         # Activate image in the UI
                         request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
                         glo_va.gui.queue_request_states_thread.put(request)
@@ -331,6 +348,7 @@ def State_6():
                         if glo_va.current_shape == glo_va.num_face_new_user:
                             LogMesssage('Done get face new user')
                             glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
+
                             # send request change ui
                             request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
                             glo_va.gui.queue_request_states_thread.put(request)
@@ -339,11 +357,12 @@ def State_6():
                             # MOMO saying
                             glo_va.momo_assis.stopCurrentConversation()
                             glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+            
                 else:
                     glo_va.check_current_shape = False
-            
+
                 glo_va.num_user_pose = 0
-                glo_va.dict_user_pose = {}
+                glo_va.num_correct_user_pose = 0
                 glo_va.list_embedded_face_origin_new_patient = []
     # # Face detecting
     # ret = glo_va.face_recognition.Get_Face()
@@ -403,7 +422,7 @@ def State_6():
     #         glo_va.num_user_pose = 0
     #         glo_va.dict_user_pose = {}
     #         glo_va.list_embedded_face_origin_new_patient = []
-            
+
     glo_va.gui.image_display = glo_va.img
 
 ############################################################
@@ -472,10 +491,11 @@ def State_8():
             # Update sensor entity
             sensor.Update_Sensor(sensor_infor)
 
-        # Close sensor-devices connection
-        glo_va.measuring_sensor.closeDevice()
-        glo_va.measure_sensor = None
-        glo_va.connected_sensor_device = False
+        if glo_va.connected_sensor_device:
+            glo_va.connected_sensor_device = False
+            glo_va.measuring_sensor.closeDevice()
+
+        glo_va.measuring_sensor = None
 
         # Change state
         glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
@@ -535,9 +555,19 @@ def State_8():
             # disconnect
             if ret == -2:
                 glo_va.measuring_sensor.closeDevice()
-                glo_va.measure_sensor = None
                 glo_va.connected_sensor_device = False
+
+                data = {}
+                data['opt'] = 5
+                request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
+                glo_va.gui.queue_request_states_thread.put(request)
+
                 LogMesssage("[states_State_8]: Connection with sensors device is disconnected")
+
+            elif ret == 1:
+                glo_va.measuring_sensor.closeDevice()
+                glo_va.connected_sensor_device = False
+                LogMesssage("[states_State_8]: Done getting sensor information")
 
 ############################################################
 # INIT PROGRAM                                             #
@@ -577,9 +607,9 @@ def Init_State():
     if glo_va.current_shape != 0:
         glo_va.list_embedded_face_new_user = ""
         glo_va.current_shape = 0
-        glo_va.check_current_shape = False
         glo_va.num_user_pose = 0
-        glo_va.dict_user_pose = {}
+        glo_va.check_current_shape = False
+        glo_va.num_correct_user_pose = 0
         glo_va.list_embedded_face_origin_new_patient = []
         LogMesssage('\t[states_Init_State]: Set default parameters for new patients')
     

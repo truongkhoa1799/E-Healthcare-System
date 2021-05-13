@@ -7,23 +7,31 @@ list_height = []
 list_temperature = []
 
 def getSensorData():
-    conn = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=1)
-    conn.write(b"1")  # write a string
+    conn_0 = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=0.5)
+    conn_0.write(b"1")  # write a string
+    time.sleep(1)
+    conn_1 = serial.Serial("/dev/ttyUSB1", baudrate=115200, timeout=0.5)
+    conn_1.write(b"1")  # write a string
+    
     has_value = False
     count = 0
 
     while True:
-        esp_message = conn.read(64)
-        esp_message_decoded = esp_message.decode("utf-8").replace('\r\n', '')
-        data = esp_message_decoded.split('/')
-        print('{}.'.format(esp_message_decoded))
+        conn_0_msg = conn_0.read(64)
+        conn_0_msg_decoded = conn_0_msg.decode("utf-8").replace('\r\n', '')
+        print('{}.'.format(conn_0_msg_decoded))
+
+        conn_1_msg = conn_1.read(64)
+        conn_1_msg_decoded = conn_1_msg.decode("utf-8").replace('\r\n', '')
+        print('{}.'.format(conn_1_msg_decoded))
         # print(data[1])
         # print(data[2])
 
         count += 1
         if count == 10:
-
-            conn.write(b"0")  # write a string
+            conn_0.write(b"0")  # write a string
+            time.sleep(1)
+            conn_1.write(b"0")  # write a string
             break
 
     return 1

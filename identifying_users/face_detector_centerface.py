@@ -61,12 +61,12 @@ class FaceDetector(object):
         return self.inference_tensorrt(img)
 
     def preprocess(self, img):
-        t = time.time()
+        # t = time.time()
         img = cv2.resize(img, (self.img_w_new, self.img_h_new))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = img.transpose(2,0,1).astype(np.float32)
         img = img.reshape(-1)
-        print("Preproc : ", time.time() - t)
+        # print("Preproc : ", time.time() - t)
         return img
 
     def inference_tensorrt(self, img):

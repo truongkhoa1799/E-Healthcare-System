@@ -21,10 +21,9 @@ class CountFace:
         try:
             # print("State: {}, is_sending_message: {}, has_response_server: {}, num_images: {}".format(glo_va.STATE, glo_va.is_sending_message, glo_va.has_response_server, self.__num_imgs))
             if glo_va.STATE == 1 and self.__num_imgs > glo_va.NUMBER_DETECTED_FACE_TRANSMITED and glo_va.is_sending_message == False:
-                glo_va.list_embedded_face = self.__list_faces
                 glo_va.timer.Start_Timer(glo_va.OPT_TIMER_VALIDATE)
                 glo_va.is_sending_message = True
-                glo_va.server.Validate_User()
+                glo_va.server.Validate_User(self.__list_faces)
 
             self.__list_faces = ""
             self.__num_imgs = 0
@@ -36,9 +35,9 @@ class CountFace:
         self.__counter.cancel()
         self.__counter.join()
     
-    def Count_Face(self):
-        encoded_img_string = Compose_Embedded_Face(glo_va.embedded_face)
-        self.__list_faces += encoded_img_string + ' '
+    def Count_Face(self, embedded_face):
+        encoded_embedded_face = Compose_Embedded_Face(embedded_face)
+        self.__list_faces += encoded_embedded_face + ' '
         self.__num_imgs += 1
     
     def Clear(self):

@@ -1,14 +1,10 @@
 import hid
 import serial
-import time, sys, threading
+import time
 import numpy as np
-from threading import Timer
-
-sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoa1799/GitHub/E-Healthcare-System')
 
 MIN_WEIGHT = 5.0
-NUM_GET_ESP = 5
+NUM_GET_ESP = 7
 DELAY_TIME_ESP32 = 8
 DELAY_TIME_RESET_ESP32 = 3
 
@@ -82,16 +78,17 @@ class MeasureSensor:
     def getSensorsData(self):
         try:
             # Get sensor infdrmation of oso2 device
-            self.__getOSO2Data()
+            if not self.has_oso2:
+                self.__getOSO2Data()
 
             # Get sensor infdrmation of esp devices
-            if self.__delay_esp32 == False:
+            if not self.has_esp:
                 self.__getESPData()
-            else:
-                self.__delayESP32()
-
+            
+            if self.has_esp and self.has_oso2: return 1
+            
             return 0
-                
+            
         except Exception as e:
             if str(e) == 'read error': return -2
 
@@ -146,7 +143,6 @@ class MeasureSensor:
         self.__time_missing_data = 0
 
         LogMesssage("[measuring_sensors___stateOSO2_0]: Final spo2: {}, final hear rate: {}".format(self.final_spo2, self.final_heart_pulse))
-        LogMesssage('[measuring_sensors___stateOSO2_0]: Back to wait read first data from OSO2 device')
 
     def __getOSO2Data(self):
         if self.__state_oso2 == 0:
@@ -255,11 +251,6 @@ class MeasureSensor:
                     }
                     glo_va.gui.queue_request_states_thread.put(request)
 
-                    # reset esp32
-                    self.__uart_connection_0.write(b"0")
-                    self.__uart_connection_1.write(b"0")
-                    self.__delay_esp32 = True
-                    return
             else:
                 LogMesssage('\tReset reading esp32')
                 self.__num_esp_records = 0
@@ -268,22 +259,6 @@ class MeasureSensor:
                 self.__list_temperature = []
 
             self.__pre_weight = self.__cur_weight
-    
-    def __delayESP32(self):
-        if self.__pre_time == 0:
-            self.__pre_time = time.time()
-        else:
-            self.__sum_time_delay += (time.time() - self.__pre_time)
-            self.__pre_time = time.time()
-        
-        if self.__sum_time_delay >= DELAY_TIME_ESP32:
-            self.__pre_time = 0
-            self.__sum_time_delay = 0
-            self.__delay_esp32 = False
-            LogMesssage("[measure_sensors___delayESP32]: Done restart ESP32")
-        elif self.__sum_time_delay >= DELAY_TIME_RESET_ESP32:
-            self.__uart_connection_0.write(b"1")
-            self.__uart_connection_1.write(b"1")
 
     def __readOSO2Data(self, data):
         # print(data)
@@ -328,9 +303,11 @@ class MeasureSensor:
     def closeDevice(self):
         try:
             self.__uart_connection_0.write(b"0")
+            time.sleep(0.01)
             self.__uart_connection_1.write(b"0")
             time.sleep(0.1)
             self.__uart_connection_0.close()
+            time.sleep(0.1)
             self.__uart_connection_1.close()
             LogMesssage("[measure_sensors_closeDevice]: Closing connection with ESP32 device", opt=0)
 

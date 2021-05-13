@@ -24,7 +24,6 @@ class Server:
 
         self.__establishConnectionServer()
         
-
         # Start a thread to listen 
         self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=())
         self.__listening_server_thread.daemon = True
@@ -50,6 +49,9 @@ class Server:
             
     # When server receive response:
     #   1: Clear Timer, so that timer is not trigged
+    ########################################################
+    # Listenning response or message from server           #
+    ########################################################
     def __Listen_Reponse_Server(self):
         while True:
             try:
@@ -90,8 +92,7 @@ class Server:
                         glo_va.lock_init_state.release()
 
                         LogMesssage('[server___Listen_Reponse_Server]: Receive response with different current request id')
-                        
-                        response_payload = {"Response": "Wrong response {} not defined".format(method_request.name)}
+                        method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                         self.__connection.send_method_response(method_response)
                         continue
 
@@ -191,136 +192,139 @@ class Server:
                     LogMesssage('[server___Listen_Reponse_Server]: Release lock init state')
 
             except Exception as e:
-                if method_request.name == "Update_List_Exam_Rooms":
-                    LogMesssage('[server___Listen_Reponse_Server]: Has error when updating list exam rooms')
-                
-                else:
-                    LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
+                LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
 
-                    if glo_va.lock_init_state.locked() == True:
-                        glo_va.lock_init_state.release()
-                        LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock init state'.format(e=e))
+                if glo_va.lock_init_state.locked() == True:
+                    glo_va.lock_init_state.release()
+                    LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock init state'.format(e=e))
 
-                    if glo_va.lock_response_server.locked() == True:
-                        glo_va.lock_response_server.release()
-                        LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
+                if glo_va.lock_response_server.locked() == True:
+                    glo_va.lock_response_server.release()
+                    LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
 
-                    if method_request.name == "Validate_User":
-                        user_infor.Clear()
+                if method_request.name == "Validate_User":
+                    user_infor.Clear()
 
-                    elif method_request.name == "Get_Sympton":
-                        glo_va.patient_symptons = None
+                elif method_request.name == "Get_Sympton":
+                    glo_va.patient_symptons = None
 
-                    elif method_request.name == "Get_Init_Parameters":
-                        init_parameters.Clear()
+                elif method_request.name == "Get_Init_Parameters":
+                    init_parameters.Clear()
 
-                    glo_va.has_response_server = True
+                glo_va.has_response_server = True
+
 
             method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
             self.__connection.send_method_response(method_response)
 
-    def Validate_User(self):
+    ########################################################
+    # Validate user                                        #
+    ########################################################
+    def Validate_User(self, list_embedded_face, ssn="-1"):
         # glo_va.start_time = time.time()
         try:
-            event_data_batch = self.__producer.create_batch()
-            try:
-                LogMesssage("[Validate_User]: Send validating message to server with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
-                data = EventData(glo_va.list_embedded_face)
-                data.properties = {
-                    'request_id':glo_va.timer.timer_id,
-                    'type_request': "0", 
-                    'device_ID': str(self.__device_ID)
-                }
-                event_data_batch.add(data)
-            except Exception as e:
-                LogMesssage(e, opt=2)
-                glo_va.STATE = -1
+            event_data_batch = self.__producer.create_batch(partition_id=glo_va.PARTITION_ID)
+
+            LogMesssage("[Validate_User]: Send validating message to server with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
+            data = EventData(list_embedded_face)
+            data.properties = {
+                'request_id':glo_va.timer.timer_id,
+                'type_request': "0", 
+                'device_ID': str(self.__device_ID),
+                'ssn': ssn
+            }
+            event_data_batch.add(data)
+
+            
             self.__producer.send_batch(event_data_batch)
+
         except Exception as e:
             LogMesssage("Has error at module Validate_User in server.py: {}".format(e), opt=2)
             
             self.__establishConnectionServer()
             LogMesssage('Re-establish connection with Server')
     
+    ########################################################
+    # Submit_Examination                                   #
+    ########################################################
     def Submit_Examination(self):
         try:
-            event_data_batch = self.__producer.create_batch()
-            try:
-                LogMesssage("[Submit_Examination]: Submit Examination with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
-                
-                dep_name, building_code, room_code = exam.Get_Exam_Room_Infor()
-                sensor_infor = sensor.sensor_infor
-                msg = {
-                    'request_id':glo_va.timer.timer_id,
-                    'type_request': "5",
-                    'device_ID': str(self.__device_ID),
-                    'hospital_ID': str(init_parameters.hospital_ID),
-                    'building_code': building_code,
-                    'room_code': room_code,
-                    'bmi': str(sensor_infor['bmi']),
-                    'pulse': str(sensor_infor['heart_pulse']),
-                    'thermal': str(sensor_infor['temperature']),
-                    'spo2': str(sensor_infor['spo2']),
-                    'height': str(sensor_infor['height']),
-                    'weight': str(sensor_infor['weight']),
-                    'patient_ID': str(user_infor.patient_ID)
-                }
-                
-                # Check is new user
-                if user_infor.patient_ID == -1:
-                    data = EventData(glo_va.list_embedded_face_new_user)
-                elif user_infor.patient_ID != -1:
-                    data = EventData("")
+            event_data_batch = self.__producer.create_batch(partition_id=glo_va.PARTITION_ID)
+            LogMesssage("[Submit_Examination]: Submit Examination with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
+            
+            dep_name, building_code, room_code = exam.Get_Exam_Room_Infor()
+            sensor_infor = sensor.sensor_infor
+            msg = {
+                'request_id':glo_va.timer.timer_id,
+                'type_request': "5",
+                'device_ID': str(self.__device_ID),
+                'hospital_ID': str(init_parameters.hospital_ID),
+                'building_code': building_code,
+                'room_code': room_code,
+                'bmi': str(sensor_infor['bmi']),
+                'pulse': str(sensor_infor['heart_pulse']),
+                'thermal': str(sensor_infor['temperature']),
+                'spo2': str(sensor_infor['spo2']),
+                'height': str(sensor_infor['height']),
+                'weight': str(sensor_infor['weight']),
+                'patient_ID': str(user_infor.patient_ID)
+            }
+            
+            # Check is new user
+            if user_infor.patient_ID == -1:
+                data = EventData(glo_va.list_embedded_face_new_user)
+            elif user_infor.patient_ID != -1:
+                data = EventData("")
 
-                data.properties = msg
-                event_data_batch.add(data)
-            except Exception as e:
-                LogMesssage(e, opt=2)
-                glo_va.STATE = -1
+            data.properties = msg
+            event_data_batch.add(data)
+
             self.__producer.send_batch(event_data_batch)
+
         except Exception as e:
             LogMesssage("Has error at module Submit_Examination in server.py: {}".format(e), opt=2)
             
             self.__establishConnectionServer()
             LogMesssage('Re-establish connection with Server')
 
+    ########################################################
+    # getSymptonPatient                                    #
+    ########################################################
     def getSymptonPatient(self, voice):
         try:
-            event_data_batch = self.__producer.create_batch()
-            try:
-                LogMesssage("[getSymptonPatient]: Get sympton patient with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
-                data = EventData(voice)
-                data.properties = {
-                    'request_id': glo_va.timer.timer_id,
-                    'type_request': "7", 
-                    'device_ID': str(self.__device_ID)
-                }
-                event_data_batch.add(data)
-            except Exception as e:
-                LogMesssage(e, opt=2)
-                glo_va.STATE = -1
+            event_data_batch = self.__producer.create_batch(partition_id=glo_va.PARTITION_ID)
+            LogMesssage("[getSymptonPatient]: Get sympton patient with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
+            data = EventData(voice)
+            data.properties = {
+                'request_id': glo_va.timer.timer_id,
+                'type_request': "7", 
+                'device_ID': str(self.__device_ID)
+            }
+            event_data_batch.add(data)
             self.__producer.send_batch(event_data_batch)
+
         except Exception as e:
             LogMesssage("Has error at module getSymptonPatient in server.py: {}".format(e), opt=2)
             
             self.__establishConnectionServer()
             LogMesssage('Re-establish connection with Server')
     
+    ########################################################
+    # getInitParameters                                    #
+    ########################################################
     def getInitParameters(self):
         try:
-            event_data_batch = self.__producer.create_batch()
-            try:
-                LogMesssage("[getInitParameters]: Get init parameters with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
-                data = EventData('')
-                data.properties = {
-                    'request_id': glo_va.timer.timer_id,
-                    'type_request': "8", 
-                    'device_ID': str(self.__device_ID)
-                }
-                event_data_batch.add(data)
-            except Exception as e:
-                LogMesssage(e, opt=2)
-                glo_va.STATE = -1
+            event_data_batch = self.__producer.create_batch(partition_id=glo_va.PARTITION_ID)
+
+            LogMesssage("[getInitParameters]: Get init parameters with timer_id: {timer_id}.".format(timer_id=glo_va.timer.timer_id))
+            data = EventData('')
+            data.properties = {
+                'request_id': glo_va.timer.timer_id,
+                'type_request': "8", 
+                'device_ID': str(self.__device_ID)
+            }
+            event_data_batch.add(data)
+
             self.__producer.send_batch(event_data_batch)
         except Exception as e:
             LogMesssage("Has error at module getInitParameters in server.py: {}".format(e), opt=2)

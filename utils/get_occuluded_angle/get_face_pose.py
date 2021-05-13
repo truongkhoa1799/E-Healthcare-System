@@ -2,8 +2,6 @@ import cv2
 import sys
 import numpy as np
 
-# sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-
 # from utils.get_occuluded_angle.drawFace import draw
 import utils.get_occuluded_angle.reference_world as world
 from utils.parameters import *
@@ -44,43 +42,60 @@ def Get_Face_Angle(im, shape):
     sign_horizontal = -1 if angles[1] < 0 else 1
     diff_horizontal = abs(angles[1])
 
-    print('sign_v: {}, diff_v: {}, sign_h :{}, diff_h: {}'.format(sign_vertical, diff_vertical, sign_horizontal, diff_horizontal))
+    # print('sign_v: {}, diff_v: {} '.format(sign_vertical, diff_vertical))
+    # print('\tsign_h :{}, diff_h: {}'.format(sign_horizontal, diff_horizontal))
 
-    if diff_horizontal < 15 and diff_vertical < 15:
-        # Looking foward
-        # print('front')
-        if glo_va.current_shape == 0:
-            return 0
+    if glo_va.current_shape == 0:
+        if diff_horizontal < glo_va.check_pose[glo_va.current_shape][3] \
+            and diff_vertical < glo_va.check_pose[glo_va.current_shape][1]:
+            return True
         else:
-            return 2
+            return False
     
-    if sign_horizontal == -1:
-        if diff_horizontal > 15 and diff_vertical < 15:
-            # Looking left
-            # print('left')
-            return 3
+    elif glo_va.current_shape == 1 or glo_va.current_shape == 2:
+        if sign_vertical == glo_va.check_pose[glo_va.current_shape][0] \
+            and diff_horizontal < glo_va.check_pose[glo_va.current_shape][3] \
+            and diff_vertical >= glo_va.check_pose[glo_va.current_shape][1]:
+            return True
+        else:
+            return False
+    
+    elif glo_va.current_shape == 3 or glo_va.current_shape == 4:
+        if sign_horizontal == glo_va.check_pose[glo_va.current_shape][2] \
+            and diff_horizontal >= glo_va.check_pose[glo_va.current_shape][3] \
+            and diff_vertical < glo_va.check_pose[glo_va.current_shape][1]:
+            return True
+        else:
+            return False
 
-    elif sign_horizontal == 1:
-        if diff_horizontal > 15 and diff_vertical < 15:
-            # Looking right
-            # print('right')
-            return 4
+    # if diff_horizontal < 7 and diff_vertical < 7:
+    #     # Looking foward
+    #     # print('front')
+    #     return 0
+    
+    # if sign_horizontal == -1:
+    #     if diff_horizontal >= 5 and diff_vertical < 7:
+    #         # Looking left
+    #         # print('left')
+    #         return 3
+
+    # elif sign_horizontal == 1:
+    #     if diff_horizontal >= 5 and diff_vertical < 7:
+    #         # Looking right
+    #         # print('right')
+    #         return 4
 
     # if sign_vertical == -1:
-    #     if diff_vertical >=0 and diff_horizontal < 10:
+    #     if diff_vertical >= 5 and diff_horizontal < 7:
     #         # Looking down
     #         # print('down')
     #         return 2
+
     # elif sign_vertical == 1:
-    #     if diff_vertical > 10 and diff_horizontal < 5:
+    #     if diff_vertical > 7 and diff_horizontal < 7:
     #         # Looking up
     #         # print('up')
     #         return 1
-    if sign_vertical == 1:
-        if diff_vertical > 15 and diff_horizontal < 15:
-            # Looking up
-            # print('up')
-            return 1
 
-    return -1
+    # return -1
 

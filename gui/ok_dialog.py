@@ -58,6 +58,13 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
             ''')
             self.text = '    You connect sensor successfully'
         
+        elif data['opt'] == 5:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/warning.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '     Your devices are disconnected'
 
         self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning())

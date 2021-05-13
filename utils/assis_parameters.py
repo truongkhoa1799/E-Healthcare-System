@@ -11,7 +11,7 @@ class AssistantParameter:
             -1: 'Momo xin lỗi, Momo chưa hiểu câu trả lời của bạn. Bạn có thể lặp lại giúp Momo được không',
             0: 'Vui lòng cho Momo biết khoa bạn muốn khám được không hoặc bạn có thể chọn trên màn hình',
             1: 'Vậy bạn có thể cho Momo biết bạn bị đau hoặc cảm thấy khó chịu ở chỗ nào được không? Để Momo có thể giúp bạn tìm khoa phù hợp.',
-            2: 'Momo đã chọn cho bạn khoa {dep_name}.',
+            2: 'Momo đã chọn cho bạn khoa {dep_name}. Vui lòng xác nhận để tiếp tục ạ.',
             3: "Bạn có thể miêu tả triệu chứng cho momo được không",
             4: 'Bái baiii.',
             5: 'Cảm ơn bạn đã cung cấp thông tin cho Momo. Vui lòng đợi một lát, Momo sẽ phân tích và trả lời bạn kết quả',
