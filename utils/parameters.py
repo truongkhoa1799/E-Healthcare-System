@@ -17,6 +17,9 @@ class GlobalVariable:
         self.centerface_detector = None
         self.stop_program = Event()
         self.start_program = Event()
+
+        # VERIFYING PATIENT
+        self.check_ssn = "-1"
         
         # # test
         # self.times_measure = 0
@@ -196,6 +199,7 @@ class GlobalVariable:
         self.BUTTON_CONNECT_DEVICE_SENSOR = 17
         self.BUTTON_DIAGNOSE_SYMPTOMS = 18
         self.BUTTON_CLOSE_MOMO_GUI = 19
+        self.BUTTON_VERIFY_PATIENT = 20
 
         ########################################################
         # REQUEST MAIN GUI                                     #

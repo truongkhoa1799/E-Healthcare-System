@@ -24,17 +24,40 @@ class QDialogClass(QDialog, glo_va.yes_no_dialog):
         elif opt == glo_va.CONFIRM_SENSOR_INFORMATION:
             self.text = 'Are you sure\nabout these sensor'
 
+        self.stackedWidget.addWidget(self.notification_frame)
+        self.stackedWidget.addWidget(self.check_ssn_frame)
+
         self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning(0))
         self.deny_exist.clicked.connect(lambda: self.__onButtonListenning(1))
-    
+        self.check_ssn.clicked.connect(lambda: self.__onButtonListenning(2))
+        self.back_notification.clicked.connect(lambda: self.__onButtonListenning(3))
+        self.accept_ssn.clicked.connect(lambda: self.__onButtonListenning(4))
+
     def __onButtonListenning(self, opt):
-        if opt == 0:
-            self.ret = 0
-        elif opt == 1:
-            self.ret = -1
-        self.accept()
-        self.close()
+        if opt == 0 or opt == 1 or opt == 4:
+            if opt == 0:
+                self.ret = 0
+
+            elif opt == 1:
+                self.ret = -1
+            
+            elif opt == 4:
+                glo_va.check_ssn = str(self.input_ssn.text())
+                self.input_ssn.setText('')
+                self.ret = 1
+
+            self.accept()
+            self.close()
+        
+        # check ssn
+        elif opt == 2:
+            self.stackedWidget.setCurrentWidget(self.check_ssn_frame)
+        
+        elif opt == 3:
+            self.input_ssn.setText('')
+            self.stackedWidget.setCurrentWidget(self.notification_frame)
+        
     
     def closeEvent(self, event):
         if self.ret == -2:

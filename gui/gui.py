@@ -5,18 +5,18 @@ from PyQt5.QtCore import QTimer
 import sys, time
 
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
+sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
 
-from gui.momo_gui import MomoGuiDialog
-from gui.ok_dialog import OkDialogClass
-from gui.yes_no_dialog import QDialogClass
+# from gui.momo_gui import MomoGuiDialog
+# from gui.ok_dialog import OkDialogClass
+# from gui.yes_no_dialog import QDialogClass
 
-# from momo_gui import MomoGuiDialog
-# from ok_dialog import OkDialogClass
-# from yes_no_dialog import QDialogClass
+from momo_gui import MomoGuiDialog
+from ok_dialog import OkDialogClass
+from yes_no_dialog import QDialogClass
 
 import queue
 
@@ -47,7 +47,7 @@ class GUI(QtWidgets.QMainWindow):
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
         # # Show full screen
-        self.showFullScreen()
+        # self.showFullScreen()
         # # Hide currsor
         # self.setCursor(QtCore.Qt.BlankCursor)
 
@@ -107,8 +107,10 @@ class GUI(QtWidgets.QMainWindow):
         # data['opt'] = 0
         # self.__notificationDialog(data)
         
-        # self.__OpenDialog(glo_va.CONFIRM_SENSOR_INFORMATION)
-        
+        ret = self.__OpenDialog(glo_va.CONFIRM_SENSOR_INFORMATION)
+        print(ret)
+        print(glo_va.check_ssn)
+
 
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
@@ -159,8 +161,12 @@ class GUI(QtWidgets.QMainWindow):
             ret = self.__OpenDialog(glo_va.CONFIRM_PATIENT_DIALOG)
             if ret == -1:
                 glo_va.button = glo_va.BUTTON_CANCEL_CONFIRM_PATIENT
-            else:
+
+            elif ret == 0:
                 glo_va.button = glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT
+
+            elif ret == 1:
+                glo_va.button = glo_va.BUTTON_VERIFY_PATIENT
 
         elif opt == glo_va.BUTTON_VIEW_LIST_DEP:
             if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
@@ -543,7 +549,7 @@ class GUI(QtWidgets.QMainWindow):
         self.progress_bar.setValue(0)
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()
