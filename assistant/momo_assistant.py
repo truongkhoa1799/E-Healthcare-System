@@ -230,7 +230,7 @@ class MomoAssistant:
                 print("Has error at momo_assistant_momoCore: {}".format(e))
                 glo_va.ClearAssisPara()
                 print("Reset program")
-            
+                
             time.sleep(0.1) 
 
         LogMesssage('[momo_assistant_momoCore]: Stop thread MOMO ASSISTANT')

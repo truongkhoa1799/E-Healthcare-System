@@ -30,7 +30,12 @@ def State_1():
             cv2.rectangle(glo_va.img, (location_detected_face[2], location_detected_face[0]), (location_detected_face[3], location_detected_face[1]) , (2, 255, 0), 2)
 
             embedded_face = glo_va.face_recognition.Encoding_Face(detected_face)
-            glo_va.count_face.Count_Face(embedded_face)
+            # glo_va.count_face.Count_Face(embedded_face)
+        
+        else:
+            time.sleep(0.03)
+    else:
+        time.sleep(0.03)
 
     # Face detecting
     # ret = glo_va.face_recognition.Get_Face()
@@ -60,6 +65,7 @@ def State_1():
         if user_infor.status == glo_va.USER_INFOR_HAS_FACE:
             LogMesssage('[states_State_1]: Patient: {id} has been detected'.format(id=user_infor.patient_ID))
             glo_va.STATE = glo_va.STATE_CONFIRM_PATIENT
+            
             # Clear all previous detected faces  
             glo_va.count_face.Clear()
             
@@ -73,6 +79,9 @@ def State_1():
             LogMesssage('[states_State_1]: Patient exceed number of trying identify')
             glo_va.STATE = glo_va.STATE_CONFIRM_NEW_PATIENT
 
+            # Clear all previous detected faces  
+            glo_va.count_face.Clear()
+
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
 
@@ -81,7 +90,7 @@ def State_1():
             glo_va.times_missing_face = 0
 
         elif user_infor.status == glo_va.USER_INFOR_WEARING_MASK:
-            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'], opt=glo_va.MOMO_SAY_BLOCKING)
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'])
             LogMesssage('[states_State_1]: Patient is asked to take of mask')
 
         # set parameters for receive response to server. Make sure that there will not has dump response
@@ -264,6 +273,7 @@ def State_5():
         Init_State()
 
     elif glo_va.button == glo_va.BUTTON_ACCEPT_NEW_PATIENT:
+        LogMesssage('[states_State_3]: Unknown Patient choose add new patient')
         glo_va.button = glo_va.DEFAULT_BUTTON
         # Set state for next state
         glo_va.STATE = glo_va.STATE_NEW_PATIENT
@@ -273,10 +283,18 @@ def State_5():
         glo_va.gui.queue_request_states_thread.put(request)
     
         return
+    
+    elif glo_va.button == glo_va.BUTTON_VERIFY_PATIENT:
+        LogMesssage('[states_State_3]: Unknown Patient choose verify patient with SSN: {}'.format(glo_va.check_ssn))
+        glo_va.button = glo_va.DEFAULT_BUTTON
+
+        # Back to first state
+        glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
+        return
 
     if glo_va.button == glo_va.BUTTON_EXIST:
         # If user reject, Clear user_infor, Ui and go to first state
-        LogMesssage('[states_State_3]: Patient with id: {id} exist program'.format(id=user_infor.patient_ID))
+        LogMesssage('[states_State_3]: Unknown Patient exist program')
         Init_State()
 
 ############################################################
@@ -490,6 +508,12 @@ def State_8():
 
             # Update sensor entity
             sensor.Update_Sensor(sensor_infor)
+            LogMesssage("[states_State_8]: Has enought sensor data: {}".format(sensor_infor))
+        else:
+            if glo_va.measuring_sensor.has_esp:
+                LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
+            else:
+                LogMesssage("[states_State_8]: Missing datas of ESP32 sensor")
 
         if glo_va.connected_sensor_device:
             glo_va.connected_sensor_device = False
@@ -599,6 +623,7 @@ def Init_State():
     ########################################################
     # glo_va.patient_ID = -1
     user_infor.Clear()
+    glo_va.check_ssn = "-1"
     LogMesssage('\t[states_Init_State]: Clear patient information')
 
     ########################################################
@@ -659,7 +684,7 @@ def Init_State():
     request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
     glo_va.gui.queue_request_states_thread.put(request)
     LogMesssage('\t[states_Init_State]: Back to State 1')
-        
+
     # MOMO saying
     glo_va.momo_assis.stopCurrentConversation()
     glo_va.momo_assis.momoSay(glo_va.momo_messages['say_bye'])

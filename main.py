@@ -107,6 +107,8 @@ if __name__ == "__main__":
         glo_va.main_thread.start()
 
         Init_Gui()
+
+        End()
     except Exception as e:
         print("Error at Init module: {}".format(e))
         try:

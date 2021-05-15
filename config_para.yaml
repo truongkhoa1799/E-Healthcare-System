@@ -27,8 +27,8 @@ preprocessing:
 
 identifying_face:
   cycle_count_face_period: 1
-  # number_deteced_face_allowed: 100
-  number_deteced_face_allowed: 12
+  number_deteced_face_allowed: 100
+  # number_deteced_face_allowed: 12
   max_edge: 150
   # MAX length for face Detector
   max_length_img: 80

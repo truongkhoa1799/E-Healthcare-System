@@ -219,6 +219,56 @@ QPushButton:pressed {
            </size>
           </property>
          </widget>
+         <widget class="QLabel" name="front_face_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>101</width>
+            <height>101</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>100</horstretch>
+            <verstretch>100</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255);
+	background-position: center;
+	background-repeat: no-repeat;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap>icons/small_logo.png</pixmap>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -278,7 +328,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -316,7 +366,7 @@ QPushButton:pressed {
         </property>
         <property name="styleSheet">
          <string notr="true">border-radius: 12px;
-background: rgb(0, 0, 0)</string>
+background: rgb(255, 255, 255)</string>
         </property>
         <widget class="QLabel" name="image_patient">
          <property name="geometry">
@@ -351,11 +401,13 @@ background: rgb(0, 0, 0)</string>
           <bool>false</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">background: transparent;
-</string>
+          <string notr="true"/>
          </property>
          <property name="text">
-          <string notr="true">E-Healthcare System</string>
+          <string notr="true"/>
+         </property>
+         <property name="pixmap">
+          <pixmap>icons/logo.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>false</bool>
@@ -823,7 +875,7 @@ border-radius: 5px;	</string>
           <property name="font">
            <font>
             <family>Segoe UI</family>
-            <pointsize>25</pointsize>
+            <pointsize>20</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>

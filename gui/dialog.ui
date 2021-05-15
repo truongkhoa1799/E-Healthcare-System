@@ -26,7 +26,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background: rgb(50, 50, 50);</string>
+    <string notr="true">background: rgb(255, 255, 255);</string>
    </property>
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
@@ -41,10 +41,10 @@
      <widget class="QPushButton" name="check_ssn">
       <property name="geometry">
        <rect>
-        <x>550</x>
+        <x>520</x>
         <y>10</y>
-        <width>141</width>
-        <height>71</height>
+        <width>170</width>
+        <height>90</height>
        </rect>
       </property>
       <property name="font">
@@ -191,7 +191,7 @@ QPushButton:pressed {
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">color: rgb(245,245,245);</string>
+       <string notr="true">color: rgb(50, 50, 50);</string>
       </property>
       <property name="text">
        <string>Are you sure to quit?</string>
@@ -234,10 +234,10 @@ background-repeat: no-repeat;
      <widget class="QPushButton" name="back_notification">
       <property name="geometry">
        <rect>
-        <x>550</x>
+        <x>520</x>
         <y>10</y>
-        <width>141</width>
-        <height>71</height>
+        <width>171</width>
+        <height>91</height>
        </rect>
       </property>
       <property name="font">
@@ -280,10 +280,10 @@ QPushButton:pressed {
      <widget class="QPushButton" name="accept_ssn">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>320</y>
-        <width>530</width>
-        <height>150</height>
+        <x>170</x>
+        <y>350</y>
+        <width>360</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -322,9 +322,9 @@ QPushButton:pressed {
       <property name="geometry">
        <rect>
         <x>200</x>
-        <y>20</y>
-        <width>300</width>
-        <height>140</height>
+        <y>10</y>
+        <width>301</width>
+        <height>211</height>
        </rect>
       </property>
       <property name="maximumSize">
@@ -335,7 +335,7 @@ QPushButton:pressed {
       </property>
       <property name="styleSheet">
        <string notr="true">background: transparent;
-background-image: url(icons/question.png);
+background-image: url(icons/logo.png);
 background-position: center;
 background-repeat: no-repeat;
 </string>
@@ -350,9 +350,9 @@ background-repeat: no-repeat;
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>200</y>
-        <width>161</width>
+        <x>30</x>
+        <y>240</y>
+        <width>131</width>
         <height>91</height>
        </rect>
       </property>
@@ -362,7 +362,7 @@ background-repeat: no-repeat;
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">color: rgb(255,255,255);</string>
+       <string notr="true">color: rgb(50,50,50);</string>
       </property>
       <property name="text">
        <string>CMND/CCCD:</string>
@@ -371,24 +371,27 @@ background-repeat: no-repeat;
      <widget class="QLineEdit" name="input_ssn">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>190</y>
-        <width>351</width>
-        <height>111</height>
+        <x>170</x>
+        <y>240</y>
+        <width>360</width>
+        <height>91</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>26</pointsize>
+        <pointsize>30</pointsize>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">color: rgb(255, 255, 255);
-border: 4px solid rgb(255,255,255);
+       <string notr="true">color: rgb(50, 50, 50);
+border: 4px solid rgb(100,100,100);
 border-radius: 5px;	</string>
       </property>
       <property name="text">
        <string>025874415</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>

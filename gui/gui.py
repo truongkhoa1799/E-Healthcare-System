@@ -1,22 +1,23 @@
 from PyQt5 import QtWidgets, uic, QtCore
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QTableWidgetItem
+# from PyQt5.QtWidgets import QDialog
+# from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
-import sys, time
 
+# import sys, time
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
+# sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
 
-# from gui.momo_gui import MomoGuiDialog
-# from gui.ok_dialog import OkDialogClass
-# from gui.yes_no_dialog import QDialogClass
+from gui.momo_gui import MomoGuiDialog
+from gui.ok_dialog import OkDialogClass
+from gui.yes_no_dialog import QDialogClass
 
-from momo_gui import MomoGuiDialog
-from ok_dialog import OkDialogClass
-from yes_no_dialog import QDialogClass
+# from momo_gui import MomoGuiDialog
+# from ok_dialog import OkDialogClass
+# from yes_no_dialog import QDialogClass
 
 import queue
 
@@ -47,7 +48,7 @@ class GUI(QtWidgets.QMainWindow):
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
         # # Show full screen
-        # self.showFullScreen()
+        self.showFullScreen()
         # # Hide currsor
         # self.setCursor(QtCore.Qt.BlankCursor)
 
@@ -61,10 +62,6 @@ class GUI(QtWidgets.QMainWindow):
         update_image_timer = QTimer(self)
         update_image_timer.timeout.connect(self.__UpdateImage)
         update_image_timer.start(33)
-
-        # test = QTimer(self)
-        # test.timeout.connect(self.__test)
-        # test.start(3000)
 
         self.list_shape_face = [self.front_face, self.up_face, self.down_face, self.left_face, self.right_face]
         self.__map_department = None
@@ -107,9 +104,9 @@ class GUI(QtWidgets.QMainWindow):
         # data['opt'] = 0
         # self.__notificationDialog(data)
         
-        ret = self.__OpenDialog(glo_va.CONFIRM_SENSOR_INFORMATION)
-        print(ret)
-        print(glo_va.check_ssn)
+        # ret = self.__OpenDialog(glo_va.CONFIRM_SENSOR_INFORMATION)
+        # print(ret)
+        # print(glo_va.check_ssn)
 
 
     def closeEvent(self, event):
@@ -144,246 +141,295 @@ class GUI(QtWidgets.QMainWindow):
                 self.__UpdateSelectedRoom(ret)
             glo_va.momo_gui = None
         
-
     ############################################################################
-    # CONTROL MODULE                                                            #
+    # CONTROL MODULE                                                           #
     ############################################################################
     def __onButtonsListenning(self, opt):
-        if opt == glo_va.BUTTON_EXIST:
-            ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
-            # print(ret)
-            if ret == 0:
-                glo_va.button = glo_va.BUTTON_EXIST
+        try:
+            if opt == glo_va.BUTTON_EXIST:
+                ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
+                # print(ret)
+                if ret == 0:
+                    glo_va.button = glo_va.BUTTON_EXIST
 
-        elif opt == glo_va.BUTTON_CONFIRM_PATIENT:
-            if glo_va.STATE != glo_va.STATE_CONFIRM_PATIENT:
-                return
-            ret = self.__OpenDialog(glo_va.CONFIRM_PATIENT_DIALOG)
-            if ret == -1:
-                glo_va.button = glo_va.BUTTON_CANCEL_CONFIRM_PATIENT
+            elif opt == glo_va.BUTTON_CONFIRM_PATIENT:
+                if glo_va.STATE != glo_va.STATE_CONFIRM_PATIENT:
+                    return
+                ret = self.__OpenDialog(glo_va.CONFIRM_PATIENT_DIALOG)
+                if ret == -1:
+                    glo_va.button = glo_va.BUTTON_CANCEL_CONFIRM_PATIENT
 
-            elif ret == 0:
-                glo_va.button = glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT
+                elif ret == 0:
+                    glo_va.button = glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT
 
-            elif ret == 1:
-                glo_va.button = glo_va.BUTTON_VERIFY_PATIENT
+            elif opt == glo_va.BUTTON_VIEW_LIST_DEP:
+                if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
+                    return
+                
+                glo_va.button = glo_va.BUTTON_VIEW_LIST_DEP
+                # print('BUTTON_VIEW_LIST_DEP')
 
-        elif opt == glo_va.BUTTON_VIEW_LIST_DEP:
-            if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
-                return
+            elif opt == glo_va.BUTTON_CAPTURE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
+                    return
+                
+                glo_va.button = glo_va.BUTTON_CAPTURE_SENSOR
+                # print('BUTTON_CAPTURE_SENSOR')
+                
+            elif opt == glo_va.BUTTON_SUBMIT_EXAM:
+                if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
+                    return
+                
+                glo_va.button = glo_va.BUTTON_SUBMIT_EXAM
             
-            glo_va.button = glo_va.BUTTON_VIEW_LIST_DEP
-            # print('BUTTON_VIEW_LIST_DEP')
+            elif opt == glo_va.BUTTON_CONFIRM_DEP:
+                if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
+                    return
 
-        elif opt == glo_va.BUTTON_CAPTURE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
-                return
+                self.__ConfirmExamRoom()
+                glo_va.button = glo_va.BUTTON_CONFIRM_DEP
             
-            glo_va.button = glo_va.BUTTON_CAPTURE_SENSOR
-            # print('BUTTON_CAPTURE_SENSOR')
+            elif opt == glo_va.BUTTON_SELECT_DEP:
+                if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
+                    return
+
+                index = self.table_list_department.currentRow()
+                # just allow when the index != -1 and < len of __list_department
+                if index != -1 and index < len(self.__list_department):
+                    dep_name = self.__list_department[index]
+                    self.__UpdateSelectedRoom(dep_name)
             
-        elif opt == glo_va.BUTTON_SUBMIT_EXAM:
-            if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
-                return
-            
-            glo_va.button = glo_va.BUTTON_SUBMIT_EXAM
-        
-        elif opt == glo_va.BUTTON_CONFIRM_DEP:
-            if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
-                return
+            elif opt == glo_va.BUTTON_DIAGNOSE_SYMPTOMS:
+                if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
+                    return
 
-            self.__ConfirmExamRoom()
-            glo_va.button = glo_va.BUTTON_CONFIRM_DEP
-        
-        elif opt == glo_va.BUTTON_SELECT_DEP:
-            if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
-                return
+                glo_va.button = glo_va.BUTTON_DIAGNOSE_SYMPTOMS
 
-            index = self.table_list_department.currentRow()
-            # just allow when the index != -1 and < len of __list_department
-            if index != -1 and index < len(self.__list_department):
-                dep_name = self.__list_department[index]
-                self.__UpdateSelectedRoom(dep_name)
-        
-        elif opt == glo_va.BUTTON_DIAGNOSE_SYMPTOMS:
-            if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
-                return
+            ########################################################################
+            # Measuing frame                                                       #
+            ########################################################################
+            elif opt == glo_va.BUTTON_BACK_GUILDE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
 
-            glo_va.button = glo_va.BUTTON_DIAGNOSE_SYMPTOMS
+                if self.index_instruction > 0:
+                    self.index_instruction -= 1
+                    # print(self.state)
+                    self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
 
-        ########################
-        # Measuing frame       #
-        ########################
-        elif opt == glo_va.BUTTON_BACK_GUILDE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
+                    message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                    # MOMO saying
+                    glo_va.momo_assis.stopCurrentConversation()
+                    glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
-            if self.index_instruction > 0:
-                self.index_instruction -= 1
-                # print(self.state)
-                self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+            elif opt == glo_va.BUTTON_NEXT_GUILDE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
 
-                message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                if self.index_instruction < self.num_instruction - 1:
+                    self.index_instruction += 1
+                    # print(self.state)
+                    self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+
+                    message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                    # MOMO saying
+                    glo_va.momo_assis.stopCurrentConversation()
+                    glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+
+            elif opt == glo_va.BUTTON_GUILDE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
+
+                self.current_frame = self.INSTRUCTION_FRAME
+                self.instruction_stack.setCurrentWidget(self.first_instruction)
+                self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
+
+                message = 'measure_sensor_inform_0'
                 # MOMO saying
                 glo_va.momo_assis.stopCurrentConversation()
                 glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
-        elif opt == glo_va.BUTTON_NEXT_GUILDE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
+                LogMesssage('Patient change to instruction measure sensor frame')
+                
+            elif opt == glo_va.BUTTON_QUIT_GUILDE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
 
-            if self.index_instruction < self.num_instruction - 1:
-                self.index_instruction += 1
-                # print(self.state)
-                self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
+                self.index_instruction = 0
+                self.current_frame = self.MAIN_FRAME
+                self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
+                LogMesssage('Patient change to measure sensor frame')
 
-                message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
-                # MOMO saying
-                glo_va.momo_assis.stopCurrentConversation()
-                glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+            elif opt == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
 
-        elif opt == glo_va.BUTTON_GUILDE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
+                glo_va.button = glo_va.BUTTON_CONNECT_DEVICE_SENSOR
 
-            self.current_frame = self.INSTRUCTION_FRAME
-            self.instruction_stack.setCurrentWidget(self.first_instruction)
-            self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
+            elif opt == glo_va.BUTTON_CONFIRM_SENSOR:
+                if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
+                    return
 
-            message = 'measure_sensor_inform_0'
-            # MOMO saying
-            glo_va.momo_assis.stopCurrentConversation()
-            glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+                glo_va.button = glo_va.BUTTON_CONFIRM_SENSOR
+        
+        except Exception as e:
+            LogMesssage("[gui____onButtonsListenning]: Has error :{}".format(e))
 
-            LogMesssage('Patient change to instruction measure sensor frame')
-            
-        elif opt == glo_va.BUTTON_QUIT_GUILDE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
-
-            self.index_instruction = 0
-            self.current_frame = self.MAIN_FRAME
-            self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
-            LogMesssage('Patient change to measure sensor frame')
-
-        elif opt == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
-
-            # self.__measureSenSor()
-            glo_va.button = glo_va.BUTTON_CONNECT_DEVICE_SENSOR
-
-        elif opt == glo_va.BUTTON_CONFIRM_SENSOR:
-            if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
-                return
-
-            # self.confirmSensor()
-            glo_va.button = glo_va.BUTTON_CONFIRM_SENSOR
-
+    ############################################################################
+    # LISTENNING REQUEST THREAD                                                #
+    ############################################################################
     def __CheckRequestStatesThread(self):
         if self.queue_request_states_thread.empty():
             return
         
         request = self.queue_request_states_thread.get()
 
-        if request['type'] == glo_va.REQUEST_CONFIRM_NEW_PATIENT:
-            ret = self.__OpenDialog(glo_va.CONFIRM_NEW_PATIENT_DIALOG)
-            # print(ret)
-            if ret == 0:
-                glo_va.button = glo_va.BUTTON_ACCEPT_NEW_PATIENT
-            else:
-                glo_va.button = glo_va.BUTTON_DENY_NEW_PATIENT
+        try:
+            ########################################################
+            # CONFIRM NEW PATIENT OR NOT                           #
+            ########################################################
+            if request['type'] == glo_va.REQUEST_CONFIRM_NEW_PATIENT:
+                ret = self.__OpenDialog(glo_va.CONFIRM_NEW_PATIENT_DIALOG)
+                # print(ret)
+                if ret == 0:
+                    glo_va.button = glo_va.BUTTON_ACCEPT_NEW_PATIENT
 
-        elif request['type'] == glo_va.REQUEST_CHANGE_GUI:
-            self.__ChangeUI()
+                elif ret == -1:
+                    glo_va.button = glo_va.BUTTON_DENY_NEW_PATIENT
 
-        elif request['type'] == glo_va.REQUEST_UPDATE_PATIENT_INFO:
-            info = request['data']
-            self.__UpdatePatientInfo(info)
-        
-        elif request['type'] == glo_va.REQUEST_ACTIVATE_NEW_FACE:
-            current_shape = request['data']
-            self.__ActivateFaceRecored(current_shape)
-        
-        # elif request['type'] == glo_va.REQUEST_DEACTIVATE_NEW_FACE:
-        #     self.__DeactivateFaceRecored()
-        
-        elif request['type'] == glo_va.REQUEST_UPDATE_SENSOR:
-            self.__UpdateSensorInfo()
-        
-        elif request['type'] == glo_va.REQUEST_CLEAR_SENSOR:
-            self.__ClearSensorInfo()
-        
-        elif request['type'] == glo_va.REQUEST_CLEAR_EXAM_ROOM:
-            self.__ClearExamRoom()
-        
-        elif request['type'] == glo_va.REQUEST_CLEAR_DEPARTMENT_LIST:
-            self.__ClearListDepartments()
+                elif ret == 1:
+                    glo_va.button = glo_va.BUTTON_VERIFY_PATIENT
 
-        elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
-            data = request['data']
-            self.__notificationDialog(data)
-        
-        elif request['type'] == glo_va.REQUEST_CLEAR_SELECTED_EXAM_ROOM:
-            self.__ClearSelectedRoom()
-        
-        elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
-            dep_name = request['data']
-            self.__UpdateSelectedRoom(dep_name=dep_name)
-        
-        elif request['type'] == glo_va.REQUEST_OPEN_MOMO_GUI:
-            self.__openMomoChatbotGui()
-        
-        ########################
-        # Measuing frame       #
-        ########################
-        elif request['type'] == glo_va.REQUEST_UPDATE_OSO2:
-            if self.current_frame != self.MAIN_FRAME:
-                LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
-                return
+            ########################################################
+            # REQUEST CHANGE GUI                                   #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_CHANGE_GUI:
+                self.__ChangeUI()
 
-            if request['data']['final'] == 0:
-                if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
-                    self.progress_bar.setValue(100)
-                elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
-                    self.progress_bar.setValue(50)
-                else:
-                    self.progress_bar.setValue(0)
-                
-                self.spo2.setText(str(int(request['data']['spo2'])))
-                self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+            ########################################################
+            # REQUEST UPDATE PATIENT INFORMATION                   #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_UPDATE_PATIENT_INFO:
+                info = request['data']
+                self.__UpdatePatientInfo(info)
+            
+            ########################################################
+            # REQUEST ACTIVE FACE POSE NEW PATIENT                 #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_ACTIVATE_NEW_FACE:
+                current_shape = request['data']
+                self.__ActivateFaceRecored(current_shape)
+            
+            # elif request['type'] == glo_va.REQUEST_DEACTIVATE_NEW_FACE:
+            #     self.__DeactivateFaceRecored()
+            
+            ########################################################
+            # REQUEST UPDATE SENSOR INFORMATION                    #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_UPDATE_SENSOR:
+                self.__UpdateSensorInfo()
+            
+            ########################################################
+            # REQUEST CLEAR SENSOR INFORMATION                     #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_CLEAR_SENSOR:
+                self.__ClearSensorInfo()
+            
+            ########################################################
+            # REQUEST CLEAR EXAM ROOM                              #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_CLEAR_EXAM_ROOM:
+                self.__ClearExamRoom()
+            
+            ########################################################
+            # REQUEST CLEAR DEPARTMENT LIST                        #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_CLEAR_DEPARTMENT_LIST:
+                self.__ClearListDepartments()
+
+            ########################################################
+            # REQUEST NOTIFY MESSAGE                               #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_NOTIFY_MESSAGE:
+                data = request['data']
+                self.__notificationDialog(data)
+            
+            ########################################################
+            # REQUEST CLEAR SELECTED EXAM ROOM                     #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_CLEAR_SELECTED_EXAM_ROOM:
+                self.__ClearSelectedRoom()
+            
+            ########################################################
+            # REQUEST UPDATE SELECTED EXAM ROOM                    #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
+                dep_name = request['data']
+                self.__UpdateSelectedRoom(dep_name=dep_name)
+            
+            ########################################################
+            # REQUEST OPEN MOMO CHAT BOT                           #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_OPEN_MOMO_GUI:
+                self.__openMomoChatbotGui()
+            
+            ########################################################
+            # REQUEST UPDATE OSO2 SENSOR                           #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_UPDATE_OSO2:
+                if self.current_frame != self.MAIN_FRAME:
+                    LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
+                    return
+
+                if request['data']['final'] == 0:
+                    if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
+                        self.progress_bar.setValue(100)
+                    elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
+                        self.progress_bar.setValue(50)
+                    else:
+                        self.progress_bar.setValue(0)
                     
-            self.measuring_heart_pulse.setText(str(int(request['data']['heart_pulse'])))
-            self.measuring_spo2.setText(str(int(request['data']['spo2'])))
-        
-        elif request['type'] == glo_va.REQUEST_UPDATE_ESP:
-            if self.current_frame != self.MAIN_FRAME:
-                LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
-                return
+                    self.spo2.setText(str(int(request['data']['spo2'])))
+                    self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+                        
+                self.measuring_heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+                self.measuring_spo2.setText(str(int(request['data']['spo2'])))
             
-            if request['data']['final'] == 0:
-                if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
-                    self.progress_bar.setValue(100)
-                elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
-                    self.progress_bar.setValue(50)
-                else:
-                    self.progress_bar.setValue(0)
+            ########################################################
+            # REQUEST UPDATE ESP32 SENSOR                          #
+            ########################################################
+            elif request['type'] == glo_va.REQUEST_UPDATE_ESP:
+                if self.current_frame != self.MAIN_FRAME:
+                    LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
+                    return
                 
-                self.height.setText(request['data']['height'])
-                self.weight.setText(request['data']['weight'])
-                self.temperature.setText(request['data']['temperature'])
-                self.bmi.setText(request['data']['bmi'])
-            
-            self.measuring_height.setText(request['data']['height'])
-            self.measuring_weight.setText(request['data']['weight'])
-            self.measuring_temperature.setText(request['data']['temperature'])
-            self.measuring_BMI.setText(request['data']['bmi'])
+                if request['data']['final'] == 0:
+                    if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
+                        self.progress_bar.setValue(100)
+                    elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
+                        self.progress_bar.setValue(50)
+                    else:
+                        self.progress_bar.setValue(0)
+                    
+                    self.height.setText(request['data']['height'])
+                    self.weight.setText(request['data']['weight'])
+                    self.temperature.setText(request['data']['temperature'])
+                    self.bmi.setText(request['data']['bmi'])
+                
+                self.measuring_height.setText(request['data']['height'])
+                self.measuring_weight.setText(request['data']['weight'])
+                self.measuring_temperature.setText(request['data']['temperature'])
+                self.measuring_BMI.setText(request['data']['bmi'])
+
+        except Exception as e:
+            LogMesssage("[gui___CheckRequestStatesThread]: Has error :{}".format(e))
 
         return
     
     def __ChangeUI(self):
         if glo_va.STATE == glo_va.STATE_NEW_PATIENT:
             self.__DeactivateFaceRecored()
+            self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
             self.stackedWidget.setCurrentWidget(self.add_new_patient_frame)
         
         elif glo_va.STATE == glo_va.STATE_MEASURE_SENSOR:
@@ -549,7 +595,7 @@ class GUI(QtWidgets.QMainWindow):
         self.progress_bar.setValue(0)
 
 
-app = QtWidgets.QApplication(sys.argv)
-gui = GUI()
-gui.show()
-app.exec_()
+# app = QtWidgets.QApplication(sys.argv)
+# gui = GUI()
+# gui.show()
+# app.exec_()

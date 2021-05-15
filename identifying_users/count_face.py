@@ -13,6 +13,7 @@ class CountFace:
     def __init__(self):
         self.__list_faces = ""
         self.__num_imgs = 0
+        
         self.__counter=RepeatTimer(glo_va.CYCLE_COUNT_FACE_PERIOD, self.Count_Second)
         self.__counter.daemon = True
         self.__counter.start()

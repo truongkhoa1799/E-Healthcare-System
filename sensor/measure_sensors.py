@@ -35,9 +35,6 @@ class MeasureSensor:
         self.__list_height = []
         self.__list_temperature = []
         self.__num_esp_records = 0
-        self.__delay_esp32 = False
-        self.__sum_time_delay = 0
-        self.__pre_time = 0
 
         self.final_spo2 = ""
         self.final_heart_pulse = ""
@@ -48,6 +45,16 @@ class MeasureSensor:
 
     def openConnectionSensors(self):
         try:
+            self.has_esp = False
+            self.has_oso2 = False
+
+            self.final_spo2 = ""
+            self.final_heart_pulse = ""
+            self.final_temperature = ""
+            self.final_height = ""
+            self.final_weight = ""
+            self.final_bmi = ""
+
             # Open connection with oso2 devuce
             self.__oso2_connection = hid.device()
             self.__oso2_connection.open(1155, 22320)  # TREZOR VendorID/ProductID
