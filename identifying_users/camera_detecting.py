@@ -18,14 +18,6 @@ class CameraDetecting(Thread):
         self.__csi_camera.open()
         self.__csi_camera.start()
         
-        # cv2.namedWindow("Face Detect", cv2.WINDOW_AUTOSIZE)
-        # if( not self.__csi_camera.video_capture.isOpened() ):
-        #     print("Unable to open any cameras")
-        #     self.__csi_camera.stop()
-        #     self.__csi_camera.release()
-        #     cv2.destroyAllWindows()
-        #     SystemExit(0)
-        
         if show_fps == True:
             self.__csi_camera.start_counting_fps()
 
@@ -37,7 +29,7 @@ class CameraDetecting(Thread):
         cv2.putText(cv_image, label_text, label_position, font_face, scale, color, 1, cv2.LINE_AA)
     
     def RunCamera(self):
-        _ , original_img = self.__csi_camera.read()
+        original_img = self.__csi_camera.read()
         
         if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
             margin_width = int((original_img.shape[1] - glo_va.LOCATION_RECOGNIZE_FACE_WIDTH) / 2)
@@ -58,9 +50,16 @@ class CameraDetecting(Thread):
 
             self.__csi_camera.frames_displayed += 1
     
+    def currentStopCamera(self):
+        self.__csi_camera.stop()
+        LogMesssage("[currentStopCamera]: Temporarily stop camera detecting")
+    
+    def runBackCamera(self):
+        self.__csi_camera.start()
+        LogMesssage("[currentStopCamera]: Run back camera detecting")
+    
     def StopCamera(self):
         LogMesssage("Stop camera", opt=0)
         self.__csi_camera.stop()
         self.__csi_camera.release()
-        # cv2.destroyAllWindows()
         print()

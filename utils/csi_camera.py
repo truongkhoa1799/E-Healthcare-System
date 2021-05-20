@@ -25,7 +25,6 @@ class CSI_Camera:
         self.video_capture = None
         # The last captured image from the camera
         self.frame = None
-        self.grabbed = False
         # The thread where the video capture runs
         self.read_thread = None
         self.read_lock = threading.Lock()
@@ -50,10 +49,10 @@ class CSI_Camera:
         except RuntimeError:
             self.video_capture = None
             print("Unable to open camera")
-            print("Pipeline: " + gstreamer_pipeline_string)
             return
+
         # Grab the first frame to start the video capturing
-        self.grabbed, self.frame = self.video_capture.read()
+        grabbed, self.frame = self.video_capture.read()
 
     def start(self):
         if self.running:
@@ -73,7 +72,6 @@ class CSI_Camera:
             try:
                 grabbed, frame = self.video_capture.read()
                 with self.read_lock:
-                    self.grabbed=grabbed
                     self.frame=frame
                     self.frames_read += 1
             except RuntimeError:
@@ -88,9 +86,7 @@ class CSI_Camera:
             
             # Macos
             # frame = self.frame
-            
-            grabbed=self.grabbed
-        return grabbed, frame
+        return frame
 
     def update_fps_stats(self):
         self.last_frames_read=self.frames_read
@@ -104,6 +100,9 @@ class CSI_Camera:
         self.fps_timer.start()
 
     def stop(self):
+        if self.running == False:
+            return
+            
         self.running=False
         self.read_thread.join()
 

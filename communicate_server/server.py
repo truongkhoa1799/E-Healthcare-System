@@ -1,8 +1,10 @@
 from azure.eventhub import EventData, EventHubProducerClient
 from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
-# from threading import Timer
+from threading import Timer
+# from uamqp import errors
 # import numpy as np
 import sys
+import json
 import time
 import pickle
 import threading
@@ -12,10 +14,10 @@ sys.path.append(PROJECT_PATH)
 from utils.parameters import *
 from utils.common_functions import LogMesssage
 
-# class RepeatTimer(Timer):
-#     def run(self):
-#         while not self.finished.wait(self.interval):
-#             self.function(*self.args, **self.kwargs)
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
 
 class Server:
     def __init__(self):
@@ -24,6 +26,7 @@ class Server:
         self.__device_iothub_connection = None
         self.__eventhub_connection = None
         self.__eventhub_name = None
+        
 
         self.__LoadConnection()
 
@@ -31,16 +34,13 @@ class Server:
         self.__establishIoTHubReceiveConnection()
         
         # Start a thread to listen 
-        # self.__listening_server_thread=RepeatTimer(0.1, self.__Listen_Reponse_Server)
-        # self.__listening_server_thread.daemon = True
-        # self.__listening_server_thread.start()
+        # self.__re_establish_iot_hub_connection=RepeatTimer(200, self.__establishIoTHubReceiveConnection)
+        # self.__re_establish_iot_hub_connection.daemon = True
+        # self.__re_establish_iot_hub_connection.start()
+
         self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=())
         self.__listening_server_thread.daemon = True
         self.__listening_server_thread.start()
-
-        # self.__thread_send_request = threading.Thread(target=self.__Listen_Reponse_Server, args=())
-        # self.__thread_send_request.daemon = True
-        # self.__thread_send_request.start()
 
     def __LoadConnection(self):
         with open (glo_va.CONNECTION_AZURE_PATH, 'rb') as fp_1:
@@ -49,11 +49,9 @@ class Server:
             self.__device_iothub_connection = ret['device_iothub_connection']
             self.__eventhub_connection = ret['eventhub_connection']
             self.__eventhub_name = ret['eventhub_name']
-            # print(self.__device_iothub_connection)
-            # print(self.__eventhub_connection)
-            # print(self.__eventhub_name)
     
     def __establishIoTHubReceiveConnection(self):
+        LogMesssage('[__establishIoTHubReceiveConnection]: Re-establish iot hub connection')
         self.__connection = IoTHubDeviceClient.create_from_connection_string(self.__device_iothub_connection)
     
     def __establishEventhubSendConnection(self):
@@ -70,26 +68,30 @@ class Server:
     def __Listen_Reponse_Server(self):
         while True:
             try:
-                method_request = self.__connection.receive_method_request()
+
+                message = self.__connection.receive_message()
+                payload = None
+                for property in vars(message).items():
+                    if property[0] == "custom_properties":
+                        payload = json.loads(property[1]['response_msg'])
+                        break
                 
-                # Default response
-                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
-                response_status = 200
+                if payload is None:
+                    continue
                 
-                if method_request.name == "Update_List_Exam_Rooms":
-                    init_parameters.list_examination_room = method_request.payload['list_exam_rooms']
+                type_request = payload['type_request']
+                timer_id = payload['request_id']
+
+                if type_request == glo_va.SERVER_REQUEST_UPDATE_EXAM_ROOM:
+                    init_parameters.list_examination_room = payload['parameters']
                     LogMesssage('[server___Listen_Reponse_Server]: Receive update request udpating list exam rooms')
                 
                 else:
-                    timer_id = method_request.payload['request_id']
-
                     ########################################################
                     # ACQUIRE LOCK INIT STATE                              #
                     ########################################################
                     if not glo_va.lock_init_state.acquire(False):
                         LogMesssage('[server___Listen_Reponse_Server]: Lock init state was already acquired, do not accept new message')
-                        method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                        self.__connection.send_method_response(method_response)
                         continue
                     
                     ########################################################
@@ -98,10 +100,7 @@ class Server:
                     if not glo_va.lock_response_server.acquire(False):
                         # Release lock just acquire above
                         glo_va.lock_init_state.release()
-
                         LogMesssage('[server___Listen_Reponse_Server]: Lock response server was already acquired, do not accept new message')
-                        method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                        self.__connection.send_method_response(method_response)
                         continue
                 
                     ########################################################
@@ -111,13 +110,9 @@ class Server:
                         glo_va.lock_response_server.release()
                         glo_va.lock_init_state.release()
 
-                        LogMesssage('[server___Listen_Reponse_Server]: Receive response with different current request id')
-                        method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-                        self.__connection.send_method_response(method_response)
-                        
+                        LogMesssage('[server___Listen_Reponse_Server]: Receive response with different current request id')                        
                         LogMesssage('[server___Listen_Reponse_Server]: Acquire lock init state')
                         LogMesssage('[server___Listen_Reponse_Server]: Acquire lock response server')
-                        
                         continue
 
                     LogMesssage('[server___Listen_Reponse_Server]: Acquire lock init state')
@@ -129,17 +124,16 @@ class Server:
                     if glo_va.is_sending_message == True:
                         # Notify the timer that server is in lock
                         glo_va.turn = glo_va.TIMER_GOT_BY_SERVER
-
+                        
                         # Clear timer
                         glo_va.timer.Clear_Timer()
                         LogMesssage('[server___Listen_Reponse_Server]: Clear Timer')
-
-                        LogMesssage("[server___Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id} for {name}.".format(request_name=method_request.name,timer_id=timer_id, name=method_request.name))
+                        LogMesssage("[server___Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id}.".format(request_name=glo_va.list_request_name[type_request],timer_id=timer_id))
                         
                         ########################################################
                         # VALIDATION USERS RESPONSE                            #
                         ########################################################
-                        if method_request.name == "Validate_User":
+                        if type_request == glo_va.SERVER_REQUEST_VALIDATION:
                             # glo_va.list_time_send_server.append(time.time()-glo_va.start_time)
                             # glo_va.times_send += 1
                             # if glo_va.times_send == 10:
@@ -147,22 +141,21 @@ class Server:
                             #     print('Min time detec: {}'.format(np.min(glo_va.list_time_send_server)))
                             #     print('Mean time detec: {}'.format(np.mean(glo_va.list_time_send_server)))
                             #     print('Std time detec: {}'.format(np.std(glo_va.list_time_send_server)))
-                            ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
-                                # print(method_request.payload)
-                                user_infor.Update_Info(method_request.payload)
+                            ret_msg = str(payload['return'])
+                            if ret_msg == "0":
+                                user_infor.Update_Info(payload)
                                 LogMesssage('[server___Listen_Reponse_Server]: Update patient information')
 
-                            elif ret_msg == -2:
+                            elif ret_msg == "-2":
                                 # Patient is wearing mask
                                 user_infor.wearingMask()
                                 LogMesssage('[server___Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
                             
-                            elif ret_msg == -3:
+                            elif ret_msg == "-3":
                                 # Invalid SSN
                                 LogMesssage('[server___Listen_Reponse_Server]: SSN for verifying patient is invalid')
 
-                            elif ret_msg == -1:
+                            elif ret_msg == "-1":
                                 user_infor.NoFace()
                                 glo_va.times_missing_face += 1
                                 LogMesssage('[server___Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
@@ -172,11 +165,12 @@ class Server:
                         ########################################################
                         # EXAMINATION SUBMISSION RESPONSE                     #
                         ########################################################
-                        elif method_request.name == "Submit_Examination":
-                            ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
-                                glo_va.return_stt = method_request.payload['stt']
+                        elif type_request == glo_va.SERVER_REQUEST_SUBMIT_EXAMINATION:
+                            ret_msg = str(payload['return'])
+                            if ret_msg == "0":
+                                glo_va.return_stt = payload['stt']
                                 LogMesssage('[server___Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
+                            
                             else:
                                 glo_va.return_stt = -1
                                 LogMesssage('[server___Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
@@ -186,12 +180,13 @@ class Server:
                         ########################################################
                         # GET SYMPTONS USERS RESPONSE                          #
                         ########################################################
-                        elif method_request.name == "Get_Sympton":
-                            ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
-                                glo_va.patient_symptons =  method_request.payload['symptons']
+                        elif type_request == glo_va.SERVER_REQUEST_GET_SYMPTOMS:
+                            ret_msg = str(payload['return'])
+                            if ret_msg == "0":
+                                glo_va.patient_symptons =  payload['symptons']
                                 LogMesssage('[server___Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
-                            elif ret_msg == -1:
+                            
+                            elif ret_msg == "-1":
                                 glo_va.patient_symptons = None
                                 LogMesssage('[server___Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
 
@@ -200,10 +195,10 @@ class Server:
                         ########################################################
                         # LOAD INIT PARAMETERS RESPONSE                        #
                         ########################################################
-                        elif method_request.name == "Get_Init_Parameters":
-                            ret_msg = int(method_request.payload['return'])
-                            if ret_msg == 0:
-                                parameters = method_request.payload['parameters']
+                        elif type_request == glo_va.SERVER_REQUEST_GET_INIT_PARA:
+                            ret_msg = str(payload['return'])
+                            if ret_msg == "0":
+                                parameters = payload['parameters']
                                 init_parameters.updateInitParameters(parameters)
                                 LogMesssage('[server___Listen_Reponse_Server]: Success to get init parameters')
 
@@ -231,21 +226,20 @@ class Server:
                     glo_va.lock_response_server.release()
                     LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
 
-                if method_request.name == "Validate_User":
+                if type_request == glo_va.SERVER_REQUEST_VALIDATION:
                     user_infor.Clear()
 
-                elif method_request.name == "Get_Sympton":
+                elif type_request == glo_va.SERVER_REQUEST_GET_SYMPTOMS:
                     glo_va.patient_symptons = None
 
-                elif method_request.name == "Get_Init_Parameters":
+                elif type_request == glo_va.SERVER_REQUEST_GET_INIT_PARA:
                     init_parameters.Clear()
 
                 glo_va.has_response_server = True
 
-            method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
-            self.__connection.send_method_response(method_response)
-
-
+############################################################
+# REQUEST                                                  #
+############################################################
     ########################################################
     # Validate user                                        #
     ########################################################
@@ -258,10 +252,10 @@ class Server:
             try:
                 data = EventData(list_embedded_face)
                 data.properties = {
-                    'request_id':glo_va.timer.timer_id,
-                    'type_request': "0", 
+                    'request_id': glo_va.timer.timer_id,
+                    'type_request': glo_va.SERVER_REQUEST_VALIDATION,
                     'device_ID': str(self.__device_ID),
-                    'ssn': glo_va.check_ssn
+                    'ssn': str(glo_va.check_ssn)
                 }
                 event_data_batch.add(data)
 
@@ -273,8 +267,6 @@ class Server:
 
         except Exception as e:
             LogMesssage("Has error at module Validate_User in server.py: {}".format(e), opt=2)
-            self.__establishEventhubSendConnection()
-            LogMesssage('Re-establish connection with Server')
     
     ########################################################
     # Submit_Examination                                   #
@@ -289,7 +281,7 @@ class Server:
                 sensor_infor = sensor.sensor_infor
                 msg = {
                     'request_id':glo_va.timer.timer_id,
-                    'type_request': "5",
+                    'type_request': glo_va.SERVER_REQUEST_SUBMIT_EXAMINATION,
                     'device_ID': str(self.__device_ID),
                     'hospital_ID': str(init_parameters.hospital_ID),
                     'building_code': building_code,
@@ -320,8 +312,6 @@ class Server:
 
         except Exception as e:
             LogMesssage("Has error at module Submit_Examination in server.py: {}".format(e), opt=2)
-            self.__establishEventhubSendConnection()
-            LogMesssage('Re-establish connection with Server')
 
     ########################################################
     # getSymptonPatient                                    #
@@ -335,7 +325,7 @@ class Server:
                 data = EventData(voice)
                 data.properties = {
                     'request_id': glo_va.timer.timer_id,
-                    'type_request': "7", 
+                    'type_request': glo_va.SERVER_REQUEST_GET_SYMPTOMS,
                     'device_ID': str(self.__device_ID)
                 }
                 event_data_batch.add(data)
@@ -348,8 +338,6 @@ class Server:
 
         except Exception as e:
             LogMesssage("Has error at module getSymptonPatient in server.py: {}".format(e), opt=2)
-            self.__establishEventhubSendConnection()
-            LogMesssage('Re-establish connection with Server')
     
     ########################################################
     # getInitParameters                                    #
@@ -363,7 +351,7 @@ class Server:
                 data = EventData('')
                 data.properties = {
                     'request_id': glo_va.timer.timer_id,
-                    'type_request': "8", 
+                    'type_request': glo_va.SERVER_REQUEST_GET_INIT_PARA,
                     'device_ID': str(self.__device_ID)
                 }
                 event_data_batch.add(data)
@@ -376,11 +364,8 @@ class Server:
 
         except Exception as e:
             LogMesssage("Has error at module getInitParameters in server.py: {}".format(e), opt=2)
-            self.__establishEventhubSendConnection()
-            LogMesssage('Re-establish connection with Server')
 
     def Close(self):
-        # self.__listening_server_thread.join()
         self.__producer.close()
         self.__connection.disconnect()
 

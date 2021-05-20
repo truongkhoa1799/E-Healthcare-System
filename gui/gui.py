@@ -108,12 +108,14 @@ class GUI(QtWidgets.QMainWindow):
         # print(ret)
         # print(glo_va.check_ssn)
 
-
+    ########################################################
+    # CLOSE EVENT                                          #
+    ########################################################
     def closeEvent(self, event):
         glo_va.flg_init_GUI = False
     
     ############################################################################
-    # DIALOG MODULE                                                            #
+    # OPEN NOTIFICATION DIALOG                                                 #
     ############################################################################
     def __notificationDialog(self, data):
         self.submit_dialog = OkDialogClass(-2, data)
@@ -121,6 +123,9 @@ class GUI(QtWidgets.QMainWindow):
         if self.submit_dialog.exec_() == QtWidgets.QDialog.Accepted:
             glo_va.button = glo_va.BUTTON_OKAY
 
+    ########################################################
+    # OPEN YES NO DIALOG                                   #
+    ########################################################
     def __OpenDialog(self, opt):
         ret = None
 
@@ -129,6 +134,9 @@ class GUI(QtWidgets.QMainWindow):
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             return int(dialog.ret)
     
+    ########################################################
+    # OPEN MOMO                                            #
+    ########################################################
     def __openMomoChatbotGui(self):
         ret = ""
 
@@ -139,22 +147,30 @@ class GUI(QtWidgets.QMainWindow):
             glo_va.button = glo_va.BUTTON_CLOSE_MOMO_GUI
             if ret != "":
                 self.__UpdateSelectedRoom(ret)
+
             glo_va.momo_gui = None
         
-    ############################################################################
-    # CONTROL MODULE                                                           #
-    ############################################################################
+    ########################################################
+    # CONTROL MODULE                                       #
+    ########################################################
     def __onButtonsListenning(self, opt):
         try:
+            ################################################
+            # EXIST BUTTON                                 #
+            ################################################
             if opt == glo_va.BUTTON_EXIST:
                 ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
                 # print(ret)
                 if ret == 0:
                     glo_va.button = glo_va.BUTTON_EXIST
 
+            ################################################
+            # BUTTON_CONFIRM_PATIENT                       #
+            ################################################
             elif opt == glo_va.BUTTON_CONFIRM_PATIENT:
                 if glo_va.STATE != glo_va.STATE_CONFIRM_PATIENT:
                     return
+
                 ret = self.__OpenDialog(glo_va.CONFIRM_PATIENT_DIALOG)
                 if ret == -1:
                     glo_va.button = glo_va.BUTTON_CANCEL_CONFIRM_PATIENT
@@ -162,26 +178,36 @@ class GUI(QtWidgets.QMainWindow):
                 elif ret == 0:
                     glo_va.button = glo_va.BUTTON_ACCEPT_CONFIRM_PATIENT
 
+            ################################################
+            # BUTTON_VIEW_LIST_DEP                         #
+            ################################################
             elif opt == glo_va.BUTTON_VIEW_LIST_DEP:
                 if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
                     return
                 
                 glo_va.button = glo_va.BUTTON_VIEW_LIST_DEP
-                # print('BUTTON_VIEW_LIST_DEP')
 
+            ################################################
+            # BUTTON_CAPTURE_SENSOR                        #
+            ################################################
             elif opt == glo_va.BUTTON_CAPTURE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
                     return
                 
                 glo_va.button = glo_va.BUTTON_CAPTURE_SENSOR
-                # print('BUTTON_CAPTURE_SENSOR')
-                
+            
+            ################################################
+            # BUTTON_SUBMIT_EXAM                           #
+            ################################################
             elif opt == glo_va.BUTTON_SUBMIT_EXAM:
                 if glo_va.STATE != glo_va.STATE_MEASURE_SENSOR:
                     return
                 
                 glo_va.button = glo_va.BUTTON_SUBMIT_EXAM
             
+            ################################################
+            # BUTTON_CONFIRM_DEP                           #
+            ################################################
             elif opt == glo_va.BUTTON_CONFIRM_DEP:
                 if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
                     return
@@ -189,6 +215,9 @@ class GUI(QtWidgets.QMainWindow):
                 self.__ConfirmExamRoom()
                 glo_va.button = glo_va.BUTTON_CONFIRM_DEP
             
+            ################################################
+            # BUTTON_SELECT_DEP                            #
+            ################################################
             elif opt == glo_va.BUTTON_SELECT_DEP:
                 if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
                     return
@@ -199,6 +228,9 @@ class GUI(QtWidgets.QMainWindow):
                     dep_name = self.__list_department[index]
                     self.__UpdateSelectedRoom(dep_name)
             
+            ################################################
+            # BUTTON_DIAGNOSE_SYMPTOMS                     #
+            ################################################
             elif opt == glo_va.BUTTON_DIAGNOSE_SYMPTOMS:
                 if glo_va.STATE != glo_va.STATE_VIEW_DEPARTMENTS:
                     return
@@ -208,6 +240,9 @@ class GUI(QtWidgets.QMainWindow):
             ########################################################################
             # Measuing frame                                                       #
             ########################################################################
+            ################################################
+            # BUTTON_BACK_GUILDE_SENSOR                    #
+            ################################################
             elif opt == glo_va.BUTTON_BACK_GUILDE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
@@ -221,7 +256,10 @@ class GUI(QtWidgets.QMainWindow):
                     # MOMO saying
                     glo_va.momo_assis.stopCurrentConversation()
                     glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
-
+            
+            ################################################
+            # BUTTON_NEXT_GUILDE_SENSOR                    #
+            ################################################
             elif opt == glo_va.BUTTON_NEXT_GUILDE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
@@ -236,6 +274,9 @@ class GUI(QtWidgets.QMainWindow):
                     glo_va.momo_assis.stopCurrentConversation()
                     glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
+            ################################################
+            # BUTTON_GUILDE_SENSOR                         #
+            ################################################
             elif opt == glo_va.BUTTON_GUILDE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
@@ -250,7 +291,10 @@ class GUI(QtWidgets.QMainWindow):
                 glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
                 LogMesssage('Patient change to instruction measure sensor frame')
-                
+            
+            ################################################
+            # BUTTON_QUIT_GUILDE_SENSOR                    #
+            ################################################
             elif opt == glo_va.BUTTON_QUIT_GUILDE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
@@ -260,12 +304,18 @@ class GUI(QtWidgets.QMainWindow):
                 self.measure_sensor_stack.setCurrentWidget(self.measuring_frame)
                 LogMesssage('Patient change to measure sensor frame')
 
+            ################################################
+            # BUTTON_CONNECT_DEVICE_SENSOR                 #
+            ################################################
             elif opt == glo_va.BUTTON_CONNECT_DEVICE_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
 
                 glo_va.button = glo_va.BUTTON_CONNECT_DEVICE_SENSOR
 
+            ################################################
+            # BUTTON_CONFIRM_SENSOR                 #
+            ################################################
             elif opt == glo_va.BUTTON_CONFIRM_SENSOR:
                 if glo_va.STATE != glo_va.STATE_MEASURING_SENSOR:
                     return
@@ -471,19 +521,6 @@ class GUI(QtWidgets.QMainWindow):
                     background-repeat: no-repeat;
                 }
             ''')
-
-    ############################################################################
-    # SENSOR MODULE                                                            #
-    ############################################################################
-    # def __MeasureSensor(self):
-    #     ret = {}
-    #     glo_va.measure_sensor_dialog = MeasureSensorDialog(ret)
-    #     glo_va.measure_sensor_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-    #     if glo_va.measure_sensor_dialog.exec_() == QtWidgets.QDialog.Accepted:
-    #         ret = glo_va.measure_sensor_dialog.ret
-    #         print(ret)
-        
-    #     self.__UpdateSensorInfo()
     
     def __ClearSensorInfo(self):
         self.bmi.setText('')
@@ -577,8 +614,7 @@ class GUI(QtWidgets.QMainWindow):
                 self.table_list_department.setItem(count, 0, QTableWidgetItem(str(count + 1)))
                 self.table_list_department.setItem(count, 1, QTableWidgetItem(dep_name))
                 count += 1
-        
-        # print(self.__map_department)
+
     
     def __ClearListDepartments(self):
         for count in range(len(init_parameters.list_examination_room)):

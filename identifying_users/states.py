@@ -30,7 +30,7 @@ def State_1():
             cv2.rectangle(glo_va.img, (location_detected_face[2], location_detected_face[0]), (location_detected_face[3], location_detected_face[1]) , (2, 255, 0), 2)
 
             embedded_face = glo_va.face_recognition.Encoding_Face(detected_face)
-            # glo_va.count_face.Count_Face(embedded_face)
+            glo_va.count_face.Count_Face(embedded_face)
         
         else:
             time.sleep(0.03)
@@ -72,6 +72,8 @@ def State_1():
             request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
             glo_va.gui.queue_request_states_thread.put(request)
 
+            glo_va.camera.currentStopCamera()
+
             # MOMO saying
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_confirm'])
 
@@ -85,6 +87,8 @@ def State_1():
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
 
+            glo_va.camera.currentStopCamera()
+
             # MOMO saying
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_new_patient'])
             glo_va.times_missing_face = 0
@@ -92,6 +96,9 @@ def State_1():
         elif user_infor.status == glo_va.USER_INFOR_WEARING_MASK:
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'])
             LogMesssage('[states_State_1]: Patient is asked to take of mask')
+
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'])
+            time.sleep(2)
 
         # set parameters for receive response to server. Make sure that there will not has dump response
         glo_va.is_sending_message = False
@@ -281,7 +288,9 @@ def State_5():
         # send request change ui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
-    
+
+        glo_va.camera.runBackCamera()
+
         return
     
     elif glo_va.button == glo_va.BUTTON_VERIFY_PATIENT:
@@ -290,6 +299,9 @@ def State_5():
 
         # Back to first state
         glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
+
+        glo_va.camera.runBackCamera()
+
         return
 
     if glo_va.button == glo_va.BUTTON_EXIST:
@@ -375,6 +387,8 @@ def State_6():
                             # MOMO saying
                             glo_va.momo_assis.stopCurrentConversation()
                             glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+
+                            glo_va.currentStopCamera()
             
                 else:
                     glo_va.check_current_shape = False
@@ -382,64 +396,6 @@ def State_6():
                 glo_va.num_user_pose = 0
                 glo_va.num_correct_user_pose = 0
                 glo_va.list_embedded_face_origin_new_patient = []
-    # # Face detecting
-    # ret = glo_va.face_recognition.Get_Face()
-    # if ret == -2:
-    #     LogMesssage("Error Face locations", opt=0)
-    #     glo_va.STATE = -1
-    #     return
-
-    # elif ret == 0:
-    #     # Face Identifying
-    #     glo_va.face_recognition.Encoding_Face()
-
-    #     if glo_va.num_user_pose >= 7:
-    #         max_pose = -1
-    #         for i in glo_va.dict_user_pose:
-    #             if glo_va.dict_user_pose[i] > 5 and glo_va.dict_user_pose[i] > max_pose:
-    #                 max_pose = i
-            
-    #         if max_pose == glo_va.current_shape:
-    #             if glo_va.check_current_shape == False:
-    #                 glo_va.check_current_shape = True
-    #             elif glo_va.check_current_shape == True:
-    #                 glo_va.check_current_shape = False
-    #                 # Activate image in the UI
-    #                 request = {'type': glo_va.REQUEST_ACTIVATE_NEW_FACE, 'data': glo_va.current_shape}
-    #                 glo_va.gui.queue_request_states_thread.put(request)
-
-    #                 # Change to take next pose of user
-    #                 glo_va.current_shape += 1
-
-    #                 # MOMO saying
-    #                 glo_va.momo_assis.stopCurrentConversation()
-    #                 glo_va.momo_assis.momoSay(glo_va.momo_messages['capture_img'][glo_va.current_shape])
-                    
-    #                 # calculate the mean of all images in one pose
-    #                 mean_embedded_image = np.mean(glo_va.list_embedded_face_origin_new_patient ,axis=0)
-    #                 # save the current embedded face
-    #                 # temp_embedded_face = Compose_Embedded_Face(glo_va.embedded_face)
-    #                 temp_embedded_face = Compose_Embedded_Face(mean_embedded_image)
-    #                 glo_va.list_embedded_face_new_user += temp_embedded_face + ' '
-
-    #                 if glo_va.current_shape == glo_va.num_face_new_user:
-    #                     LogMesssage('Done get face new user')
-    #                     glo_va.STATE = glo_va.STATE_MEASURE_SENSOR
-    #                     # send request change ui
-    #                     request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
-    #                     glo_va.gui.queue_request_states_thread.put(request)
-
-    #                     time.sleep(1.5)
-    #                     # MOMO saying
-    #                     glo_va.momo_assis.stopCurrentConversation()
-    #                     glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
-    #         else:
-    #             glo_va.check_current_shape = False
-        
-            
-    #         glo_va.num_user_pose = 0
-    #         glo_va.dict_user_pose = {}
-    #         glo_va.list_embedded_face_origin_new_patient = []
 
     glo_va.gui.image_display = glo_va.img
 
@@ -508,7 +464,7 @@ def State_8():
 
             # Update sensor entity
             sensor.Update_Sensor(sensor_infor)
-            LogMesssage("[states_State_8]: Has enought sensor data: {}".format(sensor_infor))
+            LogMesssage("[states_State_8]: Has enought sensor data: {}. Has oso2: {}. Has esp32: {}".format(sensor_infor, glo_va.measuring_sensor.has_oso2, glo_va.measuring_sensor.has_esp))
         else:
             if glo_va.measuring_sensor.has_esp:
                 LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
@@ -598,6 +554,9 @@ def State_8():
 ############################################################
 def Init_State():
     LogMesssage('[states_Init_State]: Reset at STATE: {}'.format(glo_va.STATE))
+
+    glo_va.camera.runBackCamera()
+
     # Lock the response message from server when restart program
     glo_va.lock_init_state.acquire(True)
     LogMesssage('[states_Init_State]: Acquire lock init state')

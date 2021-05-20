@@ -72,7 +72,7 @@ class MomoAssistant:
                 tts.save(glo_va.VOICE_PATH_FILE)
                 # MomoAssistant.momo_mounth = subprocess.Popen(["afplay", glo_va.VOICE_PATH_FILE])
 
-                MomoAssistant.momo_mounth = subprocess.Popen(["mpg321", glo_va.VOICE_PATH_FILE])
+                MomoAssistant.momo_mounth = subprocess.Popen(["mpg321", "-q", glo_va.VOICE_PATH_FILE])
             except Exception as e:
                 LogMesssage('Has error in [momo_assistant_momoSay]: {}'.format(e))
 
@@ -88,7 +88,7 @@ class MomoAssistant:
                 tts = gTTS(text =text,lang='vi')
                 tts.save(glo_va.VOICE_PATH_FILE)
                 # Change here to play music
-                os.system("mpg321 {}".format(glo_va.VOICE_PATH_FILE))
+                os.system("mpg321 -q {}".format(glo_va.VOICE_PATH_FILE))
             except Exception as e:
                 LogMesssage('\tHas error in [momo_assistant_momoSay]: {error}'.format(error=e))
 

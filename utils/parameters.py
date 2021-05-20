@@ -6,7 +6,7 @@ from PyQt5 import uic
 from utils.assis_parameters import AssistantParameter
 from threading import Event
 
-show_fps = True
+show_fps = False
 PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:
@@ -78,6 +78,19 @@ class GlobalVariable:
         self.eventhub_connection = None
         self.device_iothub_connection = None
 
+        self.SERVER_REQUEST_VALIDATION = "0"
+        self.SERVER_REQUEST_SUBMIT_EXAMINATION = "5"
+        self.SERVER_REQUEST_GET_SYMPTOMS = "7"
+        self.SERVER_REQUEST_GET_INIT_PARA = "8"
+        self.SERVER_REQUEST_UPDATE_EXAM_ROOM = "9"
+        self.list_request_name = {
+            "0": "VALIDATION REQUEST",
+            "5": "SUBMIT EXAMINATION REQUEST",
+            "7": "GET SYMPTOMS REQUEST",
+            "8": "GET INIT PARAMETERS REQUEST",
+            "9": "UPDATE EXAM ROOM REQUEST"
+        }
+
         ########################################################
         # NEW USER PARAMETERS                                  #
         ########################################################
@@ -96,9 +109,9 @@ class GlobalVariable:
             # sign_v, diff_v, sign_h, diff_h 
             [-1, 5, -1, 5],  # front
             [1, 7, -1, 5],   # up
-            [-1, 5, -1, 5],  # down
-            [-1, 5, -1, 7],  # left
-            [-1, 5, 1, 7]    # right
+            [-1, 2, -1, 10],  # down
+            [-1, 7, -1, 7],  # left
+            [-1, 7, 1, 7]    # right
         ]
 
         ########################################################
@@ -437,7 +450,7 @@ class Sensor:
             or self.sensor_infor['height'] == '' or self.sensor_infor['weight'] == '' \
             or self.sensor_infor['spo2'] == '' or self.sensor_infor['temperature'] == '' \
             or self.sensor_infor['heart_pulse'] == '' or self.sensor_infor['bmi'] == '':
-            glo_va.SENSOR_DEFAULT
+            return glo_va.SENSOR_DEFAULT
             
         return glo_va.SENSOR_HAS_VALUE
 
