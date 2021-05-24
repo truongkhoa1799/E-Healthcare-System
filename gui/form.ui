@@ -328,7 +328,7 @@ QPushButton:pressed {
        <string notr="true">background: transparent;</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="recognize_frame">
        <property name="minimumSize">
@@ -972,6 +972,233 @@ border-radius: 5px;	</string>
         <zorder>birthday_text_frame_2</zorder>
         <zorder>birthday_label_frame_2</zorder>
         <zorder>line_4</zorder>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="init_frame">
+       <property name="minimumSize">
+        <size>
+         <width>1920</width>
+         <height>980</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>1920</width>
+         <height>980</height>
+        </size>
+       </property>
+       <widget class="QLabel" name="image_patient_2">
+        <property name="geometry">
+         <rect>
+          <x>710</x>
+          <y>0</y>
+          <width>500</width>
+          <height>261</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>470</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>20000</width>
+          <height>20000</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string notr="true"/>
+        </property>
+        <property name="pixmap">
+         <pixmap>icons/logo.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QFrame" name="horizontalFrame_5">
+        <property name="geometry">
+         <rect>
+          <x>690</x>
+          <y>260</y>
+          <width>540</width>
+          <height>601</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: rgb(13, 17, 55);
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
+border-bottom-left-radius: 20px;
+border-bottom-right-radius: 20px;</string>
+        </property>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>40</y>
+           <width>101</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>icons/icons8-wi-fi-logo-96.png</pixmap>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>175</y>
+           <width>61</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>icons/icons8-wi-fi-60.png</pixmap>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>320</y>
+           <width>61</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>icons/icons8-password-60.png</pixmap>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="input_ssid_wifi">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>170</y>
+           <width>380</width>
+           <height>91</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>30</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(255,255,255);
+color: rgb(50, 50, 50);
+border: 4px solid rgb(100,100,100);
+border-radius: 20px;	</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="input_pass_wifi">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>315</y>
+           <width>380</width>
+           <height>91</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>30</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(255,255,255);
+color: rgb(50, 50, 50);
+border: 4px solid rgb(100,100,100);
+border-radius: 20px;	</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="confirm_user_but_2">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>460</y>
+           <width>461</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>30</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	border: 2px solid rgb(0, 114, 177);
+	border-radius: 5px;	
+	background-color: rgb(0, 114, 177);
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+	background-color: rgb(25, 158, 193);
+	border: 2px solid rgb(25, 158, 193);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {	
+	background-color: rgb(25, 158, 193);
+	border: 3px solid rgb(20, 126, 154);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string> Connect</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/icons8-checkmark-100.png</normaloff>icons/icons8-checkmark-100.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>70</height>
+          </size>
+         </property>
+        </widget>
        </widget>
       </widget>
       <widget class="QWidget" name="measure_sensor_frame">
@@ -2930,7 +3157,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -2938,7 +3165,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -2995,7 +3222,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3003,7 +3230,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -3060,7 +3287,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3068,7 +3295,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>

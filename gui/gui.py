@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import QTableWidgetItem
 # from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 
-# import sys, time
+import sys, time
 # sys.path.append('/home/thesis/Documents/thesis/E-Healthcare-System')
-# sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
+sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
 from utils.common_functions import LogMesssage, Convert_To_Display
@@ -37,18 +37,19 @@ class GUI(QtWidgets.QMainWindow):
         self.diagnose_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_DIAGNOSE_SYMPTOMS))
 
         # All frame of gui
+        self.stackedWidget.addWidget(self.init_frame)
         self.stackedWidget.addWidget(self.recognize_frame)
         self.stackedWidget.addWidget(self.measure_sensor_frame)
         self.stackedWidget.addWidget(self.add_new_patient_frame)
         self.stackedWidget.addWidget(self.view_departments)
         self.stackedWidget.addWidget(self.measuring_sensor_frame)
         
-        self.stackedWidget.setCurrentWidget(self.recognize_frame)
+        self.stackedWidget.setCurrentWidget(self.init_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
         # # Show full screen
-        self.showFullScreen()
+        # self.showFullScreen()
         # # Hide currsor
         # self.setCursor(QtCore.Qt.BlankCursor)
 

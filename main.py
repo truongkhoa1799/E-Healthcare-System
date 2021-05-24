@@ -86,7 +86,7 @@ def Init_Gui():
     glo_va.gui = GUI()
     glo_va.gui.show()
     glo_va.flg_init_GUI = True
-    glo_va.start_program.set()
+    # glo_va.start_program.set()
     app.exec_()
     
 #########################################################################
