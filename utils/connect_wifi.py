@@ -21,6 +21,6 @@ class ConnectWifi:
             return -1
         else: return 0
 
-wifi = ConnectWifi()
-# wifi.checkStatus()
-wifi.connectWifi("KhoaTruong", "Khoa9872134")
+# wifi = ConnectWifi()
+# # wifi.checkStatus()
+# print(wifi.connectWifi("KHOA", "Khoa9872134"))

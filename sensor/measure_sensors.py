@@ -209,7 +209,7 @@ class MeasureSensor:
             self.__cur_weight = weight
             
             if self.__cur_weight >= MIN_WEIGHT and abs(self.__cur_weight - self.__pre_weight) < MIN_WEIGHT:
-                self.__list_weight.append(self.__cur_weight)
+                self.__list_weight.append(self.__cur_weight + 1.0)
                 self.__list_height.append(height)
                 self.__list_temperature.append(temperature)
 

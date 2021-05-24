@@ -50,10 +50,10 @@ def gstreamer_pipeline(
 
 
 if __name__ == "__main__":
-    # cuda_ctx = cuda.Device(0).make_context()  # GPU 0
-    # detector = FaceDetector()
+    cuda_ctx = cuda.Device(0).make_context()  # GPU 0
+    detector = FaceDetector()
     cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
-    face_rec = Face_Recognition()
+    # face_rec = Face_Recognition()
     count = 0
     list_time = []
 
@@ -62,69 +62,72 @@ if __name__ == "__main__":
         window_handle = cv2.namedWindow("CSI Camera", cv2.WINDOW_AUTOSIZE)
         # Window
         while cv2.getWindowProperty("CSI Camera", 0) >= 0:
-            time_start = time.time()
             ret_val, img = cap.read()
-            # img = cv2.resize(img, (640,360))
 
-            fra = 80 / max(img.shape[0], img.shape[1])
-            resized_img = cv2.resize(img, (int(img.shape[1] * fra), int(img.shape[0] * fra)))
-            GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
-            face_locations = face_rec.Get_Face_Locations(GRAY_resized_img)
-            # glo_va.list_time_detection.append(time.time() - start_detec)
+            time_start = time.time()
 
-            if len(face_locations) == 0:
-                continue
+            # fra = 100 / max(img.shape[0], img.shape[1])
+            # resized_img = cv2.resize(img, (int(img.shape[1] * fra), int(img.shape[0] * fra)))
+            # GRAY_resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
+            # face_locations = face_rec.Get_Face_Locations(GRAY_resized_img)
 
-            try:
-                for face_location in face_locations:
-                    top = int(face_location[0] / fra)
-                    bottom = int(face_location[2] / fra)
-                    left = int(face_location[3] / fra)
-                    right = int(face_location[1] / fra)
+            # diff_time = time.time() - time_start
+            # if diff_time < 0.1:
+            #     list_time.append(diff_time)
+            #     count += 1
 
-                    cv2.rectangle(img, (left, top), (right, bottom) , (2, 255, 0), 2)
-            except:
-                continue
+            # if len(face_locations) != 0:
+            #     try:
+            #         top = int(face_locations[0][0] / fra)
+            #         bottom = int(face_locations[0][2] / fra)
+            #         left = int(face_locations[0][3] / fra)
+            #         right = int(face_locations[0][1] / fra)
+
+            #         cv2.rectangle(img, (left, top), (right, bottom) , (2, 255, 0), 2)
+            #     except:
+            #         continue
             
-            # dets = detector(img, img.shape[0], img.shape[1])
-            # # print(dets)
-            # for det in dets:
-            #     boxes = det[:4]
-            #     left = int(boxes[0])
-            #     top = int(boxes[1])
-            #     right = int(boxes[2])
-            #     bottom = int(boxes[3])
+            dets = detector(img, img.shape[0], img.shape[1])
 
-            #     diff_vertical = bottom - top
-            #     diff_horizontal = right - left
-            #     diff = abs(int((diff_vertical - diff_horizontal) / 2))
-            #     if diff_horizontal < diff_vertical:
-            #         top += diff
-            #         bottom -= diff
-            #     else:
-            #         left += diff
-            #         right -= diff
+            diff_time = time.time() - time_start
+            if diff_time < 0.1:
+                list_time.append(diff_time)
+                count += 1
 
-            #     cv2.rectangle(img, (left, top), (right, bottom) , (2, 255, 0), 2)
+            # print(dets)
+            for det in dets:
+                boxes = det[:4]
+                left = int(boxes[0])
+                top = int(boxes[1])
+                right = int(boxes[2])
+                bottom = int(boxes[3])
+
+                diff_vertical = bottom - top
+                diff_horizontal = right - left
+                diff = abs(int((diff_vertical - diff_horizontal) / 2))
+                if diff_horizontal < diff_vertical:
+                    top += diff
+                    bottom -= diff
+                else:
+                    left += diff
+                    right -= diff
+
+                cv2.rectangle(img, (left, top), (right, bottom) , (2, 255, 0), 2)
 
             cv2.imshow("CSI Camera", img)
             # This also acts as
             keyCode = cv2.waitKey(30) & 0xFF
             # Stop the program on the ESC key
-            if keyCode == 27 or count == 1500:
+            if keyCode == 27 or count == 500:
                 print("Mean time: {}".format(np.mean(list_time)))
                 print("Max time: {}".format(np.max(list_time)))
                 print("Min time: {}".format(np.min(list_time)))
                 print("Std time: {}".format(np.std(list_time)))
                 break
             
-            diff_time = time.time() - time_start
-            if diff_time < 0.1:
-                list_time.append(diff_time)
-                count += 1
         cap.release()
         cv2.destroyAllWindows()
     else:
         print("Unable to open camera")
-    # cuda_ctx.pop()
-    # del cuda_ctx
+    cuda_ctx.pop()
+    del cuda_ctx
