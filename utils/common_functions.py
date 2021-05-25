@@ -2,7 +2,7 @@ import os
 import cv2
 import time
 import numpy as np
-from threading import Lock, Timer
+# from threading import Lock, Timer
 from PyQt5.QtGui import QImage, QPixmap
 
 from utils.parameters import *
@@ -27,16 +27,6 @@ def LogMesssage(msg, opt = 1):
         print(bcolors.OKCYAN + "[{time}]: {msg}".format(time=time.strftime("%H:%M:%S",time.localtime()), msg=msg))
     else:
         print(bcolors.FAIL + "[{time}]: {msg}".format(time=time.strftime("%H:%M:%S",time.localtime()), msg=msg))
-
-
-def SaveFace(opt,dir_name,img_name, img,locations):
-    count = 0
-    if opt==0:
-        os.chdir(SAVING_IMG_PATH) 
-        for (top, right, bottom, left) in locations:
-            img_name_1 = dir_name+'-'+str(count)+'-'+img_name
-            cv2.imwrite(img_name_1, img[top:bottom,left:right]) 
-            count += 1
 
 def AdjustBright(img):
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) #convert it to hsv
@@ -63,7 +53,7 @@ def Compose_Embedded_Face(encoded_img):
     return ret_string
         
 def Preprocessing_Img(img):
-    resized_img = cv2.resize(img, (glo_va.IMAGE_SIZE,glo_va.IMAGE_SIZE))
+    resized_img = cv2.resize(img, (glo_va.IDENTIFIED_IMAGE_SIZE, glo_va.IDENTIFIED_IMAGE_SIZE))
     RGB_resized_adjusted_bright_img = AdjustBright(resized_img)
     # RGB_resized_adjusted_bright_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
     return RGB_resized_adjusted_bright_img

@@ -66,6 +66,30 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
             ''')
             self.text = '     Your devices are disconnected'
 
+        elif data['opt'] == 6:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/icons8-checkmark-90.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '     You connect Wifi successfully'
+
+        elif data['opt'] == 7:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/warning.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '             Fail to connect Wifi'
+        
+        elif data['opt'] == 8:
+            self.icon.setStyleSheet('''background: transparent;
+                background-image: url(icons/warning.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            ''')
+            self.text = '    Please fullfil ssid and password'
+
         self.text_dialog.setText(self.text)
         self.accept_exist.clicked.connect(lambda: self.__onButtonListenning())
     

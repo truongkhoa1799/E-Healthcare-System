@@ -2,6 +2,8 @@ from identifying_users.states import *
 from identifying_users.init import Init
 from identifying_users.end import End
 
+from utils.connect_wifi import ConnectWifi
+
 from gui.gui import GUI
 from PyQt5 import QtWidgets
 
@@ -17,23 +19,40 @@ from identifying_users.face_detector_centerface import FaceDetector
 def EndProcHandler(signal_received, frame):
     # Handle any cleanup here
     print('SIGINT or CTRL-C detected. Exiting gracefully')
-    try:
+
+    if glo_va.main_thread.is_alive():
         glo_va.stop_program.set()
         glo_va.main_thread.join()
-
-    except:
-        pass
 
     End()
 
 def main():
-    LogMesssage('Start init Center Face', opt=0)
-    cuda_ctx = cuda.Device(0).make_context()
-    glo_va.centerface_detector = FaceDetector()
 
     while not glo_va.stop_program.is_set():
-        while not glo_va.start_program.is_set():
-            continue
+        # STATE CONNECT WIFI
+        if glo_va.STATE == glo_va.STATE_CONNECT_WIFI:
+            if glo_va.start_program.is_set():
+
+                # Init face detection
+                LogMesssage('Start init Center Face', opt=0)
+                cuda_ctx = cuda.Device(0).make_context()
+                glo_va.centerface_detector = FaceDetector()
+                
+                # Init all services
+                ret = Init()
+                if ret == -1:
+                    # END face detection
+                    cuda_ctx.pop()
+                    del cuda_ctx
+                    LogMesssage('Stop Center Face', opt=0)
+
+                    # End other services
+                    End()
+
+                glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
+
+            else:
+                continue
         
         try:
             # STATE DETECTING AND RECOGNIZING PATIENT
@@ -75,7 +94,6 @@ def main():
 
             # clear all services
             End()
-            exit(0)
 
     cuda_ctx.pop()
     del cuda_ctx
@@ -95,26 +113,27 @@ def Init_Gui():
 
 if __name__ == "__main__":
     signal(SIGINT, EndProcHandler)
+    glo_va.wifi = ConnectWifi()
+    
     # while True:
-    try:
-        ret = Init()
-        if ret == -1:
-            End()
-            exit(0)
-            
+    try:            
         glo_va.main_thread = threading.Thread(target=main, args=())
         glo_va.main_thread.daemon = True
         glo_va.main_thread.start()
 
         Init_Gui()
-
-        End()
-    except Exception as e:
-        print("Error at Init module: {}".format(e))
-        try:
+        
+        if glo_va.main_thread.is_alive():
             glo_va.stop_program.set()
             glo_va.main_thread.join()
-        except:
-            pass
+
         End()
-        exit(0)
+
+    except Exception as e:
+        print("Error at Init module: {}".format(e))
+
+        if glo_va.main_thread.is_alive():
+            glo_va.stop_program.set()
+            glo_va.main_thread.join()
+
+        End()

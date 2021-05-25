@@ -1,10 +1,15 @@
 import os, time
 
+from utils.common_functions import LogMesssage
+
 class ConnectWifi:
     def __init__(self):
-        self.command_rescan_wifi = "echo 123 | sudo nmcli device wifi rescan"
-        self.command_connect = "echo 123 | sudo nmcli d wifi connect {} password {}"
+        self.command_rescan_wifi = "echo 123 | sudo -S nmcli device wifi rescan"
+        self.command_connect = "echo 123 | sudo -S nmcli d wifi connect {} password {}"
         self.command_check_status = "nmcli device status | grep wlan0"
+
+        # os.system(self.command_rescan_wifi)
+        LogMesssage("[ConnectWifi_init]: Scan the Wifi")
     
     def checkStatus(self):
         result = os.popen(self.command_check_status)
@@ -12,8 +17,6 @@ class ConnectWifi:
         print(result[2])
     
     def connectWifi(self, ssid, password):
-        result = os.popen(self.command_rescan_wifi.format(ssid, password))
-        time.sleep(1)
         result = os.popen(self.command_connect.format(ssid, password))
         result = list(result)
         print(result)

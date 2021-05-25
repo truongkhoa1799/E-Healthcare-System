@@ -29,10 +29,10 @@ def Init():
     glo_va.lock_init_state = Lock()
     glo_va.lock_response_server = Lock()
 
-    # Get init parameters
-    ret = loadParametersFromServer()
-    if ret == -1:
-        return ret
+    # # Get init parameters
+    # ret = loadParametersFromServer()
+    # if ret == -1:
+    #     return ret
 
     # Init momo assistant
     StartMomoAssistant()
@@ -64,7 +64,6 @@ def Start_Face_Recognition():
     glo_va.face_recognition = Face_Recognition()
     LogMesssage("Done start init Face Recognition", opt=0)
     
-
 def Start_Camera_Detecting():
     LogMesssage("Starting init Camera", opt=0)
     glo_va.camera = CameraDetecting()

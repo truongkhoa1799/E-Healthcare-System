@@ -22,7 +22,7 @@ azure:
   iothub_connection: HostName=thesisehealthcare.azure-devices.net;SharedAccessKeyName=serviceAndRegistryRead;SharedAccessKey=mqDNZkuK8UnoS9ccbb3bGm2OI1VCKHRfbODo6BKlfb4=
 
 preprocessing:
-  image_size: 150
+  identified_image_size: 150
   base_brightness: 180
 
 identifying_face:
@@ -85,15 +85,20 @@ timer:
   opt_timer_get_init_parameters: 4
 
 momo_message:
-  ask_confirm: Momo chào bạn, vui lòng xác nhận thông tin của mình ạ
+  ask_confirm: Momo chào bạn, vui lòng xác nhận thông tin của mình
   ask_new_patient: Bạn đến khám lần đầu phải không, nếu đúng momo giúp bạn đăng ký nhé
   say_bye: Bài bai.
-  inform_state_3: Bấm vào nút danh sách khoa để chọn khoa mình muốn khám. Sau đó bấm vào đo chỉ số để lấy thông tin sensor.
-  inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
+  ask_choose_dep: Bấm vào nút danh sách khoa để chọn khoa mình muốn khám.
+  ask_measure_sensor: Chọn vào đo chỉ số để lấy đo thông tin sinh học.
+  # inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
   ask_take_of_mask: Vui lòng cởi khẩu trang để xác thực
+  ask_finish_esp_measurement: hoàn tất, đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị. bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  ask_finish_oso2_measurement: hoàn tất, tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
+  ask_confirm_sensor_infor: Vui lòng xác nhận thông tin
+  ask_submit_exam: hoàn tất, bây giờ bạn có thể hoàn thành quá trình bằng cách nhấn vào nút hoàn tất trên màn hình
 
   measure_sensor_inform_0: đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
-  measure_sensor_inform_1: bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và đợi đến khi có thông báo đo xong.
+  measure_sensor_inform_1: bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
   measure_sensor_inform_2: tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
 
   capture_img:

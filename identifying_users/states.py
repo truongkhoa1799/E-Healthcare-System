@@ -14,6 +14,9 @@ def State_1():
     glo_va.camera.RunCamera()
 
     if glo_va.img is not None: face_locations = glo_va.centerface_detector(glo_va.img, glo_va.img.shape[0], glo_va.img.shape[1])
+    else:
+        return
+
     if len(face_locations) == 1:
         ret, location_detected_face = glo_va.face_recognition.Get_Location_Face(face_locations)
         if ret == -2:
@@ -32,10 +35,10 @@ def State_1():
             embedded_face = glo_va.face_recognition.Encoding_Face(detected_face)
             glo_va.count_face.Count_Face(embedded_face)
         
-        else:
-            time.sleep(0.03)
-    else:
-        time.sleep(0.03)
+    #     else:
+    #         time.sleep(0.03)
+    # else:
+    #     time.sleep(0.03)
 
     # Face detecting
     # ret = glo_va.face_recognition.Get_Face()
@@ -129,7 +132,7 @@ def State_2():
         
         # MOMO saying
         glo_va.momo_assis.stopCurrentConversation()
-        glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+        glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep'])
 
         LogMesssage('[states_State_2]: Clear patient information and screen. Save patient_id detected')
     
@@ -161,7 +164,7 @@ def State_3():
 
         # MOMO saying
         glo_va.momo_assis.stopCurrentConversation()
-        glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_oso2'])
+        glo_va.momo_assis.momoSay(glo_va.momo_messages['measure_sensor_inform_0'])
         
         # Init measure sensor
         glo_va.measuring_sensor = MeasureSensor()
@@ -386,9 +389,9 @@ def State_6():
                             time.sleep(1.5)
                             # MOMO saying
                             glo_va.momo_assis.stopCurrentConversation()
-                            glo_va.momo_assis.momoSay(glo_va.momo_messages['inform_state_3'])
+                            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep'])
 
-                            glo_va.currentStopCamera()
+                            glo_va.camera.currentStopCamera()
             
                 else:
                     glo_va.check_current_shape = False

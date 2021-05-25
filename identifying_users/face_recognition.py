@@ -41,7 +41,7 @@ class Face_Recognition:
 
         raw_landmarks = self.__raw_face_landmarks(test_img, [(1, 149, 1, 149)])
         test_encoded = [np.array(self.__face_encoder.compute_face_descriptor(test_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks][0]
-        time.sleep(0.1)
+        time.sleep(0.5)
 
         LogMesssage("\tDone load dlib model")
 
@@ -201,7 +201,7 @@ class Face_Recognition:
     def encodingFaceNewPatient(self, detected_face):
         RGB_resized_adjusted_bright_img = Preprocessing_Img(detected_face)
 
-        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])
+        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IDENTIFIED_IMAGE_SIZE, glo_va.IDENTIFIED_IMAGE_SIZE,0)])
 
         embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(RGB_resized_adjusted_bright_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
         
@@ -214,7 +214,7 @@ class Face_Recognition:
         RGB_resized_adjusted_bright_img = Preprocessing_Img(detected_face)
 
         # locations = (top, right, bottom, left)
-        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IMAGE_SIZE, glo_va.IMAGE_SIZE,0)])
+        raw_landmarks = self.__raw_face_landmarks(RGB_resized_adjusted_bright_img, [(0, glo_va.IDENTIFIED_IMAGE_SIZE, glo_va.IDENTIFIED_IMAGE_SIZE,0)])
 
         embedded_face = [np.array(self.__face_encoder.compute_face_descriptor(RGB_resized_adjusted_bright_img, raw_landmark_set, 1)) for raw_landmark_set in raw_landmarks]
 

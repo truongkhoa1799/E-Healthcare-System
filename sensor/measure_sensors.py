@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 MIN_WEIGHT = 5.0
-NUM_GET_ESP = 7
+NUM_GET_ESP = 10
 DELAY_TIME_ESP32 = 8
 DELAY_TIME_RESET_ESP32 = 3
 
@@ -144,6 +144,16 @@ class MeasureSensor:
         }
         glo_va.gui.queue_request_states_thread.put(request)
 
+        if self.has_esp:
+            # MOMO saying
+            glo_va.momo_assis.stopCurrentConversation()
+            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
+        else:
+            # MOMO saying
+            glo_va.momo_assis.stopCurrentConversation()
+            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_oso2_measurement"])
+
+
         self.__state_oso2 = 0
         self.__list_spo2 = []
         self.__list_heart_rate = []
@@ -257,6 +267,15 @@ class MeasureSensor:
                         }
                     }
                     glo_va.gui.queue_request_states_thread.put(request)
+
+                    if self.has_oso2:
+                        # MOMO saying
+                        glo_va.momo_assis.stopCurrentConversation()
+                        glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
+                    else:
+                        # MOMO saying
+                        glo_va.momo_assis.stopCurrentConversation()
+                        glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_esp_measurement"])
 
             else:
                 LogMesssage('\tReset reading esp32')

@@ -1,7 +1,5 @@
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QTableWidgetItem
-# from PyQt5.QtWidgets import QDialog
-# from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
 
 import sys, time
@@ -9,6 +7,7 @@ import sys, time
 sys.path.append('/Users/khoatr1799/GitHub/E-Healthcare-System')
 
 from utils.parameters import *
+from identifying_users.states import Init_State
 from utils.common_functions import LogMesssage, Convert_To_Display
 
 from gui.momo_gui import MomoGuiDialog
@@ -35,6 +34,7 @@ class GUI(QtWidgets.QMainWindow):
         self.submit_exam_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SUBMIT_EXAM))
         self.select_dep_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_SELECT_DEP))
         self.diagnose_but.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_DIAGNOSE_SYMPTOMS))
+        self.connect_wifi.clicked.connect(lambda: self.__onButtonsListenning(glo_va.BUTTON_CONNECT_WIFI))
 
         # All frame of gui
         self.stackedWidget.addWidget(self.init_frame)
@@ -161,7 +161,6 @@ class GUI(QtWidgets.QMainWindow):
             ################################################
             if opt == glo_va.BUTTON_EXIST:
                 ret = self.__OpenDialog(glo_va.EXIST_DIALOG)
-                # print(ret)
                 if ret == 0:
                     glo_va.button = glo_va.BUTTON_EXIST
 
@@ -253,10 +252,10 @@ class GUI(QtWidgets.QMainWindow):
                     # print(self.state)
                     self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
 
-                    message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
-                    # MOMO saying
-                    glo_va.momo_assis.stopCurrentConversation()
-                    glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+                    # message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                    # # MOMO saying
+                    # glo_va.momo_assis.stopCurrentConversation()
+                    # glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
             
             ################################################
             # BUTTON_NEXT_GUILDE_SENSOR                    #
@@ -270,10 +269,10 @@ class GUI(QtWidgets.QMainWindow):
                     # print(self.state)
                     self.instruction_stack.setCurrentWidget(self.__list_image[self.index_instruction])
 
-                    message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
-                    # MOMO saying
-                    glo_va.momo_assis.stopCurrentConversation()
-                    glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+                    # message = 'measure_sensor_inform_{}'.format(str(self.index_instruction))
+                    # # MOMO saying
+                    # glo_va.momo_assis.stopCurrentConversation()
+                    # glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
             ################################################
             # BUTTON_GUILDE_SENSOR                         #
@@ -286,10 +285,10 @@ class GUI(QtWidgets.QMainWindow):
                 self.instruction_stack.setCurrentWidget(self.first_instruction)
                 self.measure_sensor_stack.setCurrentWidget(self.guilde_frame)
 
-                message = 'measure_sensor_inform_0'
-                # MOMO saying
-                glo_va.momo_assis.stopCurrentConversation()
-                glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
+                # message = 'measure_sensor_inform_0'
+                # # MOMO saying
+                # glo_va.momo_assis.stopCurrentConversation()
+                # glo_va.momo_assis.momoSay(glo_va.momo_messages[message])
 
                 LogMesssage('Patient change to instruction measure sensor frame')
             
@@ -322,6 +321,42 @@ class GUI(QtWidgets.QMainWindow):
                     return
 
                 glo_va.button = glo_va.BUTTON_CONFIRM_SENSOR
+
+            ################################################
+            # BUTTON_CONNECT_WIFI                          #
+            ################################################
+            elif opt == glo_va.BUTTON_CONNECT_WIFI:
+                if glo_va.STATE != glo_va.STATE_CONNECT_WIFI:
+                    return
+
+                ssid = str(self.input_ssid_wifi.text())
+                password = str(self.input_pass_wifi.text())
+                # print(ssid)
+                # print(password)
+                if ssid == '' or password == '':
+                    data = {}
+                    data['opt'] = 8
+                    self.__notificationDialog(data)
+
+                    self.input_ssid_wifi.setText("")
+                    self.input_pass_wifi.setText("")
+                    return
+
+                ret = glo_va.wifi.connectWifi(ssid, password)
+                if ret == 0:
+                    data = {}
+                    data['opt'] = 6
+                    self.__notificationDialog(data)
+
+                    self.stackedWidget.setCurrentWidget(self.recognize_frame)
+                    glo_va.start_program.set()
+                else:
+                    data = {}
+                    data['opt'] = 7
+                    self.__notificationDialog(data)
+                
+                self.input_ssid_wifi.setText("")
+                self.input_pass_wifi.setText("")
         
         except Exception as e:
             LogMesssage("[gui____onButtonsListenning]: Has error :{}".format(e))
@@ -435,8 +470,10 @@ class GUI(QtWidgets.QMainWindow):
                 if request['data']['final'] == 0:
                     if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
                         self.progress_bar.setValue(100)
+
                     elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
                         self.progress_bar.setValue(50)
+                        
                     else:
                         self.progress_bar.setValue(0)
                     
@@ -453,12 +490,14 @@ class GUI(QtWidgets.QMainWindow):
                 if self.current_frame != self.MAIN_FRAME:
                     LogMesssage('Discard request message: {}'.format(request['type'] == glo_va.REQUEST_UPDATE_OSO2))
                     return
-                
+
                 if request['data']['final'] == 0:
                     if glo_va.measuring_sensor.has_oso2 and glo_va.measuring_sensor.has_esp:
                         self.progress_bar.setValue(100)
+
                     elif glo_va.measuring_sensor.has_oso2 or glo_va.measuring_sensor.has_esp:
                         self.progress_bar.setValue(50)
+
                     else:
                         self.progress_bar.setValue(0)
                     

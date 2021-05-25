@@ -15,6 +15,7 @@ class GlobalVariable:
         
         # CENTER_FACE
         self.centerface_detector = None
+        self.wifi = None
         self.stop_program = Event()
         self.start_program = Event()
 
@@ -173,6 +174,7 @@ class GlobalVariable:
         # STATE of the program                                 #
         ########################################################
         # STATES
+        self.STATE_CONNECT_WIFI = 0
         self.STATE_RECOGNIZE_PATIENT = 1
         self.STATE_CONFIRM_PATIENT = 2
         self.STATE_MEASURE_SENSOR = 3
@@ -182,7 +184,7 @@ class GlobalVariable:
         self.STATE_WAITING_SUB_EXAM = 7
         self.STATE_MEASURING_SENSOR = 8
 
-        self.STATE = self.STATE_RECOGNIZE_PATIENT
+        self.STATE = self.STATE_CONNECT_WIFI
         
         ########################################################
         # BUTTON                                               #
@@ -213,6 +215,7 @@ class GlobalVariable:
         self.BUTTON_DIAGNOSE_SYMPTOMS = 18
         self.BUTTON_CLOSE_MOMO_GUI = 19
         self.BUTTON_VERIFY_PATIENT = 20
+        self.BUTTON_CONNECT_WIFI = 21
 
         ########################################################
         # REQUEST MAIN GUI                                     #
@@ -267,7 +270,7 @@ class GlobalVariable:
             self.CONNECTION_AZURE_PATH = os.path.join(PROJECT_PATH, str(documents['path']['azure_connection_path']))
             
             # Parameters for image processing, and KNN model
-            self.IMAGE_SIZE = int(documents['preprocessing']['image_size'])
+            self.IDENTIFIED_IMAGE_SIZE = int(documents['preprocessing']['identified_image_size'])
             self.BASE_BRIGHTNESS = int(documents['preprocessing']['base_brightness'])
             
             # identifying_face
@@ -344,8 +347,16 @@ class GlobalVariable:
                 'ask_confirm': '123',
                 'ask_new_patient': '123',
                 'say_bye': '123',
-                'inform_state_3': '123',
-                'inform_oso2': '123',
+
+                'ask_choose_dep': '123',
+                'ask_measure_sensor': '123',
+                
+
+                'ask_finish_esp_measurement': '123',
+                'ask_finish_oso2_measurement': '123',
+                'ask_confirm_sensor_infor': '123',
+                'ask_submit_exam': '123',
+
                 'measure_sensor_inform_0': '123',
                 'measure_sensor_inform_1': '123',
                 'measure_sensor_inform_2': '123',
@@ -355,8 +366,15 @@ class GlobalVariable:
             self.momo_messages['ask_confirm'] = str(documents['momo_message']['ask_confirm'])
             self.momo_messages['ask_new_patient'] = str(documents['momo_message']['ask_new_patient'])
             self.momo_messages['say_bye'] = str(documents['momo_message']['say_bye'])
-            self.momo_messages['inform_state_3'] = str(documents['momo_message']['inform_state_3'])
-            self.momo_messages['inform_oso2'] = str(documents['momo_message']['inform_oso2'])
+            self.momo_messages['ask_choose_dep'] = str(documents['momo_message']['ask_choose_dep'])
+            # self.momo_messages['inform_oso2'] = str(documents['momo_message']['inform_oso2'])
+
+            self.momo_messages['ask_finish_esp_measurement'] = str(documents['momo_message']['ask_finish_esp_measurement'])
+            self.momo_messages['ask_finish_oso2_measurement'] = str(documents['momo_message']['ask_finish_oso2_measurement'])
+            self.momo_messages['ask_confirm_sensor_infor'] = str(documents['momo_message']['ask_confirm_sensor_infor'])
+            self.momo_messages['ask_submit_exam'] = str(documents['momo_message']['ask_submit_exam'])
+
+
             self.momo_messages['measure_sensor_inform_0'] = str(documents['momo_message']['measure_sensor_inform_0'])
             self.momo_messages['measure_sensor_inform_1'] = str(documents['momo_message']['measure_sensor_inform_1'])
             self.momo_messages['measure_sensor_inform_2'] = str(documents['momo_message']['measure_sensor_inform_2'])
