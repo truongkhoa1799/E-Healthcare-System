@@ -29,34 +29,35 @@ def EndProcHandler(signal_received, frame):
 def main():
 
     while not glo_va.stop_program.is_set():
-        # STATE CONNECT WIFI
-        if glo_va.STATE == glo_va.STATE_CONNECT_WIFI:
-            if glo_va.start_program.is_set():
-
-                # Init face detection
-                LogMesssage('Start init Center Face', opt=0)
-                cuda_ctx = cuda.Device(0).make_context()
-                glo_va.centerface_detector = FaceDetector()
-                
-                # Init all services
-                ret = Init()
-                if ret == -1:
-                    # END face detection
-                    cuda_ctx.pop()
-                    del cuda_ctx
-                    LogMesssage('Stop Center Face', opt=0)
-
-                    # End other services
-                    End()
-
-                glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
-
-            else:
-                continue
-        
         try:
+            # STATE CONNECT WIFI
+            if glo_va.STATE == glo_va.STATE_CONNECT_WIFI:
+                if glo_va.start_program.is_set():
+
+                    # Init face detection
+                    LogMesssage('Start init Center Face', opt=0)
+                    cuda_ctx = cuda.Device(0).make_context()
+                    glo_va.centerface_detector = FaceDetector()
+                    glo_va.flg_init_face_detection = True
+                    
+                    # Init all services
+                    ret = Init()
+                    if ret == -1:
+                        # END face detection
+                        cuda_ctx.pop()
+                        del cuda_ctx
+                        LogMesssage('Stop Center Face', opt=0)
+
+                        # End other services
+                        End()
+
+                    glo_va.STATE = glo_va.STATE_RECOGNIZE_PATIENT
+
+                else:
+                    continue
+        
             # STATE DETECTING AND RECOGNIZING PATIENT
-            if glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
+            elif glo_va.STATE == glo_va.STATE_RECOGNIZE_PATIENT:
                 State_1()
 
             # STATE CONFIRMING PATIENT INFORMATION
@@ -88,15 +89,19 @@ def main():
         except Exception as e:
             print("Error at module main in main: {}".format(e))
             
-            cuda_ctx.pop()
-            del cuda_ctx
-            LogMesssage('Stop Center Face', opt=0)
+            if glo_va.flg_init_face_detection:
+                cuda_ctx.pop()
+                del cuda_ctx
+                LogMesssage('Stop Center Face', opt=0)
 
             # clear all services
             End()
+            
+    if glo_va.flg_init_face_detection:
+        cuda_ctx.pop()
+        del cuda_ctx
+        LogMesssage('Stop Center Face', opt=0)
 
-    cuda_ctx.pop()
-    del cuda_ctx
     LogMesssage('Stop Center Face', opt=0)
 
 def Init_Gui():

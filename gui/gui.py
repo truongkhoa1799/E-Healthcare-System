@@ -149,6 +149,9 @@ class GUI(QtWidgets.QMainWindow):
             if ret != "":
                 self.__UpdateSelectedRoom(ret)
 
+                # MOMO saying
+                glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_confirm_selected_dep'])
+
             glo_va.momo_gui = None
         
     ########################################################
@@ -227,6 +230,9 @@ class GUI(QtWidgets.QMainWindow):
                 if index != -1 and index < len(self.__list_department):
                     dep_name = self.__list_department[index]
                     self.__UpdateSelectedRoom(dep_name)
+
+                    # MOMO saying
+                    glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_confirm_selected_dep'])
             
             ################################################
             # BUTTON_DIAGNOSE_SYMPTOMS                     #
@@ -350,13 +356,14 @@ class GUI(QtWidgets.QMainWindow):
 
                     self.stackedWidget.setCurrentWidget(self.recognize_frame)
                     glo_va.start_program.set()
+
+                    self.input_ssid_wifi.setText("")
+                    self.input_pass_wifi.setText("")
+                    
                 else:
                     data = {}
                     data['opt'] = 7
                     self.__notificationDialog(data)
-                
-                self.input_ssid_wifi.setText("")
-                self.input_pass_wifi.setText("")
         
         except Exception as e:
             LogMesssage("[gui____onButtonsListenning]: Has error :{}".format(e))
@@ -413,7 +420,7 @@ class GUI(QtWidgets.QMainWindow):
             # REQUEST UPDATE SENSOR INFORMATION                    #
             ########################################################
             elif request['type'] == glo_va.REQUEST_UPDATE_SENSOR:
-                self.__UpdateSensorInfo()
+                self.__UpdateSensorInfo(request['data'])
             
             ########################################################
             # REQUEST CLEAR SENSOR INFORMATION                     #
@@ -446,12 +453,12 @@ class GUI(QtWidgets.QMainWindow):
             elif request['type'] == glo_va.REQUEST_CLEAR_SELECTED_EXAM_ROOM:
                 self.__ClearSelectedRoom()
             
-            ########################################################
-            # REQUEST UPDATE SELECTED EXAM ROOM                    #
-            ########################################################
-            elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
-                dep_name = request['data']
-                self.__UpdateSelectedRoom(dep_name=dep_name)
+            # ########################################################
+            # # REQUEST UPDATE SELECTED EXAM ROOM                    #
+            # ########################################################
+            # elif request['type'] == glo_va.REQUEST_UPDATE_SELECTED_EXAM_ROOM:
+            #     dep_name = request['data']
+            #     self.__UpdateSelectedRoom(dep_name=dep_name)
             
             ########################################################
             # REQUEST OPEN MOMO CHAT BOT                           #
@@ -479,9 +486,6 @@ class GUI(QtWidgets.QMainWindow):
                     
                     self.spo2.setText(str(int(request['data']['spo2'])))
                     self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
-                        
-                self.measuring_heart_pulse.setText(str(int(request['data']['heart_pulse'])))
-                self.measuring_spo2.setText(str(int(request['data']['spo2'])))
             
             ########################################################
             # REQUEST UPDATE ESP32 SENSOR                          #
@@ -505,11 +509,6 @@ class GUI(QtWidgets.QMainWindow):
                     self.weight.setText(request['data']['weight'])
                     self.temperature.setText(request['data']['temperature'])
                     self.bmi.setText(request['data']['bmi'])
-                
-                self.measuring_height.setText(request['data']['height'])
-                self.measuring_weight.setText(request['data']['weight'])
-                self.measuring_temperature.setText(request['data']['temperature'])
-                self.measuring_BMI.setText(request['data']['bmi'])
 
         except Exception as e:
             LogMesssage("[gui___CheckRequestStatesThread]: Has error :{}".format(e))
@@ -562,6 +561,14 @@ class GUI(QtWidgets.QMainWindow):
                 }
             ''')
     
+    def __UpdateSensorInfo(self, sensor_infor):
+        self.bmi.setText(sensor_infor['bmi'])
+        self.heart_pulse.setText(sensor_infor['heart_pulse'])
+        self.temperature.setText(sensor_infor['temperature'])
+        self.spo2.setText(sensor_infor['spo2'])
+        self.weight.setText(sensor_infor['weight'])
+        self.height.setText(sensor_infor['height'])
+
     def __ClearSensorInfo(self):
         self.bmi.setText('')
         self.heart_pulse.setText('')

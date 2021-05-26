@@ -50,6 +50,7 @@ class GlobalVariable:
         self.flg_init_count_face = False
         self.flg_server_connected = False
         self.flg_init_momo_assistant = False
+        self.flg_init_face_detection = False
         self.flg_init_face_recognition = False
         
         ########################################################
@@ -225,9 +226,9 @@ class GlobalVariable:
         self.REQUEST_UPDATE_PATIENT_INFO = 2
         # self.REQUEST_CLEAR_PATIENT_INFO = 3
         self.REQUEST_ACTIVATE_NEW_FACE = 4
-        self.REQUEST_UPDATE_EXAM_ROOM = 5
+        # self.REQUEST_UPDATE_EXAM_ROOM = 5
         self.REQUEST_CLEAR_EXAM_ROOM = 6
-        self.REQUEST_UPDATE_DEPARTMENT_LIST = 9
+        # self.REQUEST_UPDATE_DEPARTMENT_LIST = 9
         self.REQUEST_CLEAR_DEPARTMENT_LIST = 10
         self.REQUEST_UPDATE_SENSOR = 7
         self.REQUEST_CLEAR_SENSOR = 8
@@ -235,7 +236,7 @@ class GlobalVariable:
         self.REQUEST_NOTIFY_MESSAGE = 12
         # self.REQUEST_DEACTIVATE_NEW_FACE = 13
         self.REQUEST_CLEAR_SELECTED_EXAM_ROOM = 14
-        self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
+        # self.REQUEST_UPDATE_SELECTED_EXAM_ROOM = 15
         self.REQUEST_OPEN_MOMO_GUI = 18
         self.REQUEST_UPDATE_DEP_MOMO_GUI = 19
         self.REQUEST_UPDATE_CONVERSATION_MOMO_GUI = 20
@@ -279,9 +280,9 @@ class GlobalVariable:
             # MAX length for HOG face Detector
             self.MAX_LENGTH_IMG = int(documents['identifying_face']['max_length_img'])
             self.MAX_LENGTH_IMG_NEW_USER = int(documents['identifying_face']['max_length_img_new_user'])
-            self.MAX_EDGE = int(documents['identifying_face']['max_edge'])
+            self.MIN_EDGE_DETECTED_FACE = int(documents['identifying_face']['min_edge_detected_face'])
 
-            self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
+            # self.FACE_DETECTOR_MODEL = documents['identifying_face']['face_detector_model']
             self.SHAPE_PREDICTOR_MODEL = str(documents['identifying_face']['shape_predictor_model'])
 
             # FACE RECOGNITION MODEL
@@ -298,6 +299,10 @@ class GlobalVariable:
             self.CAMERA_CAPTURE_WIDTH = int(documents['camera']['camera_capture_width'])
             self.CAMERA_CAPTURE_HEIGHT = int(documents['camera']['camera_capture_height'])
             self.FLIP_METHOD_CAM = int(documents['camera']['flip_method'])
+
+            # SENSOR
+            self.BASE_HEIGHT_SENSOR = float(documents['sensor']['base_height_sensor'])
+            self.ADDITIONAL_TEMP_SENSOR = float(documents['sensor']['additional_temp_sensor'])
 
             # size for display patient
             self.LOCATION_RECOGNIZE_FACE_WIDTH = int(documents['gui']['location_recognize_face_width'])
@@ -347,10 +352,20 @@ class GlobalVariable:
                 'ask_confirm': '123',
                 'ask_new_patient': '123',
                 'say_bye': '123',
-
+                
+                # MESSAGE STATE MEASURE SENSOR AND CHOOSE DEP
+                'ask_choose_dep_frame': '123',
                 'ask_choose_dep': '123',
                 'ask_measure_sensor': '123',
-                
+                'ask_choose_dep_frame_again': '123',
+                'ask_measure_sensor_again': '123',
+
+                # MESSAGE CHOOSE DEPARTMENT
+                'ask_confirm_selected_dep': '123', 
+
+                'ask_turn_on_oso2': '123',
+                'confirm_connect_device_success': '123',
+                'confirm_connected_device': '123',
 
                 'ask_finish_esp_measurement': '123',
                 'ask_finish_oso2_measurement': '123',
@@ -366,7 +381,21 @@ class GlobalVariable:
             self.momo_messages['ask_confirm'] = str(documents['momo_message']['ask_confirm'])
             self.momo_messages['ask_new_patient'] = str(documents['momo_message']['ask_new_patient'])
             self.momo_messages['say_bye'] = str(documents['momo_message']['say_bye'])
+            
+            # MESSAGE STATE MEASURE SENSOR AND CHOOSE DEP
+            self.momo_messages['ask_choose_dep_frame'] = str(documents['momo_message']['ask_choose_dep_frame'])
             self.momo_messages['ask_choose_dep'] = str(documents['momo_message']['ask_choose_dep'])
+            self.momo_messages['ask_measure_sensor'] = str(documents['momo_message']['ask_measure_sensor'])
+
+            self.momo_messages['ask_choose_dep_frame_again'] = str(documents['momo_message']['ask_choose_dep_frame_again'])
+            self.momo_messages['ask_measure_sensor_again'] = str(documents['momo_message']['ask_measure_sensor_again'])
+
+            # MESSAGE CHOOSE DEPARTMENT
+            self.momo_messages['ask_confirm_selected_dep'] = str(documents['momo_message']['ask_confirm_selected_dep'])
+            
+            self.momo_messages['ask_turn_on_oso2'] = str(documents['momo_message']['ask_turn_on_oso2'])
+            self.momo_messages['confirm_connect_device_success'] = str(documents['momo_message']['ask_turn_on_oso2'])
+            self.momo_messages['confirm_connected_device'] = str(documents['momo_message']['ask_turn_on_oso2'])
             # self.momo_messages['inform_oso2'] = str(documents['momo_message']['inform_oso2'])
 
             self.momo_messages['ask_finish_esp_measurement'] = str(documents['momo_message']['ask_finish_esp_measurement'])

@@ -20,7 +20,7 @@ def State_1():
     if len(face_locations) == 1:
         ret, location_detected_face = glo_va.face_recognition.Get_Location_Face(face_locations)
         if ret == -2:
-            LogMesssage("[State_1]: Error Face locations", opt=0)
+            LogMesssage("[states_State_1]: Error Face locations", opt=0)
             Init_State()
             return
 
@@ -35,24 +35,6 @@ def State_1():
             embedded_face = glo_va.face_recognition.Encoding_Face(detected_face)
             glo_va.count_face.Count_Face(embedded_face)
         
-    #     else:
-    #         time.sleep(0.03)
-    # else:
-    #     time.sleep(0.03)
-
-    # Face detecting
-    # ret = glo_va.face_recognition.Get_Face()
-    # if ret == -2:
-    #     LogMesssage("[State_1]: Error Face locations", opt=0)
-    #     Init_State()
-    #     return
-    # elif ret == 0:
-    #     # Face Identifying
-    #     glo_va.face_recognition.Encoding_Face()
-    #     glo_va.count_face.Count_Face()
-    # else:
-    #     time.sleep(0.025)
-
     # Update image to display
     glo_va.gui.image_display = glo_va.img
 
@@ -69,9 +51,6 @@ def State_1():
             LogMesssage('[states_State_1]: Patient: {id} has been detected'.format(id=user_infor.patient_ID))
             glo_va.STATE = glo_va.STATE_CONFIRM_PATIENT
             
-            # Clear all previous detected faces  
-            glo_va.count_face.Clear()
-            
             request = {'type': glo_va.REQUEST_UPDATE_PATIENT_INFO, 'data': user_infor.user_info}
             glo_va.gui.queue_request_states_thread.put(request)
 
@@ -83,9 +62,6 @@ def State_1():
         elif user_infor.status == glo_va.USER_INFOR_NO_FACE and glo_va.times_missing_face == glo_va.NUM_MISSING_FACE:
             LogMesssage('[states_State_1]: Patient exceed number of trying identify')
             glo_va.STATE = glo_va.STATE_CONFIRM_NEW_PATIENT
-
-            # Clear all previous detected faces  
-            glo_va.count_face.Clear()
 
             request = {'type': glo_va.REQUEST_CONFIRM_NEW_PATIENT, 'data': ''}
             glo_va.gui.queue_request_states_thread.put(request)
@@ -102,6 +78,9 @@ def State_1():
 
             glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_take_of_mask'])
             time.sleep(2)
+        
+        # Clear all previous detected faces  
+        glo_va.count_face.Clear()
 
         # set parameters for receive response to server. Make sure that there will not has dump response
         glo_va.is_sending_message = False
@@ -109,7 +88,6 @@ def State_1():
     
     if glo_va.button == glo_va.BUTTON_EXIST:
         LogMesssage('[states_State_1]: Patient exist program')
-        # If user reject, Clear user_infor, Ui and go to first state
         Init_State()
 
 ############################################################
@@ -131,8 +109,7 @@ def State_2():
         glo_va.gui.queue_request_states_thread.put(request)
         
         # MOMO saying
-        glo_va.momo_assis.stopCurrentConversation()
-        glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep'])
+        glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep_frame'])
 
         LogMesssage('[states_State_2]: Clear patient information and screen. Save patient_id detected')
     
@@ -154,18 +131,16 @@ def State_3():
         glo_va.button = glo_va.DEFAULT_BUTTON
         glo_va.STATE = glo_va.STATE_MEASURING_SENSOR
 
-        # Clear current sensor information
-        request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
-        glo_va.gui.queue_request_states_thread.put(request)
+        # # Clear current sensor information
+        # request = {'type': glo_va.REQUEST_CLEAR_SENSOR, 'data': ''}
+        # glo_va.gui.queue_request_states_thread.put(request)
         
         # send request to change gui
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
 
         # MOMO saying
-        glo_va.momo_assis.stopCurrentConversation()
         glo_va.momo_assis.momoSay(glo_va.momo_messages['measure_sensor_inform_0'])
-        
         # Init measure sensor
         glo_va.measuring_sensor = MeasureSensor()
         LogMesssage('[states_State_3]: Patient choose measuring sensor')
@@ -175,12 +150,13 @@ def State_3():
     ########################################################
     elif glo_va.button == glo_va.BUTTON_VIEW_LIST_DEP:
         glo_va.button = glo_va.DEFAULT_BUTTON
-        # if init_parameters.status == glo_va.HAS_LIST_EXAM_ROOMS:
         glo_va.STATE = glo_va.STATE_VIEW_DEPARTMENTS
 
         request = {'type': glo_va.REQUEST_CHANGE_GUI, 'data': ''}
         glo_va.gui.queue_request_states_thread.put(request)
-        
+
+        # MOMO saying
+        glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep'])
         LogMesssage('[states_State_3]: Patient choose view department')
 
     ########################################################
@@ -199,12 +175,19 @@ def State_3():
 
             LogMesssage('[states_State_3]: Patient submit examination and go state waiting for response')
             
-        else:
-            data = {}
-            data['opt'] = 2
-            request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
-            glo_va.gui.queue_request_states_thread.put(request)
-            LogMesssage('[states_State_3]: Patient do not have selected exam room and sensor. Notify for patient')
+        elif exam.status == glo_va.EXAM_DEFAULT:
+            # data = {}
+            # data['opt'] = 2
+            # request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
+            # glo_va.gui.queue_request_states_thread.put(request)
+            # LogMesssage('[states_State_3]: Patient do not have selected exam room and sensor. Notify for patient')
+
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep_frame_again'])
+        
+        elif sensor.getStatus() == glo_va.SENSOR_DEFAULT:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_measure_sensor_again'])
 
     ########################################################
     # EXIST PROGRAM                                        #
@@ -227,6 +210,21 @@ def State_4():
         glo_va.gui.queue_request_states_thread.put(request)
 
         LogMesssage('[states_State_4]: Patient confirm exam room')
+
+        if exam.status == glo_va.EXAM_DEFAULT:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep_frame_again'])
+            LogMesssage('[states_State_4]: Patient do not select department room')
+
+        elif sensor.getStatus() == glo_va.SENSOR_DEFAULT:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_measure_sensor'])
+            LogMesssage('[states_State_4]: Patient do not have sensor information')
+
+        else:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
+            LogMesssage('[states_State_4]: Patient have enought data')
     
     ########################################################
     # EXIST PROGRAM                                        #
@@ -368,7 +366,6 @@ def State_6():
                         glo_va.current_shape += 1
 
                         # MOMO saying
-                        glo_va.momo_assis.stopCurrentConversation()
                         glo_va.momo_assis.momoSay(glo_va.momo_messages['capture_img'][glo_va.current_shape])
                         
                         # calculate the mean of all images in one pose
@@ -387,10 +384,9 @@ def State_6():
                             glo_va.gui.queue_request_states_thread.put(request)
 
                             time.sleep(1.5)
-                            # MOMO saying
-                            glo_va.momo_assis.stopCurrentConversation()
-                            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep'])
 
+                            # MOMO saying
+                            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_choose_dep_frame'])
                             glo_va.camera.currentStopCamera()
             
                 else:
@@ -457,6 +453,7 @@ def State_8():
     ########################################################
     if glo_va.button == glo_va.BUTTON_CONFIRM_SENSOR:
         glo_va.button = glo_va.DEFAULT_BUTTON
+
         if glo_va.measuring_sensor.has_esp and glo_va.measuring_sensor.has_oso2:
             # Get sensor information from MeasureSensor
             sensor_infor = {
@@ -465,14 +462,17 @@ def State_8():
                 'temperature': glo_va.measuring_sensor.final_temperature, 'bmi': glo_va.measuring_sensor.final_bmi
             }
 
+            # Change state
+            request = {'type': glo_va.REQUEST_UPDATE_SENSOR, 'data': sensor_infor}
+            glo_va.gui.queue_request_states_thread.put(request)
+
             # Update sensor entity
             sensor.Update_Sensor(sensor_infor)
             LogMesssage("[states_State_8]: Has enought sensor data: {}. Has oso2: {}. Has esp32: {}".format(sensor_infor, glo_va.measuring_sensor.has_oso2, glo_va.measuring_sensor.has_esp))
+
         else:
-            if glo_va.measuring_sensor.has_esp:
-                LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
-            else:
-                LogMesssage("[states_State_8]: Missing datas of ESP32 sensor")
+            if glo_va.measuring_sensor.has_esp: LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
+            else: LogMesssage("[states_State_8]: Missing datas of ESP32 sensor")
 
         if glo_va.connected_sensor_device:
             glo_va.connected_sensor_device = False
@@ -487,6 +487,20 @@ def State_8():
 
         LogMesssage('[states_State_8]: Patient confirm measuring sensor')
 
+        if sensor.getStatus() == glo_va.SENSOR_DEFAULT:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_measure_sensor_again'])
+            LogMesssage('[states_State_8]: Patient do not have sensor information')
+
+        elif exam.status == glo_va.EXAM_DEFAULT:
+            # MOMO saying
+            LogMesssage('[states_State_8]: Patient do not select deparment')
+            
+        else:
+            # MOMO saying
+            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
+            LogMesssage('[states_State_8]: Patient have enough data')
+
     ########################################################
     # CONNECT DEVICE                                       #
     ########################################################
@@ -500,24 +514,19 @@ def State_8():
             # If open connection successfully
             if is_opened == 0:
                 glo_va.connected_sensor_device = True
-                
-                data = {}
-                data['opt'] = 4
-                request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
-                glo_va.gui.queue_request_states_thread.put(request)
-                
+                # MOMO saying
+                glo_va.momo_assis.momoSay(glo_va.momo_messages['confirm_connect_device_success'])
                 LogMesssage('[states_State_8]: Patient successfully connect sensor device')
             
             # If open connection unsuccessfully
             elif is_opened == -1:
-                data = {}
-                data['opt'] = 3
-                request = {'type': glo_va.REQUEST_NOTIFY_MESSAGE, 'data': data}
-                glo_va.gui.queue_request_states_thread.put(request)
+                # MOMO saying
+                glo_va.momo_assis.momoSay(glo_va.momo_messages['ask_turn_on_oso2'])
                 LogMesssage("[State_8]: Patient unsuccessfully connect sensor device")
         
         # If the connection is already opened
         else:
+            glo_va.momo_assis.momoSay(glo_va.momo_messages['confirm_connected_device'])
             LogMesssage("[states_State_8]: Connection with sensors device is already connected")
 
     ########################################################
@@ -551,6 +560,10 @@ def State_8():
                 glo_va.measuring_sensor.closeDevice()
                 glo_va.connected_sensor_device = False
                 LogMesssage("[states_State_8]: Done getting sensor information")
+            
+            elif ret == 2: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_oso2_measurement"])
+            
+            elif ret == 3: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_esp_measurement"])
 
 ############################################################
 # INIT PROGRAM                                             #
@@ -648,7 +661,6 @@ def Init_State():
     LogMesssage('\t[states_Init_State]: Back to State 1')
 
     # MOMO saying
-    glo_va.momo_assis.stopCurrentConversation()
     glo_va.momo_assis.momoSay(glo_va.momo_messages['say_bye'])
     time.sleep(1)
 

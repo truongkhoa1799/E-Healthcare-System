@@ -29,10 +29,10 @@ def Init():
     glo_va.lock_init_state = Lock()
     glo_va.lock_response_server = Lock()
 
-    # # Get init parameters
-    # ret = loadParametersFromServer()
-    # if ret == -1:
-    #     return ret
+    # Get init parameters
+    ret = loadParametersFromServer()
+    if ret == -1:
+        return ret
 
     # Init momo assistant
     StartMomoAssistant()

@@ -111,15 +111,12 @@ class Face_Recognition:
 
     # def Get_Face(self):
     def Get_Location_Face(self, face_locations):
-        max_edge = 0
+        max_edge_detected_face = 0
         max_face_location = ()
         try:
             boxes = face_locations[0][:4]
 
-            left = int(boxes[0])
-            top = int(boxes[1])
-            right = int(boxes[2])
-            bottom = int(boxes[3])
+            left, top, right, bottom = int(boxes[0]), int(boxes[1]), int(boxes[2]), int(boxes[3])
             
             # print("top: {}, left: {}, bottom: {}, right: {}".format(top, left, bottom, right))
             if left >= glo_va.MARGIN_FACE_LOCATION and top >= glo_va.MARGIN_FACE_LOCATION \
@@ -130,8 +127,7 @@ class Face_Recognition:
                 right += glo_va.MARGIN_FACE_LOCATION
                 bottom += glo_va.MARGIN_FACE_LOCATION
 
-            diff_vertical = bottom - top
-            diff_horizontal = right - left
+            diff_vertical, diff_horizontal = (bottom - top), (right - left)
             diff = abs(int((diff_vertical - diff_horizontal) / 2))
             
             if diff_horizontal < diff_vertical:
@@ -144,15 +140,16 @@ class Face_Recognition:
             
             edge = min((right - left), (bottom - top))
 
-            if edge > max_edge:
+            if edge > max_edge_detected_face:
                 max_face_location = (top, bottom, left, right)
-                max_edge = edge
+                max_edge_detected_face = edge
 
         except:
             return -2, None
 
-        if max_edge > glo_va.MAX_EDGE:
+        if max_edge_detected_face > glo_va.MIN_EDGE_DETECTED_FACE:
             return 0, max_face_location
+            
         else:
             return -1, None
 

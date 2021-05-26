@@ -32,31 +32,32 @@ class OkDialogClass(QDialog, glo_va.ok_dialog):
                 background-repeat: no-repeat;
             ''')
             self.text = '     False to submit examination.\n                Please try again.'
-        # ask capture sensor
-        elif data['opt'] == 2:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/warning.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = ' Please capture sensor information\nand select examination department'
         
-        # Ask patient must have enought sensor information
-        elif data['opt'] == 3:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/warning.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = '       Please turn on OSO2 device\n               or see instruction'
+        # # ask capture sensor
+        # elif data['opt'] == 2:
+        #     self.icon.setStyleSheet('''background: transparent;
+        #         background-image: url(icons/warning.png);
+        #         background-position: center;
+        #         background-repeat: no-repeat;
+        #     ''')
+        #     self.text = ' Please capture sensor information\nand select examination department'
         
-        elif data['opt'] == 4:
-            self.icon.setStyleSheet('''background: transparent;
-                background-image: url(icons/icons8-checkmark-90.png);
-                background-position: center;
-                background-repeat: no-repeat;
-            ''')
-            self.text = '    You connect sensor successfully'
+        # # Ask patient must have enought sensor information
+        # elif data['opt'] == 3:
+        #     self.icon.setStyleSheet('''background: transparent;
+        #         background-image: url(icons/warning.png);
+        #         background-position: center;
+        #         background-repeat: no-repeat;
+        #     ''')
+        #     self.text = '       Please turn on OSO2 device\n               or see instruction'
+        
+        # elif data['opt'] == 4:
+        #     self.icon.setStyleSheet('''background: transparent;
+        #         background-image: url(icons/icons8-checkmark-90.png);
+        #         background-position: center;
+        #         background-repeat: no-repeat;
+        #     ''')
+        #     self.text = '    You connect sensor successfully'
         
         elif data['opt'] == 5:
             self.icon.setStyleSheet('''background: transparent;

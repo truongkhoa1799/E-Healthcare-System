@@ -68,7 +68,7 @@ class Server:
     def __Listen_Reponse_Server(self):
         while True:
             try:
-
+                # RECEIVE MESSAGE
                 message = self.__connection.receive_message()
                 payload = None
                 for property in vars(message).items():
@@ -78,7 +78,12 @@ class Server:
                 
                 if payload is None:
                     continue
+            
+            except Exception as e:
+                LogMesssage('[server___Listen_Reponse_Server]: Fail to receive message: {}'.format(e))
+                continue
                 
+            try:
                 type_request = payload['type_request']
                 timer_id = payload['request_id']
 

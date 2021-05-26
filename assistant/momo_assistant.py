@@ -58,21 +58,22 @@ class MomoAssistant:
     
     @staticmethod
     def stopCurrentConversation():
-        try:
-            MomoAssistant.momo_mounth.terminate()
-        except Exception as e:
-            pass
+        try: MomoAssistant.momo_mounth.terminate()
+        except Exception as e: pass
 
     @staticmethod
     def momoSay(text, opt=glo_va.MOMO_SAY_WITHOUT_BLOCKING):
         # say without blocking
         if opt == glo_va.MOMO_SAY_WITHOUT_BLOCKING:
             try:
+                MomoAssistant.stopCurrentConversation()
+
                 tts = gTTS(text = text,lang='vi')
                 tts.save(glo_va.VOICE_PATH_FILE)
                 # MomoAssistant.momo_mounth = subprocess.Popen(["afplay", glo_va.VOICE_PATH_FILE])
 
                 MomoAssistant.momo_mounth = subprocess.Popen(["mpg321", "-q", glo_va.VOICE_PATH_FILE])
+
             except Exception as e:
                 LogMesssage('Has error in [momo_assistant_momoSay]: {}'.format(e))
 
@@ -89,8 +90,11 @@ class MomoAssistant:
                 tts.save(glo_va.VOICE_PATH_FILE)
                 # Change here to play music
                 os.system("mpg321 -q {}".format(glo_va.VOICE_PATH_FILE))
+
             except Exception as e:
                 LogMesssage('\tHas error in [momo_assistant_momoSay]: {error}'.format(error=e))
+
+        # LogMesssage("[momo_assistant_momoSay]: {}".format(text))
 
 
     @staticmethod
@@ -118,18 +122,12 @@ class MomoAssistant:
             normalized_list_part_bodies = []
 
             for i in list_problems:
-                try:
-                    normalized_list_problems.append(assis_para.dict_synonym_problem[i])
-                    # print(dict_synonym_problem[i])
-                except:
-                    normalized_list_problems.append(i)
+                try: normalized_list_problems.append(assis_para.dict_synonym_problem[i])
+                except: normalized_list_problems.append(i)
 
             for i in list_part_of_body:
-                try:
-                    normalized_list_part_bodies.append(assis_para.dict_synonym_part_body[i])
-                    # print(dict_synonym_part_body[i])
-                except:
-                    normalized_list_part_bodies.append(i)
+                try: normalized_list_part_bodies.append(assis_para.dict_synonym_part_body[i])
+                except: normalized_list_part_bodies.append(i)
 
             # INT
             predict_department_id = MomoAssistant.dt_clf.Get_Department(normalized_list_problems, normalized_list_part_bodies)
@@ -140,13 +138,11 @@ class MomoAssistant:
                 msg = MomoAssistant.Submit_Examination(mapped_dep_ID)
                 # print(msg)
                 
-                if msg == -1:
-                    return assis_para.res_msg[14].format(dep_name=assis_para.department[predict_department_id])
+                if msg == -1: return assis_para.res_msg[14].format(dep_name=assis_para.department[predict_department_id])
 
-                else:
-                    return msg
-            else:
-                return assis_para.res_msg[13].format(dep_name=assis_para.department[predict_department_id])
+                else: return msg
+
+            else: return assis_para.res_msg[13].format(dep_name=assis_para.department[predict_department_id])
 
         except Exception as e:
             LogMesssage('Has error at analyzeSympton in momo_assistant: {e}'.format(e=e))
@@ -163,13 +159,11 @@ class MomoAssistant:
                         mapped_dep_ID = glo_va.map_department_table[predict_department_id][init_parameters.hospital_ID]
                         msg = MomoAssistant.Submit_Examination(mapped_dep_ID)
 
-                        if msg == -1:
-                            return assis_para.res_msg[14].format(dep_name=assis_para.department[predict_department_id])
+                        if msg == -1: return assis_para.res_msg[14].format(dep_name=assis_para.department[predict_department_id])
 
-                        else:
-                            return msg
-                    else:
-                        return assis_para.res_msg[13].format(dep_name=assis_para.department[predict_department_id])
+                        else: return msg
+
+                    else: return assis_para.res_msg[13].format(dep_name=assis_para.department[predict_department_id])
             
             # ERROR: HIEỆN TẠI department VÀ list_department CÙNG CÁC PARA TRONG ASSIS_PARA KO THỂ CẬP NHẬP
             # CẦN CẬP NHẬP CHUNG
@@ -191,8 +185,7 @@ class MomoAssistant:
         while glo_va.enable_momo_run:
             try:
                 if glo_va.has_response_server == False:
-                    if glo_va.is_sending_message == True:
-                        continue
+                    if glo_va.is_sending_message == True: continue
 
                     user_voice = MomoAssistant.momoListen()
                     LogMesssage('[momo_assistant_momoCore]: Patient say {}'.format(user_voice))
@@ -237,21 +230,19 @@ class MomoAssistant:
 
     @staticmethod
     def measureDepartment(symptons):
-        if glo_va.assis_state == glo_va.ASSIS_FIRST_STATE:
-            State_1(symptons)
-        elif glo_va.assis_state == glo_va.ASSIS_CHOOSE_DEP_STATE:
-            State_2(symptons)
-        elif glo_va.assis_state == glo_va.ASSIS_DISPLAY_SYMPTON_STATE:
-            State_3(symptons)
-        elif glo_va.assis_state == glo_va.ASSIS_CONFIRM_STATE:
-            Confirm_Message(symptons)
+        if glo_va.assis_state == glo_va.ASSIS_FIRST_STATE: State_1(symptons)
+        elif glo_va.assis_state == glo_va.ASSIS_CHOOSE_DEP_STATE: State_2(symptons)
+        elif glo_va.assis_state == glo_va.ASSIS_DISPLAY_SYMPTON_STATE: State_3(symptons)
+        elif glo_va.assis_state == glo_va.ASSIS_CONFIRM_STATE: Confirm_Message(symptons)
 
 # STATE -1: confirm message
 # STATE 1: ask want diagnosis
 # STATE 2: listen for department name
 # STATE 3: listen for display sympton
 
-# ask want diagnosis
+############################################################
+# ASK WANT DIAGNOSIS                                       #
+############################################################
 def State_1(symptons):
     msg = assis_para.res_msg[-1]
 
@@ -263,17 +254,18 @@ def State_1(symptons):
     if symptons['intent'] == 'affirm':
         glo_va.assis_state = glo_va.ASSIS_CHOOSE_DEP_STATE
         msg = assis_para.msg_for_states[glo_va.assis_state]
+        
     elif symptons['intent'] == 'deny':
         glo_va.assis_state = glo_va.ASSIS_DISPLAY_SYMPTON_STATE
         msg = assis_para.msg_for_states[glo_va.assis_state]
-    else:
-        msg = Common_State(symptons)
 
-    # print("Momo: {}".format(msg))
+    else: msg = Common_State(symptons)
+
     glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
-    # print()
 
-# listen for department name
+############################################################
+# LISTENNING FOR DEPARTMENT NAME                           #
+############################################################
 def State_2(symptons):
     msg = assis_para.res_msg[-1]
 
@@ -282,16 +274,16 @@ def State_2(symptons):
         glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
         return
 
-    if symptons['intent'] == 'affirm':
-        msg = res_msg[8]
-    else:
-        msg = Common_State(symptons)
+    if symptons['intent'] == 'affirm': msg = assis_para.res_msg[8]
+    else: msg = Common_State(symptons)
 
     # print("Momo: {}".format(msg))
     glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
     # print()
 
-# listen for display sympton
+############################################################
+# LISTENNING FOR DISPLAYING SYMPTOMS                       #
+############################################################
 def State_3(symptons):
     msg = assis_para.res_msg[-1]
 
@@ -300,16 +292,14 @@ def State_3(symptons):
         glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
         return
 
-    if symptons['intent'] == 'affirm':
-        msg = assis_para.res_msg[8]
-    else:
-        msg = Common_State(symptons)
+    if symptons['intent'] == 'affirm': msg = assis_para.res_msg[8]
+    else: msg = Common_State(symptons)
 
-    # print("Momo: {}".format(msg))
     glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
-    # print()
 
-# confirm message : -1
+############################################################
+# ASK CONFIRM                                              #
+############################################################
 def Confirm_Message(symptons):
     msg = assis_para.res_msg[-1]
 
@@ -333,6 +323,9 @@ def Confirm_Message(symptons):
     glo_va.momo_assis.momoSay(msg, opt=glo_va.MOMO_SAY_BLOCKING)
     # print()
 
+############################################################
+# COMMON INTENT                                            #
+############################################################
 def Common_State(symptons):
     msg = assis_para.res_msg[-1]
     if symptons['intent'] == 'greet':

@@ -29,12 +29,12 @@ identifying_face:
   cycle_count_face_period: 1
   # number_deteced_face_allowed: 100
   number_deteced_face_allowed: 12
-  max_edge: 150
+  min_edge_detected_face: 150
   # MAX length for face Detector
   max_length_img: 80
   max_length_img_new_user: 150
   # face_detector_model: cnn
-  face_detector_model: hog
+  # face_detector_model: hog
   shape_predictor_model: 68
 
   width_img_center_face: 224
@@ -45,6 +45,10 @@ camera:
   camera_capture_width: 1280
   camera_capture_height: 720
   flip_method: 0
+
+sensor:
+  base_height_sensor: 2.63
+  additional_temp_sensor: 1.5
 
 gui:
   # Width and height for patient face when recognizing
@@ -88,18 +92,37 @@ momo_message:
   ask_confirm: Momo chào bạn, vui lòng xác nhận thông tin của mình
   ask_new_patient: Bạn đến khám lần đầu phải không, nếu đúng momo giúp bạn đăng ký nhé
   say_bye: Bài bai.
-  ask_choose_dep: Bấm vào nút danh sách khoa để chọn khoa mình muốn khám.
-  ask_measure_sensor: Chọn vào đo chỉ số để lấy đo thông tin sinh học.
-  # inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
-  ask_take_of_mask: Vui lòng cởi khẩu trang để xác thực
+  
+  # MESSAGE STATE MEASURE SENSOR AND CHOOSE DEP
+
+  # MESSAGE CHOOSE DEPARTMENT
+  ask_choose_dep_frame: Bấm vào nút danh sách khoa
+  ask_choose_dep_frame_again: Bạn chưa chọn khoa khám bệnh, vui lòng bấm vào nút danh sách khoa đẻ chọn khoa khám.
+  ask_choose_dep: Chọn khoa mình muốn khám, nếu bạn chưa biết khám khoa gì, chọn chuẩn đoán.
+  ask_confirm_selected_dep: bấm nút xác nhận để hoàn tất chọn khoa
+
+  # MESSAGE GUIDE MEASURING SENSOR
+  ask_measure_sensor: Chọn vào đo chỉ số để đo thông tin sinh học.
+  ask_measure_sensor_again: bạn chưa có chỉ số sinh học, vui lòng chọn vào đo chỉ số để lấy thông tin.
+  measure_sensor_inform_0: đeo thiết bị đo vào ngón tay. bấm nút i o trên thiết bị và kết nối thiết bị trên màn hình.
+  measure_sensor_inform_1: bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  measure_sensor_inform_2: tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
+  ask_turn_on_oso2: Vui lòng đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
+  confirm_connect_device_success: kết nối với thiết bị rồi, Vui lòng đeo thiết bị đo vào ngón tay và bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  confirm_connected_device: Bạn đã kết nối với thiết bị rồi, Vui lòng đeo thiết bị đo vào ngón tay và bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  
+  # MEASURE ESP AND OSO2
   ask_finish_esp_measurement: hoàn tất, đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị. bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
   ask_finish_oso2_measurement: hoàn tất, tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
-  ask_confirm_sensor_infor: Vui lòng xác nhận thông tin
-  ask_submit_exam: hoàn tất, bây giờ bạn có thể hoàn thành quá trình bằng cách nhấn vào nút hoàn tất trên màn hình
 
-  measure_sensor_inform_0: đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
-  measure_sensor_inform_1: bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
-  measure_sensor_inform_2: tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
+  # MESSAGE SUBMIT
+  ask_submit_exam: hoàn thành, nhấn vào nút hoàn tất trên màn hình để lấy số thứ tự và số phòng
+
+  # inform_oso2: Để biết cách đo sensor, hãy bấm nút hướng dẫn bên phải phía trên màn hình.
+  ask_take_of_mask: Vui lòng cởi khẩu trang để xác thực
+  ask_confirm_sensor_infor: Vui lòng xác nhận thông tin
+
+  
 
   capture_img:
     - nhìn thẳng

@@ -4,9 +4,7 @@ import time
 import numpy as np
 
 MIN_WEIGHT = 5.0
-NUM_GET_ESP = 10
-DELAY_TIME_ESP32 = 8
-DELAY_TIME_RESET_ESP32 = 3
+NUM_GET_ESP = 7
 
 UART_PORT_0 = "/dev/ttyUSB0"
 UART_PORT_1 = "/dev/ttyUSB1"
@@ -82,19 +80,20 @@ class MeasureSensor:
     # ret -2: disconnect device
     # ret 0 : normal
     # ret 1 : enought data
+    # ret 2: not have esp, have oso2
+    # ret 3: not have oso2, have esp
     def getSensorsData(self):
         try:
             # Get sensor infdrmation of oso2 device
-            if not self.has_oso2:
-                self.__getOSO2Data()
+            if not self.has_oso2: self.__getOSO2Data()
 
             # Get sensor infdrmation of esp devices
-            if not self.has_esp:
-                self.__getESPData()
+            if not self.has_esp: self.__getESPData()
             
-            if self.has_esp and self.has_oso2: return 1
-            
-            return 0
+            if not self.has_esp and not self.has_oso2: return 0
+            elif self.has_esp and self.has_oso2: return 1
+            elif not self.has_esp and self.has_oso2: return 2
+            elif not self.has_oso2 and self.has_esp: return 3
             
         except Exception as e:
             if str(e) == 'read error': return -2
@@ -102,28 +101,40 @@ class MeasureSensor:
             else:
                 LogMesssage('Has error at __getSensorsData: {e}'.format(e=e))
                 return -1
-    
+
+############################################################
+# OSO2 DEVICE                                              #
+############################################################
+    ########################################################
+    # OSO2 STATE 0                                         #
+    ########################################################
     def __stateOSO2_0(self):
         data = self.__oso2_connection.read(64)
         if data:
             self.__readOSO2Data(data)
             self.__state_oso2 = 1
             LogMesssage('[measuring_sensors___stateOSO2_0]: Has first data from OSO2 device')
-
+    
+    ########################################################
+    # OSO2 STATE 1                                         #
+    ########################################################
     def __stateOSO2_1(self):
         data = self.__oso2_connection.read(64)
         if data:
             self.__time_missing_data = 0
             self.__readOSO2Data(data)
+
         else:
             # LogMesssage('Missing data: {num}'.format(num=self.__time_missing_data))
             # print(self.__read_oso2.is_alive())
             self.__time_missing_data += 1
             time.sleep(1)
         
-        if self.__time_missing_data == 3:
-            self.__state_oso2 = 2
+        if self.__time_missing_data == 3: self.__state_oso2 = 2
     
+    ########################################################
+    # OSO2 STATE 2                                         #
+    ########################################################
     def __stateOSO2_2(self):
         LogMesssage('[measuring_sensors___stateOSO2_2]: Done read data from OSO2 device')
 
@@ -144,16 +155,6 @@ class MeasureSensor:
         }
         glo_va.gui.queue_request_states_thread.put(request)
 
-        if self.has_esp:
-            # MOMO saying
-            glo_va.momo_assis.stopCurrentConversation()
-            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
-        else:
-            # MOMO saying
-            glo_va.momo_assis.stopCurrentConversation()
-            glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_oso2_measurement"])
-
-
         self.__state_oso2 = 0
         self.__list_spo2 = []
         self.__list_heart_rate = []
@@ -161,14 +162,58 @@ class MeasureSensor:
 
         LogMesssage("[measuring_sensors___stateOSO2_0]: Final spo2: {}, final hear rate: {}".format(self.final_spo2, self.final_heart_pulse))
 
+    ########################################################
+    # GET OSO2 DATA                                        #
+    ########################################################
     def __getOSO2Data(self):
-        if self.__state_oso2 == 0:
-            self.__stateOSO2_0()
-        elif self.__state_oso2 == 1:
-            self.__stateOSO2_1()
-        elif self.__state_oso2 == 2:
-            self.__stateOSO2_2()
+        if self.__state_oso2 == 0: self.__stateOSO2_0()
+
+        elif self.__state_oso2 == 1: self.__stateOSO2_1()
+
+        elif self.__state_oso2 == 2: self.__stateOSO2_2()
     
+    ########################################################
+    # EXTRACT OSO2 DATA                                    #
+    ########################################################
+    def __readOSO2Data(self, data):
+        # print(data)
+        hex_string = ""
+        sub_str_set = []
+
+        for element in data: hex_string += hex(element)
+
+        hex_string = hex_string.replace('x', '')
+        sub_str_set = hex_string.split('0a0d')
+
+        sub_str_set = sub_str_set[:-1]
+
+        for i in range(len(sub_str_set)):
+            if sub_str_set[i][:3] == '04f':
+                OFFSET = i*16
+                hr_index = OFFSET + 2
+                spo2_index = OFFSET + 10
+
+                request = {
+                    'type': glo_va.REQUEST_UPDATE_OSO2, 
+                    'data': {
+                        'heart_pulse': data[hr_index], 
+                        'spo2': data[spo2_index], 
+                        'final': -1
+                    }
+                }
+                glo_va.gui.queue_request_states_thread.put(request)
+
+                print("spo2: {}, hear rate: {}".format(data[spo2_index], data[hr_index]))
+
+                self.__list_heart_rate.append(data[hr_index])
+                self.__list_spo2.append(data[spo2_index])
+    
+############################################################
+# ESP DEVICE                                               #
+############################################################
+    ########################################################
+    # EXTRACT ESP DATA                                     #
+    ########################################################
     # 0 : ok, weight, height, temperature 
     # -1: error
     def __extractESPMessage(self, weight, height_temp):
@@ -182,23 +227,23 @@ class MeasureSensor:
                 return -1, None, None, None
             
             return 0, float(weight_splited[1]), float(height_temp_splited[1]), float(height_temp_splited[2])
+
         except Exception as e:
             return -1, None, None, None
 
+    ########################################################
+    # GET ESP DATA                                         #
+    ########################################################
     def __getESPData(self):
         # Read esp32 data
         uart_0_message = self.__uart_connection_0.read(64).decode("utf-8").replace('\r\n', '')
         uart_1_message = self.__uart_connection_1.read(64).decode("utf-8").replace('\r\n', '')
 
-        if uart_0_message != '':
-            self.__uart_0_message_decoded = uart_0_message
-        
-        if uart_1_message != '':
-            self.__uart_1_message_decoded = uart_1_message
+        if uart_0_message != '': self.__uart_0_message_decoded = uart_0_message
+        if uart_1_message != '': self.__uart_1_message_decoded = uart_1_message
         
         if self.__uart_0_message_decoded != '' and self.__uart_1_message_decoded != '':
-            weight_message = None
-            height_temp_message = None
+            weight_message, height_temp_message = None, None
             
             if len(self.__uart_0_message_decoded) > len(self.__uart_1_message_decoded):
                 height_temp_message = self.__uart_0_message_decoded
@@ -207,21 +252,19 @@ class MeasureSensor:
                 height_temp_message = self.__uart_1_message_decoded
                 weight_message = self.__uart_0_message_decoded
 
-            self.__uart_0_message_decoded = ''
-            self.__uart_1_message_decoded = ''
+            self.__uart_0_message_decoded, self.__uart_1_message_decoded = '', ''
 
             ret, weight, height, temperature = self.__extractESPMessage(weight_message, height_temp_message)
-            if ret == -1:
-                return
+            if ret == -1 or height == -1.0: return
             
             LogMesssage("[measure_sensors___getESPData]: Has data from ESP32. Weight: {}, Height: {}, Temperature: {}".format(weight, height, temperature))
             
             self.__cur_weight = weight
             
             if self.__cur_weight >= MIN_WEIGHT and abs(self.__cur_weight - self.__pre_weight) < MIN_WEIGHT:
-                self.__list_weight.append(self.__cur_weight + 1.0)
-                self.__list_height.append(height)
-                self.__list_temperature.append(temperature)
+                self.__list_weight.append(self.__cur_weight)
+                self.__list_height.append(glo_va.BASE_HEIGHT_SENSOR - height)
+                self.__list_temperature.append(temperature + glo_va.ADDITIONAL_TEMP_SENSOR)
 
                 request = {
                     'type': glo_va.REQUEST_UPDATE_ESP,
@@ -268,15 +311,6 @@ class MeasureSensor:
                     }
                     glo_va.gui.queue_request_states_thread.put(request)
 
-                    if self.has_oso2:
-                        # MOMO saying
-                        glo_va.momo_assis.stopCurrentConversation()
-                        glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_submit_exam"])
-                    else:
-                        # MOMO saying
-                        glo_va.momo_assis.stopCurrentConversation()
-                        glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_esp_measurement"])
-
             else:
                 LogMesssage('\tReset reading esp32')
                 self.__num_esp_records = 0
@@ -286,40 +320,9 @@ class MeasureSensor:
 
             self.__pre_weight = self.__cur_weight
 
-    def __readOSO2Data(self, data):
-        # print(data)
-        hex_string = ""
-        sub_str_set = []
-
-        for element in data:
-            hex_string += hex(element)
-
-        hex_string = hex_string.replace('x', '')
-        sub_str_set = hex_string.split('0a0d')
-
-        sub_str_set = sub_str_set[:-1]
-
-        for i in range(len(sub_str_set)):
-            if sub_str_set[i][:3] == '04f':
-                OFFSET = i*16
-                hr_index = OFFSET + 2
-                spo2_index = OFFSET + 10
-
-                request = {
-                    'type': glo_va.REQUEST_UPDATE_OSO2, 
-                    'data': {
-                        'heart_pulse': data[hr_index], 
-                        'spo2': data[spo2_index], 
-                        'final': -1
-                    }
-                }
-                glo_va.gui.queue_request_states_thread.put(request)
-
-                print("spo2: {}, hear rate: {}".format(data[spo2_index], data[hr_index]))
-
-                self.__list_heart_rate.append(data[hr_index])
-                self.__list_spo2.append(data[spo2_index])
-
+############################################################
+# REMOVE NOISE                                             #
+############################################################
     def __removeNoiseListData(self, list_data):
         mean = np.mean(list_data)
         std = np.std(list_data)
