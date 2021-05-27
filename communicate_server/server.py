@@ -1,11 +1,12 @@
 from azure.eventhub import EventData, EventHubProducerClient
-from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
+from azure.iot.device.aio import IoTHubDeviceClient
 from threading import Timer
 # from uamqp import errors
 # import numpy as np
 import sys
 import json
 import time
+import asyncio
 import pickle
 import threading
 
@@ -13,11 +14,6 @@ PROJECT_PATH = '/home/thesis/Documents/thesis/E-Healthcare-System/'
 sys.path.append(PROJECT_PATH)
 from utils.parameters import *
 from utils.common_functions import LogMesssage
-
-class RepeatTimer(Timer):
-    def run(self):
-        while not self.finished.wait(self.interval):
-            self.function(*self.args, **self.kwargs)
 
 class Server:
     def __init__(self):
@@ -27,20 +23,16 @@ class Server:
         self.__eventhub_connection = None
         self.__eventhub_name = None
         
+        # self.__LoadConnection()
+        # self.__establishEventhubSendConnection()
+        # self.__establishIoTHubReceiveConnection()
 
-        self.__LoadConnection()
-
-        self.__establishEventhubSendConnection()
-        self.__establishIoTHubReceiveConnection()
-        
-        # Start a thread to listen 
-        # self.__re_establish_iot_hub_connection=RepeatTimer(200, self.__establishIoTHubReceiveConnection)
-        # self.__re_establish_iot_hub_connection.daemon = True
-        # self.__re_establish_iot_hub_connection.start()
-
-        self.__listening_server_thread = threading.Thread(target=self.__Listen_Reponse_Server, args=())
+        event_loop_receive = asyncio.new_event_loop()
+        self.__listening_server_thread = threading.Thread(target=self.__init_server, args=(event_loop_receive,))
         self.__listening_server_thread.daemon = True
         self.__listening_server_thread.start()
+
+        # set the mesage received handler on the client
 
     def __LoadConnection(self):
         with open (glo_va.CONNECTION_AZURE_PATH, 'rb') as fp_1:
@@ -49,35 +41,40 @@ class Server:
             self.__device_iothub_connection = ret['device_iothub_connection']
             self.__eventhub_connection = ret['eventhub_connection']
             self.__eventhub_name = ret['eventhub_name']
-    
-    def __establishIoTHubReceiveConnection(self):
-        LogMesssage('[__establishIoTHubReceiveConnection]: Re-establish iot hub connection')
+
+    async def __establishIoTHubReceiveConnection(self):
+        LogMesssage('[__establishIoTHubReceiveConnection]: Establish iot hub connection')
         self.__connection = IoTHubDeviceClient.create_from_connection_string(self.__device_iothub_connection)
+        await self.__connection.connect()
+
     
     def __establishEventhubSendConnection(self):
         self.__producer = EventHubProducerClient.from_connection_string(
             conn_str=self.__eventhub_connection,
             eventhub_name=self.__eventhub_name
         )
-            
-    # When server receive response:
-    #   1: Clear Timer, so that timer is not trigged
-    ########################################################
-    # Listenning response or message from server           #
-    ########################################################
-    def __Listen_Reponse_Server(self):
+    
+    def __init_server(self, loop):
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.message_received_handler())
+
+    async def message_received_handler(self):
+        self.__LoadConnection()
+        self.__establishEventhubSendConnection()
+        await self.__establishIoTHubReceiveConnection()
+
         while True:
             try:
-                # RECEIVE MESSAGE
-                message = self.__connection.receive_message()
                 payload = None
+                message = await self.__connection.receive_message()
+                if message is None: continue
+                
                 for property in vars(message).items():
                     if property[0] == "custom_properties":
                         payload = json.loads(property[1]['response_msg'])
                         break
-                
-                if payload is None:
-                    continue
+
+                if payload is None: continue
             
             except Exception as e:
                 LogMesssage('[server___Listen_Reponse_Server]: Fail to receive message: {}'.format(e))
@@ -241,6 +238,191 @@ class Server:
                     init_parameters.Clear()
 
                 glo_va.has_response_server = True
+                
+    # # When server receive response:
+    # #   1: Clear Timer, so that timer is not trigged
+    # ########################################################
+    # # Listenning response or message from server           #
+    # ########################################################
+    # def __Listen_Reponse_Server(self):
+    #     while True:
+    #         try:
+    #             # RECEIVE MESSAGE
+    #             # message = self.__connection.receive_message()
+    #             message = self.__connection.receive_message()
+    #             if message is None: continue
+
+    #             payload = None
+    #             for property in vars(message).items():
+    #                 if property[0] == "custom_properties":
+    #                     payload = json.loads(property[1]['response_msg'])
+    #                     break
+                
+    #             if payload is None:
+    #                 continue
+            
+    #         except Exception as e:
+    #             LogMesssage('[server___Listen_Reponse_Server]: Fail to receive message: {}'.format(e))
+    #             continue
+                
+    #         try:
+    #             type_request = payload['type_request']
+    #             timer_id = payload['request_id']
+
+    #             if type_request == glo_va.SERVER_REQUEST_UPDATE_EXAM_ROOM:
+    #                 init_parameters.list_examination_room = payload['parameters']
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Receive update request udpating list exam rooms')
+                
+    #             else:
+    #                 ########################################################
+    #                 # ACQUIRE LOCK INIT STATE                              #
+    #                 ########################################################
+    #                 if not glo_va.lock_init_state.acquire(False):
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Lock init state was already acquired, do not accept new message')
+    #                     continue
+                    
+    #                 ########################################################
+    #                 # ACQUIRE LOCK RESPONSE SERVER                         #
+    #                 ########################################################
+    #                 if not glo_va.lock_response_server.acquire(False):
+    #                     # Release lock just acquire above
+    #                     glo_va.lock_init_state.release()
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Lock response server was already acquired, do not accept new message')
+    #                     continue
+                
+    #                 ########################################################
+    #                 # RESPONSE WITH DIFFERENT REQUEST ID                   #
+    #                 ########################################################
+    #                 if glo_va.timer.timer_id != timer_id:
+    #                     glo_va.lock_response_server.release()
+    #                     glo_va.lock_init_state.release()
+
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Receive response with different current request id')                        
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Acquire lock init state')
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Acquire lock response server')
+    #                     continue
+
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Acquire lock init state')
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Acquire lock response server')
+
+    #                 ########################################################
+    #                 # CHECK REPONSE MESSAGES                              #
+    #                 ########################################################
+    #                 if glo_va.is_sending_message == True:
+    #                     # Notify the timer that server is in lock
+    #                     glo_va.turn = glo_va.TIMER_GOT_BY_SERVER
+                        
+    #                     # Clear timer
+    #                     glo_va.timer.Clear_Timer()
+    #                     LogMesssage('[server___Listen_Reponse_Server]: Clear Timer')
+    #                     LogMesssage("[server___Listen_Reponse_Server]: Received response for request: {request_name} of timer_id: {timer_id}.".format(request_name=glo_va.list_request_name[type_request],timer_id=timer_id))
+                        
+    #                     ########################################################
+    #                     # VALIDATION USERS RESPONSE                            #
+    #                     ########################################################
+    #                     if type_request == glo_va.SERVER_REQUEST_VALIDATION:
+    #                         # glo_va.list_time_send_server.append(time.time()-glo_va.start_time)
+    #                         # glo_va.times_send += 1
+    #                         # if glo_va.times_send == 10:
+    #                         #     print('Max time detec: {}'.format(np.max(glo_va.list_time_send_server)))
+    #                         #     print('Min time detec: {}'.format(np.min(glo_va.list_time_send_server)))
+    #                         #     print('Mean time detec: {}'.format(np.mean(glo_va.list_time_send_server)))
+    #                         #     print('Std time detec: {}'.format(np.std(glo_va.list_time_send_server)))
+    #                         ret_msg = str(payload['return'])
+    #                         if ret_msg == "0":
+    #                             user_infor.Update_Info(payload)
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Update patient information')
+
+    #                         elif ret_msg == "-2":
+    #                             # Patient is wearing mask
+    #                             user_infor.wearingMask()
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Patient is wearing mask. Please push your mask off')
+                            
+    #                         elif ret_msg == "-3":
+    #                             # Invalid SSN
+    #                             LogMesssage('[server___Listen_Reponse_Server]: SSN for verifying patient is invalid')
+
+    #                         elif ret_msg == "-1":
+    #                             user_infor.NoFace()
+    #                             glo_va.times_missing_face += 1
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Missing face times: {time}'.format(time=glo_va.times_missing_face))
+                            
+    #                         glo_va.has_response_server = True
+
+    #                     ########################################################
+    #                     # EXAMINATION SUBMISSION RESPONSE                     #
+    #                     ########################################################
+    #                     elif type_request == glo_va.SERVER_REQUEST_SUBMIT_EXAMINATION:
+    #                         ret_msg = str(payload['return'])
+    #                         if ret_msg == "0":
+    #                             glo_va.return_stt = payload['stt']
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
+                            
+    #                         else:
+    #                             glo_va.return_stt = -1
+    #                             LogMesssage('[server___Listen_Reponse_Server]: False receive STT: {stt} of patient: {id}'.format(stt=glo_va.return_stt, id=user_infor.patient_ID))
+
+    #                         glo_va.has_response_server = True
+
+    #                     ########################################################
+    #                     # GET SYMPTONS USERS RESPONSE                          #
+    #                     ########################################################
+    #                     elif type_request == glo_va.SERVER_REQUEST_GET_SYMPTOMS:
+    #                         ret_msg = str(payload['return'])
+    #                         if ret_msg == "0":
+    #                             glo_va.patient_symptons =  payload['symptons']
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Receive analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
+                            
+    #                         elif ret_msg == "-1":
+    #                             glo_va.patient_symptons = None
+    #                             LogMesssage('[server___Listen_Reponse_Server]: False analyzed symptons of patient: {id}'.format(id=user_infor.patient_ID))
+
+    #                         glo_va.has_response_server = True
+
+    #                     ########################################################
+    #                     # LOAD INIT PARAMETERS RESPONSE                        #
+    #                     ########################################################
+    #                     elif type_request == glo_va.SERVER_REQUEST_GET_INIT_PARA:
+    #                         ret_msg = str(payload['return'])
+    #                         if ret_msg == "0":
+    #                             parameters = payload['parameters']
+    #                             init_parameters.updateInitParameters(parameters)
+    #                             LogMesssage('[server___Listen_Reponse_Server]: Success to get init parameters')
+
+    #                         else:
+    #                             init_parameters.status = ret_msg
+    #                             LogMesssage('[server___Listen_Reponse_Server]: False to get init parameters')
+
+    #                         glo_va.has_response_server = True
+
+    #                 # Release lock
+    #                 glo_va.lock_response_server.release()
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Release lock response server')
+
+    #                 glo_va.lock_init_state.release()
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Release lock init state')
+
+    #         except Exception as e:
+    #             LogMesssage("Has error at module __Listen_Reponse_Server in server.py: {}".format(e), opt=2)
+
+    #             if glo_va.lock_init_state.locked() == True:
+    #                 glo_va.lock_init_state.release()
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock init state'.format(e=e))
+
+    #             if glo_va.lock_response_server.locked() == True:
+    #                 glo_va.lock_response_server.release()
+    #                 LogMesssage('[server___Listen_Reponse_Server]: Has error: {e}. Release lock response server'.format(e=e))
+
+    #             if type_request == glo_va.SERVER_REQUEST_VALIDATION:
+    #                 user_infor.Clear()
+
+    #             elif type_request == glo_va.SERVER_REQUEST_GET_SYMPTOMS:
+    #                 glo_va.patient_symptons = None
+
+    #             elif type_request == glo_va.SERVER_REQUEST_GET_INIT_PARA:
+    #                 init_parameters.Clear()
+
+    #             glo_va.has_response_server = True
 
 ############################################################
 # REQUEST                                                  #
@@ -370,10 +552,19 @@ class Server:
         except Exception as e:
             LogMesssage("Has error at module getInitParameters in server.py: {}".format(e), opt=2)
 
-    def Close(self):
+    async def closeIoTHubConnection(self):
+        await self.__connection.shutdown()
+    
+    def closeEventHubConnection(self):
         self.__producer.close()
-        self.__connection.disconnect()
 
 # server = Server()
-# server.Validate_User()
-# server.Close()
+# server.getInitParameters()
+# while True:
+#     selection = input("Press Q to quit\n")
+#     if selection == "Q" or selection == "q":
+#         print("Quitting...")
+#         break
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(server.Close())
+# loop.close()

@@ -80,8 +80,6 @@ class MeasureSensor:
     # ret -2: disconnect device
     # ret 0 : normal
     # ret 1 : enought data
-    # ret 2: not have esp, have oso2
-    # ret 3: not have oso2, have esp
     def getSensorsData(self):
         try:
             # Get sensor infdrmation of oso2 device
@@ -92,8 +90,6 @@ class MeasureSensor:
             
             if not self.has_esp and not self.has_oso2: return 0
             elif self.has_esp and self.has_oso2: return 1
-            elif not self.has_esp and self.has_oso2: return 2
-            elif not self.has_oso2 and self.has_esp: return 3
             
         except Exception as e:
             if str(e) == 'read error': return -2
@@ -162,6 +158,8 @@ class MeasureSensor:
 
         LogMesssage("[measuring_sensors___stateOSO2_0]: Final spo2: {}, final hear rate: {}".format(self.final_spo2, self.final_heart_pulse))
 
+        if not self.has_esp: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_esp_measurement"])
+
     ########################################################
     # GET OSO2 DATA                                        #
     ########################################################
@@ -193,11 +191,14 @@ class MeasureSensor:
                 hr_index = OFFSET + 2
                 spo2_index = OFFSET + 10
 
+                hr = str(data[hr_index])
+                spo2 = str(data[spo2_index])
+
                 request = {
                     'type': glo_va.REQUEST_UPDATE_OSO2, 
                     'data': {
-                        'heart_pulse': data[hr_index], 
-                        'spo2': data[spo2_index], 
+                        'heart_pulse': hr, 
+                        'spo2': spo2, 
                         'final': -1
                     }
                 }
@@ -226,7 +227,7 @@ class MeasureSensor:
                 or height_temp_splited[3] != "0x81":
                 return -1, None, None, None
             
-            return 0, float(weight_splited[1]), float(height_temp_splited[1]), float(height_temp_splited[2])
+            return 0, float(weight_splited[1]), glo_va.BASE_HEIGHT_SENSOR - float(height_temp_splited[1]), float(height_temp_splited[2]) + glo_va.ADDITIONAL_TEMP_SENSOR
 
         except Exception as e:
             return -1, None, None, None
@@ -262,15 +263,20 @@ class MeasureSensor:
             self.__cur_weight = weight
             
             if self.__cur_weight >= MIN_WEIGHT and abs(self.__cur_weight - self.__pre_weight) < MIN_WEIGHT:
-                self.__list_weight.append(self.__cur_weight)
-                self.__list_height.append(glo_va.BASE_HEIGHT_SENSOR - height)
-                self.__list_temperature.append(temperature + glo_va.ADDITIONAL_TEMP_SENSOR)
+                self.__list_weight.append(weight)
+                self.__list_height.append(height)
+                self.__list_temperature.append(temperature)
+
+                # CHANGE TO STR TO ADD TO gui
+                height = str(round(height, 2))
+                temperature = str(round(temperature, 1))
+                weight = str(round(weight, 1))
 
                 request = {
                     'type': glo_va.REQUEST_UPDATE_ESP,
                     'data': {
-                        'height': str(round(height, 2)), 'weight': str(round(weight, 1)), 
-                        'temperature': str(round(temperature, 1)), 'bmi': "0", 
+                        'height': height, 'weight': weight, 
+                        'temperature': temperature, 'bmi': "0", 
                         'final': -1
                     }
                 }
@@ -291,6 +297,11 @@ class MeasureSensor:
                     self.final_temperature = np.mean(processed_list_temperature)
                     self.final_bmi = self.final_weight / pow(self.final_height, 2)
 
+                    self.final_weight = str(round(self.final_weight, 1))
+                    self.final_height = str(round(self.final_height, 2))
+                    self.final_temperature = str(round(self.final_temperature, 1))
+                    self.final_bmi = str(round(self.final_bmi, 1))
+
                     LogMesssage("[measure_sensors___getESPData]: Done getting datas ESP32. Final weight: {}, final height: {}, final temperature: {}, final bmi: {}".format(self.final_weight, self.final_height, self.final_temperature, self.final_bmi))
 
                     self.__num_esp_records = 0
@@ -304,12 +315,13 @@ class MeasureSensor:
                     request = {
                         'type': glo_va.REQUEST_UPDATE_ESP,
                         'data': {
-                            'height': str(round(self.final_height, 2)), 'weight': str(round(self.final_weight, 1)), 
-                            'temperature': str(round(self.final_temperature, 1)), 'bmi':str(round(self.final_bmi, 1)),
+                            'height': self.final_height, 'weight': self.final_weight, 
+                            'temperature': self.final_temperature, 'bmi': self.final_bmi,
                             'final': 0
                         }
                     }
                     glo_va.gui.queue_request_states_thread.put(request)
+                    if not self.has_oso2: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_oso2_measurement"])
 
             else:
                 LogMesssage('\tReset reading esp32')

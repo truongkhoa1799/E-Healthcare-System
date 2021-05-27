@@ -484,8 +484,11 @@ class GUI(QtWidgets.QMainWindow):
                     else:
                         self.progress_bar.setValue(0)
                     
-                    self.spo2.setText(str(int(request['data']['spo2'])))
-                    self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+                    # self.spo2.setText(str(int(request['data']['spo2'])))
+                    # self.heart_pulse.setText(str(int(request['data']['heart_pulse'])))
+                
+                self.measuring_spo2.setText(request['data']['spo2'])
+                self.measuring_heart_pulse.setText(request['data']['heart_pulse'])
             
             ########################################################
             # REQUEST UPDATE ESP32 SENSOR                          #
@@ -505,10 +508,16 @@ class GUI(QtWidgets.QMainWindow):
                     else:
                         self.progress_bar.setValue(0)
                     
-                    self.height.setText(request['data']['height'])
-                    self.weight.setText(request['data']['weight'])
-                    self.temperature.setText(request['data']['temperature'])
-                    self.bmi.setText(request['data']['bmi'])
+                    # self.height.setText(request['data']['height'])
+                    # self.weight.setText(request['data']['weight'])
+                    # self.temperature.setText(request['data']['temperature'])
+                    # self.bmi.setText(request['data']['bmi'])
+                
+                self.measuring_height.setText(request['data']['height'])
+                self.measuring_weight.setText(request['data']['weight'])
+                self.measuring_temperature.setText(request['data']['temperature'])
+                self.measuring_BMI.setText(request['data']['bmi'])
+
 
         except Exception as e:
             LogMesssage("[gui___CheckRequestStatesThread]: Has error :{}".format(e))

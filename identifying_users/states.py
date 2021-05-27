@@ -471,8 +471,8 @@ def State_8():
             LogMesssage("[states_State_8]: Has enought sensor data: {}. Has oso2: {}. Has esp32: {}".format(sensor_infor, glo_va.measuring_sensor.has_oso2, glo_va.measuring_sensor.has_esp))
 
         else:
-            if glo_va.measuring_sensor.has_esp: LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
-            else: LogMesssage("[states_State_8]: Missing datas of ESP32 sensor")
+            if not glo_va.measuring_sensor.has_oso2: LogMesssage("[states_State_8]: Missing datas of OSO2 sensor")
+            if not glo_va.measuring_sensor.has_esp: LogMesssage("[states_State_8]: Missing datas of ESP32 sensor")
 
         if glo_va.connected_sensor_device:
             glo_va.connected_sensor_device = False
@@ -560,10 +560,6 @@ def State_8():
                 glo_va.measuring_sensor.closeDevice()
                 glo_va.connected_sensor_device = False
                 LogMesssage("[states_State_8]: Done getting sensor information")
-            
-            elif ret == 2: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_oso2_measurement"])
-            
-            elif ret == 3: glo_va.momo_assis.momoSay(glo_va.momo_messages["ask_finish_esp_measurement"])
 
 ############################################################
 # INIT PROGRAM                                             #

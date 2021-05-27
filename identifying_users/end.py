@@ -1,3 +1,4 @@
+import asyncio
 from utils.parameters import *
 from utils.kill_python_process import KillPythonProcess
 from utils.common_functions import LogMesssage
@@ -16,7 +17,10 @@ def Stop_Camera_Detecting():
     
 
 def Stop_Connecting_Server():
-    glo_va.server.Close()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(glo_va.server.closeIoTHubConnection())
+    loop.close()
+    glo_va.server.closeEventHubConnection()
     LogMesssage("Stop Connecting Server", opt=0)
     
 

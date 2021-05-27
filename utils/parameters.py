@@ -6,7 +6,7 @@ from PyQt5 import uic
 from utils.assis_parameters import AssistantParameter
 from threading import Event
 
-show_fps = False
+show_fps = True
 PROJECT_PATH = pathlib.Path().absolute()
 
 class GlobalVariable:

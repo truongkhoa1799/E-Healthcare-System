@@ -3,6 +3,7 @@ from identifying_users.init import Init
 from identifying_users.end import End
 
 from utils.connect_wifi import ConnectWifi
+# from communicate_server.server import Server
 
 from gui.gui import GUI
 from PyQt5 import QtWidgets
@@ -102,8 +103,6 @@ def main():
         del cuda_ctx
         LogMesssage('Stop Center Face', opt=0)
 
-    LogMesssage('Stop Center Face', opt=0)
-
 def Init_Gui():
     app = QtWidgets.QApplication(sys.argv)
     glo_va.gui = GUI()
@@ -121,7 +120,7 @@ if __name__ == "__main__":
     glo_va.wifi = ConnectWifi()
     
     # while True:
-    try:            
+    try:
         glo_va.main_thread = threading.Thread(target=main, args=())
         glo_va.main_thread.daemon = True
         glo_va.main_thread.start()

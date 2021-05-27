@@ -47,7 +47,7 @@ camera:
   flip_method: 0
 
 sensor:
-  base_height_sensor: 2.63
+  base_height_sensor: 2.71
   additional_temp_sensor: 1.5
 
 gui:
@@ -104,16 +104,16 @@ momo_message:
   # MESSAGE GUIDE MEASURING SENSOR
   ask_measure_sensor: Chọn vào đo chỉ số để đo thông tin sinh học.
   ask_measure_sensor_again: bạn chưa có chỉ số sinh học, vui lòng chọn vào đo chỉ số để lấy thông tin.
-  measure_sensor_inform_0: đeo thiết bị đo vào ngón tay. bấm nút i o trên thiết bị và kết nối thiết bị trên màn hình.
-  measure_sensor_inform_1: bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  measure_sensor_inform_0: bấm nút i o trên thiết bị và kết nối thiết bị trên màn hình.
+  measure_sensor_inform_1: đeo thiết bị đo vào ngón tay. bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
   measure_sensor_inform_2: tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
   ask_turn_on_oso2: Vui lòng đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị.
   confirm_connect_device_success: kết nối với thiết bị rồi, Vui lòng đeo thiết bị đo vào ngón tay và bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
   confirm_connected_device: Bạn đã kết nối với thiết bị rồi, Vui lòng đeo thiết bị đo vào ngón tay và bấm nút s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
   
   # MEASURE ESP AND OSO2
-  ask_finish_esp_measurement: hoàn tất, đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị. bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
-  ask_finish_oso2_measurement: hoàn tất, tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
+  ask_finish_oso2_measurement: hoàn tất, đeo thiết bị đo vào ngón tay và bấm nút i o trên thiết bị. bấm nút kết nối thiết bị trên màn hình và s p o 2 trên máy đo và và đợi thông báo đã xong từ momo
+  ask_finish_esp_measurement: hoàn tất, tháo gỡ thiết bị đo ra, đứng lên cân và đợi thông báo đã xong từ momo
 
   # MESSAGE SUBMIT
   ask_submit_exam: hoàn thành, nhấn vào nút hoàn tất trên màn hình để lấy số thứ tự và số phòng

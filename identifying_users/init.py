@@ -19,11 +19,9 @@ def Init():
     LogMesssage('Start init program', opt=0)
     # Init server connection
     Start_Server_Connection()
-    glo_va.flg_server_connected = True
 
     # Init Timer
     Start_Timer()
-    glo_va.flg_init_timer = True
 
     # Init lock response from server and timer
     glo_va.lock_init_state = Lock()
@@ -36,23 +34,19 @@ def Init():
 
     # Init momo assistant
     StartMomoAssistant()
-    glo_va.flg_init_momo_assistant = True
     # exit(0)
 
     # Init face recognition
     Start_Face_Recognition()
-    glo_va.flg_init_face_recognition = True
 
     # Init camera detecting
     Start_Camera_Detecting()
-    glo_va.flg_init_camera = True
     
     # Init count face
     Start_Count_Face()
-    glo_va.flg_init_count_face = True
 
     # glo_va.STATE = 6
-    time.sleep(2)
+    time.sleep(1)
 
     return 0
 
@@ -63,29 +57,34 @@ def Start_Face_Recognition():
     LogMesssage("Starting init Face Recognition", opt=0)
     glo_va.face_recognition = Face_Recognition()
     LogMesssage("Done start init Face Recognition", opt=0)
+    glo_va.flg_init_face_recognition = True
     
 def Start_Camera_Detecting():
     LogMesssage("Starting init Camera", opt=0)
     glo_va.camera = CameraDetecting()
     LogMesssage("Done start init Camera", opt=0)
+    glo_va.flg_init_camera = True
     
 
 def Start_Count_Face():
     LogMesssage("Starting Init CountFace", opt=0)
     glo_va.count_face = CountFace()
     LogMesssage("Done start CountFace", opt=0)
+    glo_va.flg_init_count_face = True
     
 
 def Start_Timer():
     LogMesssage("Starting Init Timer", opt=0)
     glo_va.timer = TimerModule()
     LogMesssage("Done start Timer", opt=0)
+    glo_va.flg_init_timer = True
     
 
 def Start_Server_Connection():
     LogMesssage("Starting Init Server Connection", opt=0)
     glo_va.server = Server()
     LogMesssage("Done Init Server Connection", opt=0)
+    glo_va.flg_server_connected = True
     
 
 def StartMomoAssistant():
@@ -93,6 +92,7 @@ def StartMomoAssistant():
     glo_va.momo_assis = MomoAssistant()
     glo_va.momo_assis.testmomoListen()
     LogMesssage("Done Init Server Connection", opt=0)
+    glo_va.flg_init_momo_assistant = True
     
 
 def loadParametersFromServer():

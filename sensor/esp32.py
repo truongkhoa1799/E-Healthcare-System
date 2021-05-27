@@ -20,20 +20,21 @@ def getSensorData():
     count = 0
 
     while True:
-        conn_0_msg = conn_0.read(64)
         try:
+            conn_0_msg = conn_0.read(64)
             conn_0_msg_decoded = conn_0_msg.decode("utf-8").replace('\r\n', '')
             list_values = conn_0_msg_decoded.split("/")
-            if len(list_values) == 4:
-                print('height: {}.'.format( round(2.64 - float(list_values[1]), 2) ))
-                print('\ttemp: {}.'.format(float(list_values[2]) + 1.5))
+            print('{}.'.format(list_values))
+            # if len(list_values) == 4:
+            #     print('height: {}.'.format( round(2.64 - float(list_values[1]), 2) ))
+            #     print('\ttemp: {}.'.format(float(list_values[2]) + 1.5))
 
             conn_1_msg = conn_1.read(64)
             conn_1_msg_decoded = conn_1_msg.decode("utf-8").replace('\r\n', '')
             list_values = conn_1_msg_decoded.split("/")
-            # print('{}.'.format(conn_1_msg_decoded))
-            if len(list_values) == 3:
-                print('\t\tweight: {}.'.format(list_values[1]))
+            print('{}.'.format(list_values))
+            # if len(list_values) == 3:
+            #     print('\t\tweight: {}.'.format(list_values[1]))
             
             count += 1
             if count == 200:
