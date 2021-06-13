@@ -992,7 +992,7 @@ border-radius: 5px;	</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1261</width>
+          <width>1311</width>
           <height>980</height>
          </rect>
         </property>
@@ -1001,7 +1001,7 @@ border-radius: 5px;	</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>1260</width>
+           <width>1311</width>
            <height>980</height>
           </rect>
          </property>
@@ -1009,16 +1009,16 @@ border-radius: 5px;	</string>
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>icons/poster.jpg</pixmap>
+          <pixmap>icons/poster.png</pixmap>
          </property>
         </widget>
        </widget>
        <widget class="QFrame" name="verticalFrame">
         <property name="geometry">
          <rect>
-          <x>1259</x>
+          <x>1309</x>
           <y>0</y>
-          <width>651</width>
+          <width>601</width>
           <height>980</height>
          </rect>
         </property>
@@ -1028,7 +1028,7 @@ border-radius: 5px;	</string>
         <widget class="QFrame" name="horizontalFrame_5">
          <property name="geometry">
           <rect>
-           <x>60</x>
+           <x>30</x>
            <y>325</y>
            <width>540</width>
            <height>601</height>
@@ -1239,9 +1239,9 @@ border-radius: 20px;	</string>
         <widget class="QLabel" name="image_patient_2">
          <property name="geometry">
           <rect>
-           <x>60</x>
+           <x>0</x>
            <y>0</y>
-           <width>540</width>
+           <width>601</width>
            <height>321</height>
           </rect>
          </property>
@@ -3242,7 +3242,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3250,7 +3250,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </active>
              <inactive>
               <colorrole role="WindowText">
@@ -3307,7 +3307,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3315,7 +3315,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </inactive>
              <disabled>
               <colorrole role="WindowText">
@@ -3372,7 +3372,7 @@ QPushButton:pressed {
                 </color>
                </brush>
               </colorrole>
-              <!-- <colorrole role="PlaceholderText">
+              <colorrole role="PlaceholderText">
                <brush brushstyle="NoBrush">
                 <color alpha="128">
                  <red>210</red>
@@ -3380,7 +3380,7 @@ QPushButton:pressed {
                  <blue>210</blue>
                 </color>
                </brush>
-              </colorrole> -->
+              </colorrole>
              </disabled>
             </palette>
            </property>

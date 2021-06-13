@@ -10,13 +10,13 @@ from utils.parameters import *
 from identifying_users.states import Init_State
 from utils.common_functions import LogMesssage, Convert_To_Display
 
-from gui.momo_gui import MomoGuiDialog
-from gui.ok_dialog import OkDialogClass
-from gui.yes_no_dialog import QDialogClass
+# from gui.momo_gui import MomoGuiDialog
+# from gui.ok_dialog import OkDialogClass
+# from gui.yes_no_dialog import QDialogClass
 
-# from momo_gui import MomoGuiDialog
-# from ok_dialog import OkDialogClass
-# from yes_no_dialog import QDialogClass
+from momo_gui import MomoGuiDialog
+from ok_dialog import OkDialogClass
+from yes_no_dialog import QDialogClass
 
 import queue
 
@@ -44,12 +44,12 @@ class GUI(QtWidgets.QMainWindow):
         self.stackedWidget.addWidget(self.view_departments)
         self.stackedWidget.addWidget(self.measuring_sensor_frame)
         
-        self.stackedWidget.setCurrentWidget(self.init_frame)
+        self.stackedWidget.setCurrentWidget(self.add_new_patient_frame)
         # Fix header table widget
         self.table_list_department.horizontalHeader().setSectionResizeMode(2)
 
         # # Show full screen
-        # self.showFullScreen()
+        self.showFullScreen()
         # # Hide currsor
         # self.setCursor(QtCore.Qt.BlankCursor)
 
@@ -687,7 +687,7 @@ class GUI(QtWidgets.QMainWindow):
         self.progress_bar.setValue(0)
 
 
-# app = QtWidgets.QApplication(sys.argv)
-# gui = GUI()
-# gui.show()
-# app.exec_()
+app = QtWidgets.QApplication(sys.argv)
+gui = GUI()
+gui.show()
+app.exec_()
